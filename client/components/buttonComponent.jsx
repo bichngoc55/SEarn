@@ -1,24 +1,35 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const MyComponent = () => {
+const reuseBtn = ({ onPress, btnText, textColor }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Hello, React Native!</Text>
-    </View>
+    <TouchableOpacity
+      style={styles.container(
+        width,
+        height,
+        backgroundColor,
+        borderWidth,
+        borderColor
+      )}
+      onPress={onPress}
+    >
+      <Text style={styles.Text(textColor)}>{btnText}</Text>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
+  container: (width, height, backgroundColor, borderWidth, borderColor) => ({
+    width: width,
+    height: height,
+    backgroundColor: backgroundColor,
+    borderWidth: borderWidth,
+    borderColor: borderColor,
+    padding: 10,
+    borderRadius: 15,
     alignItems: "center",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
+    justifyContent: "center",
+  }),
 });
 
-export default MyComponent;
+export default reuseBtn;

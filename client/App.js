@@ -3,6 +3,7 @@ import NavigationContainer from "./routes/index";
 import { View, Text } from "react-native";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
+import MainContainer from "./components/MainContainer";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -20,9 +21,5 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-  return (
-    <View>
-      <Text>Hello, World!</Text>
-    </View>
-  );
+  return <MainContainer></MainContainer>;
 }

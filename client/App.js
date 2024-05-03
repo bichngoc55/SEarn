@@ -3,11 +3,9 @@ import StackNavigation from "./routes/index";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, Text } from "react-native";
 import { useFonts } from "expo-font";
-import { useCallback, useMemo, useState } from "react";
-import LaunchingPage from "./pages/LaunchingPage/launchingPage";
-import LoginPage from "./pages/LoginPage/loginPage";
-import LightTheme from "./pages/ThemePage/lightTheme";
-import DarkTheme from "./pages/ThemePage/darkTheme";
+import { useCallback } from "react";
+import MainContainer from "./components/MainContainer";
+
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const AppContext = useMemo(() => {
@@ -34,13 +32,8 @@ export default function App() {
     return null;
   }
   return (
-    // <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-    //   <NavigationContainer theme={isDarkTheme ? DarkTheme : LightTheme}>
-    //     <AppContext.Provider value={AppContext}>
-    //       <StackNavigation />
-    //     </AppContext.Provider>
-    //   </NavigationContainer>
-    // </GestureHandlerRootView>
-    <LaunchingPage />
+    <View>
+      <Text>Hello, World!</Text>
+    </View>
   );
 }

@@ -1,15 +1,28 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import NavigationContainer from "./routes/index";
+import StackNavigation from "./routes/index";
+import { NavigationContainer } from "@react-navigation/native";
 import { View, Text } from "react-native";
 import { useFonts } from "expo-font";
-import { useCallback } from "react";
-
+import { useCallback, useMemo, useState } from "react";
+import LaunchingPage from "./pages/LaunchingPage/launchingPage";
+import LoginPage from "./pages/LoginPage/loginPage";
+import LightTheme from "./pages/ThemePage/lightTheme";
+import DarkTheme from "./pages/ThemePage/darkTheme";
 export default function App() {
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const AppContext = useMemo(() => {
+    return {
+      isDarkTheme,
+      setIsDarkTheme,
+    };
+  });
   const [fontsLoaded] = useFonts({
     regular: require("./assets/fonts/Montserrat-Regular.ttf"),
     bold: require("./assets/fonts/Montserrat-Bold.ttf"),
     italic: require("./assets/fonts/Montserrat-Italic.ttf"),
     boldItalic: require("./assets/fonts/Montserrat-BoldItalic.ttf"),
+    light: require("./assets/fonts/Montserrat-Light.ttf"),
+    lightItalic: require("./assets/fonts/Montserrat-LightItalic.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -21,8 +34,13 @@ export default function App() {
     return null;
   }
   return (
-    <View>
-      <Text>Hello, World!</Text>
-    </View>
+    // <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+    //   <NavigationContainer theme={isDarkTheme ? DarkTheme : LightTheme}>
+    //     <AppContext.Provider value={AppContext}>
+    //       <StackNavigation />
+    //     </AppContext.Provider>
+    //   </NavigationContainer>
+    // </GestureHandlerRootView>
+    <LaunchingPage />
   );
 }

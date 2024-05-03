@@ -1,10 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 
 const HomePage = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, Home!</Text>
+      <StatusBar
+        translucent={true}
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      <ScrollView style={styles.scrollView}></ScrollView>
     </View>
   );
 };
@@ -12,12 +17,12 @@ const HomePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#1C1B1B",
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
+  scrollView: {
+    flex: 1,
   },
 });
 

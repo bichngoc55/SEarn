@@ -3,7 +3,7 @@ import StackNavigation from "./routes/index";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, Text } from "react-native";
 import { useFonts } from "expo-font";
-import { useCallback } from "react";
+import { useCallback, useState, useMemo } from "react";
 import MainContainer from "./components/MainContainer";
 
 export default function App() {

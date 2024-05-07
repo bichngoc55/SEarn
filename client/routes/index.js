@@ -1,26 +1,28 @@
 // import { NavigationContainer } from "@react-navigation/native";
 // import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import React from "react"; // Add this line
 
 // import ArtistPage from "../pages/ArtistPage/artistPage";
 // import HomePage from "../pages/HomePage/HomePage";
-// import artistDetailPage from "../pages/ArtistDetailPage/artistDetailPage";
+// import ArtistDetailPage from "../pages/ArtistDetailPage/artistDetailPage";
 // import NotFoundPage from "../pages/NotFoundPage/notFoundPage";
-// import albumPage from "../pages/AlbumPage/albumPage";
-// import launchingPage from "../pages/LaunchingPage/launchingPage";
-// import addToPlaylistPage from "../pages/AddToPlaylistPage/addToPlaylistPage";
-// import exploreSearchPage from "../pages/ExploreSearchPage/exploreSearchPage";
-// import likedSongsPage from "../pages/LikedSongsPage/likedSongsPage";
-// import userProfilePage from "../pages/userProfile/userProfilePage";
+// import AlbumPage from "../pages/AlbumPage/albumPage";
+// import LaunchingPage from "../pages/LaunchingPage/launchingPage";
+// import AddToPlaylistPage from "../pages/AddToPlaylistPage/addToPlaylistPage";
+// import ExploreSearchPage from "../pages/ExploreSearchPage/exploreSearchPage";
+// import LikedSongPage from "../pages/LikedSongsPage/likedSongPage";
+// //import UserProfilePage from "../pages/userProfile/userProfilePage";
 // import LoginPage from "../pages/LoginPage/loginPage";
-// import registerPage from "../pages/RegisterPage/registerPage";
-// import playlistPage from "../pages/PlaylistPage/playlistPage";
+// import RegisterPage from "../pages/RegisterPage/registerPage";
+// import PlaylistPage from "../pages/PlaylistPage/playlistPage";
 
 // const Stack = createNativeStackNavigator();
 
-// const MyNavigationContainer = () => {
+// const StackNavigation = () => {
 //   return (
 //     <NavigationContainer independent={true}>
 //       <Stack.Navigator screenOptions={{ headerShown: false }}>
+//         <Stack.Screen name="LoginPage" component={LoginPage} />
 //         <Stack.Screen name="SignIn" component={LoginPage} />
 
 //         {/* homepage */}
@@ -29,29 +31,29 @@
 //         {/* artist  */}
 //         <Stack.Screen name="ArtistPage" component={ArtistPage} />
 
-//         <Stack.Screen name="artistDetailPage" component={artistDetailPage} />
+//         <Stack.Screen name="ArtistDetailPage" component={ArtistDetailPage} />
 //         {/* user profile */}
-//         <Stack.Screen name="UserProfilePage" component={userProfilePage} />
+//         {/* <Stack.Screen name="UserProfilePage" component={UserProfilePage} /> */}
 //         {/* register page */}
-//         <Stack.Screen name="RegisterPage" component={registerPage} />
+//         <Stack.Screen name="RegisterPage" component={RegisterPage} />
 //         {/* login page */}
-//         <Stack.Screen name="LoginPage" component={LoginPage} />
+
 //         {/* launching page */}
-//         <Stack.Screen name="LaunchingPage" component={launchingPage} />
+//         <Stack.Screen name="LaunchingPage" component={LaunchingPage} />
 //         {/* add to playlist page */}
-//         <Stack.Screen name="AddToPlaylistPage" component={addToPlaylistPage} />
+//         <Stack.Screen name="AddToPlaylistPage" component={AddToPlaylistPage} />
 //         {/* explore search page */}
-//         <Stack.Screen name="ExploreSearchPage" component={exploreSearchPage} />
+//         <Stack.Screen name="ExploreSearchPage" component={ExploreSearchPage} />
 //         {/* liked songs page */}
-//         <Stack.Screen name="LikedSongsPage" component={likedSongsPage} />
+//         <Stack.Screen name="LikedSongsPage" component={LikedSongPage} />
 //         {/* playlist page */}
-//         <Stack.Screen name="PlaylistPage" component={playlistPage} />
+//         <Stack.Screen name="PlaylistPage" component={PlaylistPage} />
 //         {/* not found page */}
 //         <Stack.Screen name="NotFoundPage" component={NotFoundPage} />
 //         {/* album page */}
-//         <Stack.Screen name="AlbumPage" component={albumPage} />
+//         <Stack.Screen name="AlbumPage" component={AlbumPage} />
 //       </Stack.Navigator>
 //     </NavigationContainer>
 //   );
 // };
-// export default MyNavigationContainer;
+// export default StackNavigation;

@@ -2,7 +2,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import NavigationContainer from "./routes/index";
 import { View, Text } from "react-native";
 import { useFonts } from "expo-font";
-import { useCallback } from "react";
+import { useCallback, useState, useMemo } from "react";
 import MainContainer from "./components/MainContainer";
 
 export default function App() {

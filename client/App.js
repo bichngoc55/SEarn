@@ -32,8 +32,6 @@ export default function App() {
     return null;
   }
   return (
-    <View>
-      <Text>Hello, World!</Text>
-    </View>
+    <MainContainer></MainContainer>
   );
 }

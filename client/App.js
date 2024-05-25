@@ -31,9 +31,5 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-  return (
-    <View>
-      <Text>Hello, World!</Text>
-    </View>
-  );
+  return <MainContainer />;
 }

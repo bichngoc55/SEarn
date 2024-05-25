@@ -1,16 +1,11 @@
 import express from "express";
-import {
-  login,
-  register,
-  refresh,
-  linkSpotifyAccount,
-} from "../controllers/authController.js";
+import { getAccessToken } from "../controllers/userController.js";
 
 const router = express.Router();
 
-router.post("/register", register);
-router.post("/login", login);
-router.post("/refresh", refresh);
-router.get("/spotify/callback", linkSpotifyAccount);
+// router.post("/register", register);
+// router.post("/login", login);
+// router.post("/refresh", refresh);
+router.get("/getAcessToken", getAccessToken);
 
 export default router;

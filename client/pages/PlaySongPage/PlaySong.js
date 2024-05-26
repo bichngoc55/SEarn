@@ -23,12 +23,7 @@ const PlaySongPage = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerL}>
-        <Ionicons
-          name="arrow-back-circle"
-          size={scale(30)}
-          color="#737373"
-          onPress={navigation.goBack}
-        />
+        <Ionicons name="arrow-back-circle" size={scale(30)} color="#737373" />
         <Text style={styles.headerText}>Your liked song</Text>
         <View style={{ width: scale(30), height: scale(30) }} />
       </View>

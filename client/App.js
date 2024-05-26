@@ -5,6 +5,9 @@ import { View, Text } from "react-native";
 import { useFonts } from "expo-font";
 import { useCallback, useState, useMemo } from "react";
 import MainContainer from "./components/MainContainer";
+import { Provider } from "react-redux";
+import { store, persistor } from "./redux/store"; // Import your store
+import { PersistGate } from "redux-persist/integration/react";
 
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -31,5 +34,11 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-  return <MainContainer />;
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <MainContainer />
+      </PersistGate>
+    </Provider>
+  );
 }

@@ -1,40 +1,53 @@
-import { useSelector, useDispatch } from "react-redux";
-import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
-import { View, Text, StyleSheet } from "react-native";
-import React, { useEffect } from "react";
-const LaunchingPage = () => {
-  const dispatch = useDispatch();
-  const accessToken = useSelector(
-    (state) => state.spotifyAccessToken.accessToken
-  );
-  const loading = useSelector((state) => state.spotifyAccessToken.loading);
-  const error = useSelector((state) => state.spotifyAccessToken.error);
+import React, { useEffect, useRef } from "react";
+import { View, Image, Text, StyleSheet, Animated } from "react-native";
+import scale from "../../constant/responsive";
+
+const LaunchingPage = ({ navigation }) => {
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+    const fadeOut = () => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start(() => {
+        navigation.replace("GettingStarted");
+      });
+    };
+
+    const timer = setTimeout(fadeOut, 2000);
+
+    return () => clearTimeout(timer);
+  }, [fadeAnim, navigation]);
+
   return (
-    <View style={styles.container}>
-      {loading && <Text>Loading access token...</Text>}
-      {error && <Text>Error: {error.message}</Text>}
-      {accessToken && (
-        <Text style={styles.text}>
-          Hello, LaunchingPage! This is {accessToken}
-        </Text>
-      )}
-    </View>
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      <Image
+        source={require("../../assets/images/logoSEE.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <Text>Musicify</Text>
+    </Animated.View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#000",
+  },
+  logo: {
+    width: scale(160),
+    height: scale(150),
   },
   text: {
-    fontSize: 24,
+    color: "#fff",
+    fontSize: scale(30),
     fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

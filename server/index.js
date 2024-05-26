@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import FacebookStrategy from "passport-facebook";
+import playlistRoutes from "./routes/playlist.js";
 //config
 dotenv.config();
 //express app
@@ -28,7 +29,7 @@ app.use(cookieParser());
 
 //express
 app.use("/auth", authRoutes);
-
+app.use("/playlists", playlistRoutes);
 //connect to mongodb
 mongoose
   .connect(process.env.URI)

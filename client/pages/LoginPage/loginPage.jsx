@@ -1,181 +1,195 @@
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   Image,
+  TextInput,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
-import React, { useState } from "react";
-import * as yup from "yup";
-import { COLOR } from "../../constant/color";
+import { Ionicons } from "@expo/vector-icons";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import ReuseBtn from "../../components/buttonComponent";
-import scale from "../../constant/responsive";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Formik } from "formik";
+import * as Yup from "yup";
+import TextField from "../../components/textField";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../redux/userSlice"; // Adjust import path
+import { COLOR } from "../../constant/color";
+import scale from "../../constant/responsive";
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-
-// Yup validation schema
-const signInPayLoadSchema = yup.object({
-  email: yup
-    .string()
-    .required("Email cannot be blank")
-    .email("Invalid email")
-    .max(50, "Email length must be less than 50 characters"),
-  password: yup
-    .string()
-    .required("Password can not be blank")
-    .min(6, "Password length must be more than 6 characters")
-    .max(16, "Password length must be less than 16 characters")
-    .matches(
-      passwordRegex,
-      "Password must contain uppercase, lowercase and number characters"
-    ),
+const RegisterSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 6 characters")
+    .required("Password is required"),
 });
 
-const LoginPage = () => {
+export default function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
   const handleSubmit = async (values) => {
-    console.log(values);
-  };
-  const handlePress = () => {
-    //navigation.navigate("HomePage");
-    console.log("pressed");
+    try {
+      await dispatch(loginUser(values));
+      navigation.navigate("Main");
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../../assets/images/logoSEE.png")}
-        style={styles.image}
-      />
-      <Text style={styles.textLogin}>Sign In</Text>
+      <View style={styles.backButtonContainer}>
+        <Pressable
+          style={styles.backButton}
+          onPress={() => navigation.navigate("SignUpOrLogin")}
+        >
+          <Ionicons name="chevron-back-sharp" size={24} color="black" />
+        </Pressable>
+      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.content}>
+          <Image
+            source={require("../../assets/images/logoSEE.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
 
-      <Text style={styles.textIfYouNeed}>
-        If you need any support{" "}
-        <TouchableOpacity onPress={handlePress}>
-          <Text style={styles.textCLickMe}>Click Me</Text>
-        </TouchableOpacity>
-      </Text>
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        validationSchema={signInPayLoadSchema}
-        onSubmit={(values) => handleSubmit(values)}
-      >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
-          <View>
-            <TextInput
-              placeholder="Email"
-              onChangeText={handleChange("email")}
-              value={values.email}
-              style={styles.inputText}
-            />
-            {touched.email && errors.email && (
-              <Text style={styles.text}>{errors.email}</Text>
+          <Text style={styles.registerText}>Sign Up</Text>
+
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={RegisterSchema}
+            onSubmit={handleSubmit}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <View style={styles.formContainer}>
+                <View style={styles.inputContainer}>
+                  <TextField
+                    width={scale(310)}
+                    height={scale(65)}
+                    placeholder="Enter your email"
+                    onChangeText={handleChange("email")}
+                    onBlur={handleBlur("email")}
+                    value={values.email}
+                    keyboardType="email-address"
+                  />
+                  {touched.email && errors.email && (
+                    <Text style={styles.errorMessage}>{errors.email}</Text>
+                  )}
+                </View>
+                <View style={styles.inputContainer}>
+                  <TextField
+                    placeholder="Enter your password"
+                    width={scale(310)}
+                    height={scale(65)}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    value={values.password}
+                    secureTextEntry
+                  />
+                  {touched.password && errors.password && (
+                    <Text style={styles.errorMessage}>{errors.password}</Text>
+                  )}
+                </View>
+                <View style={styles.btnContainer}>
+                  <ReuseBtn
+                    onPress={handleSubmit}
+                    btnText="Register"
+                    textColor="#ffffff"
+                    width={scale(210)}
+                    height={scale(65)}
+                  />
+                </View>
+              </View>
             )}
+          </Formik>
 
-            <TextInput
-              placeholder="Password"
-              onChangeText={handleChange("password")}
-              onBlur={handleBlur("password")}
-              value={values.password}
-              secureTextEntry
-              style={styles.inputText}
-            />
-            {touched.password && errors.password && (
-              <Text style={styles.text}>{errors.password}</Text>
-            )}
-
-            <View style={styles.stack}>
-              <ReuseBtn
-                btnText={"Login"}
-                onPress={handleSubmit}
-                textColor={COLOR.textPrimaryColor}
-                width={scale(270)}
-                height={scale(65)}
-                borderColor={COLOR.textPrimaryColor}
-              />
-            </View>
+          <View style={styles.signInLinkContainer}>
+            <Text style={styles.signInText}>Not a member? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+              <Text style={styles.signInLink}>Register now</Text>
+            </TouchableOpacity>
           </View>
-        )}
-      </Formik>
+        </View>
+      </TouchableWithoutFeedback>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#121212",
+  },
+  backButtonContainer: {
+    marginTop: scale(20),
+    marginLeft: scale(15),
+  },
+  backButton: {
+    width: scale(35),
+    height: scale(35),
+    borderRadius: 17.5,
+    backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLOR.backgroundColor,
-    height: "100%",
   },
-  image: {
-    width: "40%",
-    position: "absolute",
-    top: scale(50),
-    height: scale(200),
-    resizeMode: "contain",
+  backButtonIcon: {
+    width: scale(25),
+    height: scale(25),
+    marginLeft: scale(10),
   },
-  text: {
-    fontSize: scale(12),
-    fontFamily: "light",
-    color: "red",
-    opacity: 0.7,
-  },
-
-  textLogin: {
-    fontSize: scale(24),
-    fontFamily: "bold",
-    color: COLOR.textPrimaryColor,
-    position: "absolute",
-    top: scale(220),
-  },
-  textCLickMe: {
-    fontSize: scale(12),
-    fontFamily: "light",
-    position: "absolute",
-    color: COLOR.textLinkColor,
-    top: scale(-12),
-    margin: scale(0),
-    padding: scale(0),
-  },
-  textIfYouNeed: {
-    position: "absolute",
-    fontFamily: "light",
-    color: COLOR.textPrimaryColor,
-    fontSize: scale(12),
-    top: scale(270),
-    left: scale(95),
-  },
-  stack: {
-    position: "absolute",
-    top: scale(80),
-    //width: "80%",
-    backgroundColor: COLOR.btnBackgroundColor,
-    left: scale(-50),
-  },
-  inputText: {
-    position: "absolute",
-    width: scale(220),
+  content: {
     flex: 1,
-    padding: scale(10),
-    flexDirection: "column",
-    height: scale(40),
-    borderColor: "black",
-    borderWidth: 1,
-    borderRadius: scale(10),
-    // padding: scale(10),
-    // marginTop: scale(10),
-    // marginBottom: scale(10),
+    alignItems: "center",
+    paddingHorizontal: scale(24),
+  },
+  logo: {
+    marginTop: scale(10),
+    width: scale(160),
+    height: scale(150),
+  },
+  registerText: {
+    fontSize: 30,
     color: COLOR.textPrimaryColor,
-    fontFamily: "regular",
+    marginBottom: 10,
+  },
+  errorMessage: {
+    color: "red",
+    opacity: 0,
+  },
+  registerButton: {
+    color: COLOR.textPrimaryColor,
+  },
+  signInLinkContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: scale(20),
+  },
+  signInText: {
+    color: COLOR.textPrimaryColor,
+  },
+  signInLink: {
+    color: COLOR.textLinkColor,
+  },
+  btnContainer: {
+    marginTop: scale(20),
+
+    alignItems: "center",
   },
 });
-
-export default LoginPage;

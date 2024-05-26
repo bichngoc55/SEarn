@@ -1,18 +1,10 @@
 import mongoose from "mongoose";
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
     name: {
-      type: String,
-      required: true,
-      min: 5,
-      max: 70,
-    },
-    accountId: {
-      type: String,
-    },
-    username: {
       type: String,
       required: true,
       min: 5,
@@ -28,40 +20,32 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
-      min: 5,
+      min: 6,
     },
-    ava: {
+    avaURL: {
       type: String,
       default: "",
     },
-    phone: {
+    backgroundImageUrl: {
       type: String,
       default: "",
-    },
-    dateOfBirth: {
-      type: Date,
-      default: "",
-    },
-    location: String,
-    gender: {
-      type: String,
-      enum: ["nam", "nu"],
-      required: true,
     },
     likedSongs: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Song",
+        type: String,
       },
     ],
-    likedPlaylists: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Playlist",
-      },
-    ],
-    spotifyAccessToken: { type: String },
-    spotifyRefreshToken: { type: String },
+    recentListeningSong: {
+      artistName: { type: String },
+      imageURL: { type: String },
+      songId: { type: String },
+      songName: { type: String },
+    },
+    notificationCount: {
+      type: Number,
+    },
+    likedArtists: [{ type: String }],
+    likedAlbums: [{ type: String }],
   },
   { timestamps: true }
 );

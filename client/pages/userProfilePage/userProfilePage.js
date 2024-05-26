@@ -4,11 +4,14 @@ import { COLOR } from "../../constant/color";
 import ReuseBtn from "../../components/buttonComponent";
 //import { useNavigation } from "@react-navigation/native";
 import scale from "../../constant/responsive";
+import { useSelector, useDispatch } from "react-redux";
 
 const UserPage = () => {
+  const { user } = useSelector((state) => state.user);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, userPage!</Text>
+      <Text style={styles.text}>Hello, {user.accessToken}!</Text>
     </View>
   );
 };

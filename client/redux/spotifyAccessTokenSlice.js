@@ -6,11 +6,12 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/auth/getAccessToken"
+        "http://localhost:8081/auth/getAccessToken"
       );
       return response.data.accessToken;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error("Error fetching:", error);
+      throw error;
     }
   }
 );

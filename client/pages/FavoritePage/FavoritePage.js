@@ -7,25 +7,23 @@ import {
   StatusBar,
   Pressable,
 } from "react-native";
+import { Provider } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import PlaylistPage from "./PlaylistPage";
+import { store, persistor } from "../../redux/store";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
 const LibraryPage = () => {
   const PlaylistScreen = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Playlist Content</Text>
+    <View style={{ flex: 1 }}>
+      <PlaylistPage />
     </View>
   );
 
-  const SingerScreen = () => (
+  const ArtistScreen = () => (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Singer Content</Text>
-    </View>
-  );
-  const SongScreen = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Song Content</Text>
+      <Text>Artist Contents</Text>
     </View>
   );
   const AlbumScreen = () => (
@@ -37,32 +35,36 @@ const LibraryPage = () => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "playlist", title: "Playlist" },
-    { key: "song", title: "Song" },
     { key: "album", title: "Album" },
-    { key: "singer", title: "Singer" },
+    { key: "artist", title: "Artist" },
   ]);
 
   const renderScene = SceneMap({
     playlist: PlaylistScreen,
-    song: SongScreen,
     album: AlbumScreen,
-    singer: SingerScreen,
+    artist: ArtistScreen,
   });
   const renderTabBar = (props) => (
     <TabBar
       {...props}
-      indicatorStyle={{ backgroundColor: "#1C1B1B", width: 20 }}
-      style={{ backgroundColor: "#1C1B1B", overflowX: "auto" }}
+      indicatorStyle={{ backgroundColor: "transparent" }}
+      style={{
+        backgroundColor: "#1C1B1B",
+        marginHorizontal: 10,
+        outline: "none",
+        borderWidth: 0,
+        borderColor: "#FFFFFF",
+      }}
       renderLabel={({ route, focused }) => (
         <Pressable
           style={{
             borderWidth: 1,
             backgroundColor: focused ? "#49A078" : "#1C1B1B",
-            paddingLeft: 10,
-            paddingRight: 10,
-            paddingTop: 3,
-            paddingBottom: 3,
-            borderColor: "white",
+            paddingLeft: 20,
+            paddingRight: 20,
+            paddingTop: 5,
+            paddingBottom: 5,
+            borderColor: focused ? "#49A078" : "white",
             borderRadius: 20,
             margin: 0,
           }}
@@ -70,6 +72,7 @@ const LibraryPage = () => {
           <Text
             style={{
               color: "white",
+              fontSize: 18,
             }}
           >
             {route.title}
@@ -88,9 +91,7 @@ const LibraryPage = () => {
       />
 
       <View style={styles.headerL}>
-        <Ionicons name="arrow-back-circle-outline" size={24} color="white" />
         <Text style={styles.headerText}>My Library</Text>
-        <Feather name="more-vertical" size={24} color="white" />
       </View>
 
       <TabView
@@ -117,13 +118,16 @@ const styles = StyleSheet.create({
     marginLeft: "8.48%",
     marginRight: "8.48%",
     height: 35,
-    marginTop: "11.68%",
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    marginTop: "8.68%",
+    marginBottom: "2.68%",
+    flexDirection: "row",
   },
   headerText: {
     color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
 

@@ -12,13 +12,14 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import * as utils from "../../service/songService";
+import { getTrack } from "../../service/songService";
+import SongItem from "../../components/songItem";
+import { useNavigation } from "@react-navigation/native";
 
 const PlaylistPage = () => {
   const dispatch = useDispatch();
-  const accessToken = useSelector(
-    (state) => state.spotifyAccessToken.accessToken
-  );
+  const accessToken =
+    "BQBwZHWpPLNX0xTkaTCu6RjVn79_eXrBr0FeWk0Qq6EAWZSl0IulY6E6mfcAhzIEwQqF3eQToCKGgps0Va5DdqnoUDrugjsVB1c7dc0GqB0tWNiIxwc";
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
   const [songList, setSongList] = useState([
@@ -28,16 +29,16 @@ const PlaylistPage = () => {
   ]);
   const [tracks, setTracks] = useState([]);
 
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchSpotifyAccessToken());
+  // }, [dispatch]);
 
   useEffect(() => {
     const fetchTracks = async () => {
       try {
         if (accessToken) {
           const trackPromises = songList.map((songId) =>
-            utils.getTrack(accessToken, songId)
+            getTrack(accessToken, songId)
           );
           const trackData = await Promise.all(trackPromises);
           trackData.forEach((track) => {});
@@ -50,6 +51,12 @@ const PlaylistPage = () => {
 
     fetchTracks();
   }, [accessToken, songList]);
+
+  const navigation = useNavigation();
+
+  const MoveToLikedSong = () => {
+    navigation.navigate("LikedSong");
+  };
 
   return (
     <SafeAreaView
@@ -67,33 +74,22 @@ const PlaylistPage = () => {
         <Text style={styles.text}>New playlist</Text>
       </View>
 
-      <View style={styles.NewPlaylist}>
+      <TouchableOpacity style={styles.NewPlaylist} onPress={MoveToLikedSong}>
         <TouchableOpacity style={styles.container}>
           <View style={styles.circle}>
             <Ionicons name="heart-outline" size={30} color="black" />
           </View>
         </TouchableOpacity>
         <Text style={styles.text}>Your liked song</Text>
-      </View>
+      </TouchableOpacity>
 
-      <FlatList
+      {/* <FlatList
         data={tracks}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.trackContainer}>
-            <Image
-              source={{ uri: item.album.images[0].url }}
-              style={styles.circle}
-            />
-            <View style={{ flexDirection: "column" }}>
-              <Text style={styles.text}>{item.name}</Text>
-              <Text style={styles.text}>
-                {item.artists.map((artist) => artist.name).join(", ")}
-              </Text>
-            </View>
-          </View>
-        )}
-      />
+        renderItem={({ item }) => {
+          return <SongItem item={item} />;
+        }}
+      /> */}
     </SafeAreaView>
   );
 };

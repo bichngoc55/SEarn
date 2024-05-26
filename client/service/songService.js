@@ -15,11 +15,16 @@ const getTrack = async (accessToken, songId) => {
     return {
       name: track.name,
       id: track.id,
-      artists: track.artists.map((artist) => artist.name),
+      artists: track.artists.map((artist) => ({
+        name: artist.name,
+        id: artist.id,
+      })),
       album: {
+        id: track.album.id,
         name: track.album.name,
         image: track.album.images[0].url,
       },
+      preview_url: track.preview_url,
     };
   } catch (error) {
     console.error("Error fetching track:", error);

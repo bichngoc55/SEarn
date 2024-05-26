@@ -5,13 +5,14 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
   "accessToken/fetchAccessToken",
   async (_, { rejectWithValue }) => {
     try {
+      console.log("INside fetch function");
       const response = await axios.get(
-        "http://localhost:8081/auth/getAccessToken"
+        "http://localhost:8080/auth/getAccessToken"
       );
+      console.log(response.data.accessToken);
       return response.data.accessToken;
     } catch (error) {
-      console.error("Error fetching:", error);
-      throw error;
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -24,7 +25,18 @@ const accessTokenSlice = createSlice({
     error: null,
   },
   reducers: {
-    // ... other reducers if needed
+    fetchAccessTokenRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchAccessTokenSuccess: (state, action) => {
+      state.loading = false;
+      state.accessToken = action.payload;
+    },
+    fetchAccessTokenFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -43,5 +55,9 @@ const accessTokenSlice = createSlice({
   },
 });
 
-export const {} = accessTokenSlice.actions;
+export const {
+  fetchAccessTokenRequest,
+  fetchAccessTokenSuccess,
+  fetchAccessTokenFailure,
+} = accessTokenSlice.actions;
 export default accessTokenSlice.reducer;

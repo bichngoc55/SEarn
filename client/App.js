@@ -7,7 +7,7 @@ import { useCallback, useState, useMemo } from "react";
 import MainContainer from "./components/MainContainer";
 import React from "react";
 import { Provider } from "react-redux";
-import { store, persistor } from "../client/redux/store"; // Import your store
+import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 
 export default function App() {

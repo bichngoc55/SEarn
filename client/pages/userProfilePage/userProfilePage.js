@@ -5,13 +5,35 @@ import ReuseBtn from "../../components/buttonComponent";
 //import { useNavigation } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { useSelector, useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { logoutUser } from "../../redux/userSlice";
 
 const UserPage = () => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const { accessToken } = useSelector((state) => state.spotifyAccessToken);
+  const handleSubmit = async () => {
+    try {
+      dispatch(logoutUser());
 
+      await AsyncStorage.removeItem("user");
+      await AsyncStorage.removeItem("accessToken");
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Hello, {user.accessToken}!</Text>
+      <Text style={styles.text}>Hello, {accessToken}!</Text>
+      <ReuseBtn
+        onPress={handleSubmit}
+        btnText="Log out"
+        textColor="#ffffff"
+        width={scale(210)}
+        height={scale(65)}
+      />
     </View>
   );
 };

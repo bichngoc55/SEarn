@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
+import { TabBar } from "react-native-tab-view";
 
 const HomePage = () => {
   return (

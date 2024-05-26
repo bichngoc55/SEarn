@@ -4,11 +4,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { View, Text } from "react-native";
 import { useFonts } from "expo-font";
 import { useCallback, useState, useMemo } from "react";
-import MainContainer from "./components/MainContainer";
+import MainNavigation from "./components/MainContainer";
 import React from "react";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { SafeAreaView, StyleSheet } from "react-native";
 
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -39,7 +40,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <MainContainer />
+        <MainNavigation />
       </PersistGate>
     </Provider>
   );

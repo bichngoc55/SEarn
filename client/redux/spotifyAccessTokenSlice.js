@@ -7,9 +7,10 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
     try {
       console.log("INside fetch function");
       const response = await axios.get(
-        "http://localhost:8080/auth/getAccessToken"
+        "http://localhost:3005/auth/getAccessToken"
       );
       console.log(response.data.accessToken);
+      console.log("HUHU chay di");
       return response.data.accessToken;
     } catch (error) {
       return rejectWithValue(error.response.data);

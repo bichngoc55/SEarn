@@ -23,7 +23,7 @@ const ReuseBtn = ({
     <Pressable
       style={[
         styles.container(width, height),
-        { backgroundColor: isPressed ? COLOR.btnBackgroundColor : "#408F6B" },
+        { backgroundColor: isPressed ? COLOR.btnBackgroundColor : "#F4BC48" },
       ]}
       onPress={onPress}
       onPressIn={() => setIsPressed(true)} // When pressed

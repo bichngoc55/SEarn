@@ -11,14 +11,16 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import ReuseBtn from "../../components/buttonComponent";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import TextField from "../../components/textField";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../redux/userSlice"; // Adjust import path
+import { loginUser } from "../../redux/userSlice";
+import { CommonActions } from "@react-navigation/native";
 import { COLOR } from "../../constant/color";
 import scale from "../../constant/responsive";
+import { StackActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string()
@@ -29,15 +31,20 @@ const RegisterSchema = Yup.object().shape({
     .required("Password is required"),
 });
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const handleSubmit = async (values) => {
     try {
       await dispatch(loginUser(values));
-      navigation.navigate("Main");
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "BottomBar" }],
+        })
+      );
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -107,7 +114,7 @@ export default function LoginScreen({ navigation }) {
                 <View style={styles.btnContainer}>
                   <ReuseBtn
                     onPress={handleSubmit}
-                    btnText="Register"
+                    btnText="Sign up"
                     textColor="#ffffff"
                     width={scale(210)}
                     height={scale(65)}
@@ -170,7 +177,6 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: "red",
-    opacity: 0,
   },
   registerButton: {
     color: COLOR.textPrimaryColor,

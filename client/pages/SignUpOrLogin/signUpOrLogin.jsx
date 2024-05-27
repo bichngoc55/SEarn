@@ -29,13 +29,13 @@ const SignUpOrLoginPage = () => {
 
       <View style={styles.contentContainer}>
         <Image
-          source={require("../../assets/images/logoSEE.png")}
+          source={require("../../assets/images/logoSEarn.png")}
           style={styles.logo}
           resizeMode="contain"
         />
-        <Text style={styles.musicifyText}>Musicify</Text>
+        {/* <Text style={styles.musicifyText}>SEarn</Text> */}
         <Text style={styles.descriptionText}>
-          Musicify is the go-to Vietnamese music app, offering a wide range of
+          SEarn is the go-to Vietnamese music app, offering a wide range of
           tracks, personalized playlists.
         </Text>
         <View style={styles.buttonsContainer}>
@@ -51,7 +51,7 @@ const SignUpOrLoginPage = () => {
           <View style={styles.wrapContainer}>
             <ReuseBtn
               onPress={handleLoginPress}
-              btnText="Sign up"
+              btnText="Sign in"
               textColor="#ffffff"
               width={scale(150)}
               height={scale(65)}
@@ -92,8 +92,11 @@ const styles = StyleSheet.create({
     marginBottom: scale(160),
   },
   logo: {
-    width: scale(160),
-    height: scale(150),
+    // width: scale(160),
+    // height: scale(150),
+    width: scale(236),
+    height: scale(170),
+    marginBottom: 17
   },
   musicifyText: {
     fontFamily: "Montserrat",

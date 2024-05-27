@@ -28,7 +28,7 @@ const LaunchingPage = ({ navigation }) => {
         style={styles.logo}
         resizeMode="contain"
       />
-      <Text>Musicify</Text>
+      <Text>SEarn</Text>
     </Animated.View>
   );
 };

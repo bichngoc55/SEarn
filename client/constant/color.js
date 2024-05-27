@@ -2,7 +2,7 @@
 // const {height,width} = Dimensions.get('window');
 export const COLOR = {
   textPrimaryColor: "#FFFFFF",
-  btnBackgroundColor: "#49A078",
+  btnBackgroundColor: "#FFC752",
   textSecondaryColor: "#A0A0A0",
   backgroundColor: "#1C1B1B",
   textLinkColor: "#288CE9",

@@ -1,21 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { COLOR } from "../../constant/color";
 import ReuseBtn from "../../components/buttonComponent";
-//import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logoutUser } from "../../redux/userSlice";
 
-const UserPage = () => {
+export default function UserPage() {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const { accessToken } = useSelector((state) => state.spotifyAccessToken);
+  const { accessToken } = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
+  useEffect(() => {
+    if (accessToken) {
+      console.log("Access Token in useEffect:", accessToken);
+    }
+  }, [user, accessToken]);
   const handleSubmit = async () => {
     try {
       dispatch(logoutUser());
-
       await AsyncStorage.removeItem("user");
       await AsyncStorage.removeItem("accessToken");
       navigation.navigate("Login");
@@ -25,8 +33,9 @@ const UserPage = () => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, {user.accessToken}!</Text>
+      <Text style={styles.text}>Hello, {user?._id}!</Text>
       <Text style={styles.text}>Hello, {accessToken}!</Text>
+      <Text style={styles.text}>Hello, {accessTokenForSpotify}!</Text>
       <ReuseBtn
         onPress={handleSubmit}
         btnText="Log out"
@@ -36,7 +45,7 @@ const UserPage = () => {
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -75,5 +84,3 @@ const styles = StyleSheet.create({
     width: "80%",
   },
 });
-
-export default UserPage;

@@ -21,7 +21,7 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
 const accessTokenSlice = createSlice({
   name: "accessToken",
   initialState: {
-    accessToken: null,
+    accessTokenForSpotify: null,
     loading: false,
     error: null,
   },
@@ -32,7 +32,7 @@ const accessTokenSlice = createSlice({
     },
     fetchAccessTokenSuccess: (state, action) => {
       state.loading = false;
-      state.accessToken = action.payload;
+      state.accessTokenForSpotify = action.payload;
     },
     fetchAccessTokenFailure: (state, action) => {
       state.loading = false;
@@ -47,7 +47,7 @@ const accessTokenSlice = createSlice({
       })
       .addCase(fetchSpotifyAccessToken.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessToken = action.payload;
+        state.accessTokenForSpotify = action.payload;
       })
       .addCase(fetchSpotifyAccessToken.rejected, (state, action) => {
         state.loading = false;

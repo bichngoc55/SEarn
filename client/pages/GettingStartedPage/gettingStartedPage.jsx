@@ -48,7 +48,7 @@ const GettingStartedScreen = () => {
       <View style={styles.contentContainer}>
         <Text style={styles.enjoyText}>Enjoy Listening to Music</Text>
 
-        <Text style={styles.musicifyText}>Musicify</Text>
+        <Text style={styles.searnText}>SEarn</Text>
 
         <Text style={styles.typingText}>{displayedText}</Text>
 
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     height: scale(25),
     marginLeft: scale(10),
   },
-  musicifyText: {
+  searnText: {
     fontFamily: "Montserrat",
     fontSize: 23,
     textAlign: "center",

@@ -55,12 +55,12 @@ export default function LoginScreen({ navigation }) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.content}>
           <Image
-            source={require("../../assets/images/logoSEE.png")}
+            source={require("../../assets/images/logoSEarn.png")}
             style={styles.logo}
             resizeMode="contain"
           />
 
-          <Text style={styles.registerText}>Sign Up</Text>
+          <Text style={styles.registerText}>Sign In</Text>
 
           <Formik
             initialValues={{ email: "", password: "" }}
@@ -107,7 +107,7 @@ export default function LoginScreen({ navigation }) {
                 <View style={styles.btnContainer}>
                   <ReuseBtn
                     onPress={handleSubmit}
-                    btnText="Register"
+                    btnText="Login"
                     textColor="#ffffff"
                     width={scale(210)}
                     height={scale(65)}
@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(24),
   },
   logo: {
-    marginTop: scale(10),
-    width: scale(160),
+    marginVertical: scale(10),
+    width: scale(208),
     height: scale(150),
   },
   registerText: {
@@ -189,7 +189,6 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     marginTop: scale(20),
-
     alignItems: "center",
   },
 });

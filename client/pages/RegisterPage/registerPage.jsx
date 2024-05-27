@@ -65,7 +65,7 @@ export default function RegisterScreen({ navigation }) {
 
         <View style={styles.content}>
           <Image
-            source={require("../../assets/images/logoSEE.png")}
+            source={require("../../assets/images/logoSEarn.png")}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -182,8 +182,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(24),
   },
   logo: {
-    marginTop: scale(10),
-    width: scale(160),
+    marginVertical: scale(10),
+    width: scale(208),
     height: scale(150),
   },
   registerText: {

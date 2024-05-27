@@ -16,11 +16,10 @@ import * as Yup from "yup";
 import TextField from "../../components/textField";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/userSlice";
-import { CommonActions } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import { COLOR } from "../../constant/color";
 import scale from "../../constant/responsive";
-import { StackActions } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
+import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string()
@@ -31,20 +30,20 @@ const RegisterSchema = Yup.object().shape({
     .required("Password is required"),
 });
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const loginError = useSelector((state) => state.user.error);
+
   const handleSubmit = async (values) => {
     try {
-      await dispatch(loginUser(values));
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "BottomBar" }],
-        })
-      );
+      const resultAction = await dispatch(loginUser(values));
+      if (loginUser.fulfilled.match(resultAction)) {
+        dispatch(fetchSpotifyAccessToken());
+      } else {
+        console.error("Login error:", resultAction.error);
+      }
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -111,10 +110,13 @@ export default function LoginScreen() {
                     <Text style={styles.errorMessage}>{errors.password}</Text>
                   )}
                 </View>
+                {loginError && (
+                  <Text style={styles.errorMessage}>{loginError}</Text>
+                )}
                 <View style={styles.btnContainer}>
                   <ReuseBtn
                     onPress={handleSubmit}
-                    btnText="Sign up"
+                    btnText="Login"
                     textColor="#ffffff"
                     width={scale(210)}
                     height={scale(65)}

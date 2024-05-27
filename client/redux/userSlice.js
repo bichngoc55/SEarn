@@ -12,6 +12,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
+      console.log("Inside login user in user slice");
       const response = await fetch("http://localhost:3005/auth/login", {
         method: "POST",
         headers: {
@@ -19,15 +20,17 @@ export const loginUser = createAsyncThunk(
         },
         body: JSON.stringify(credentials),
       });
-
+      console.log("Inside login user in user slice");
       if (!response.ok) {
         throw new Error("Something went wrong during login.");
       }
 
       const data = await response.json();
+      console.log(data.user);
       await AsyncStorage.setItem("user", JSON.stringify(data.user));
       await AsyncStorage.setItem("accessToken", data.accessToken);
-      return data; // Return user data and token
+      console.log(data.accessToken);
+      return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -67,6 +70,8 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.user;
         state.accessToken = action.payload.accessToken;
+        console.log("Inside add case login user");
+        console.log(state.accessToken);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;

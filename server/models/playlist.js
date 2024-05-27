@@ -1,4 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
+const { Schema } = mongoose;
 
 const playlistSchema = new mongoose.Schema(
   {
@@ -17,4 +19,4 @@ const playlistSchema = new mongoose.Schema(
 );
 
 const Playlist = mongoose.model("Playlist", playlistSchema);
-module.exports = Playlist;
+export default Playlist;

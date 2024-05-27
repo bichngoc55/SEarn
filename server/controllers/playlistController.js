@@ -1,7 +1,7 @@
-const Playlist = require("../models/playlist");
+import Playlist from "../models/playlist.js";
 
 // Get all playlists
-const getAllPlaylists = async (req, res) => {
+export const getAllPlaylists = async (req, res) => {
   try {
     const playlists = await Playlist.find();
     res.status(200).json(playlists);
@@ -11,7 +11,7 @@ const getAllPlaylists = async (req, res) => {
 };
 
 // Add a new playlist
-const addPlaylist = async (req, res) => {
+export const addPlaylist = async (req, res) => {
   try {
     const playlist = new Playlist(req.body);
     await playlist.save();
@@ -22,7 +22,7 @@ const addPlaylist = async (req, res) => {
 };
 
 // Delete a playlist
-const deletePlaylist = async (req, res) => {
+export const deletePlaylist = async (req, res) => {
   try {
     const { id } = req.params;
     await Playlist.findByIdAndDelete(id);
@@ -33,7 +33,7 @@ const deletePlaylist = async (req, res) => {
 };
 
 // Update a playlist
-const updatePlaylist = async (req, res) => {
+export const updatePlaylist = async (req, res) => {
   try {
     const { id } = req.params;
     const playlist = await Playlist.findByIdAndUpdate(id, req.body, {
@@ -46,7 +46,7 @@ const updatePlaylist = async (req, res) => {
 };
 
 // Get details of a playlist
-const getPlaylistDetails = async (req, res) => {
+export const getPlaylistDetails = async (req, res) => {
   try {
     const { id } = req.params;
     const playlist = await Playlist.findById(id);
@@ -54,11 +54,4 @@ const getPlaylistDetails = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to get playlist details" });
   }
-};
-
-module.exports = {
-  addPlaylist,
-  deletePlaylist,
-  updatePlaylist,
-  getPlaylistDetails,
 };

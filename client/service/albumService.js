@@ -12,7 +12,6 @@ const getAlbum = async (accessToken, albumId) => {
     );
 
     const album = response.data;
-    console.log(album);
     return {
       name: album.name,
       id: album.id,
@@ -33,17 +32,10 @@ const getAlbum = async (accessToken, albumId) => {
         height: image.height,
         width: image.width,
       })),
-        // album: {
-        //   //id: track.album.id,
-        //   name: track.album.name,
-        //   image: track.album.images[0].url,
-        // },
         // preview_url: track.preview_url,
-
-
     };
   } catch (error) {
-    console.error("Error fetching track:", error);
+    console.error("Error fetching album:", error);
     throw error;
   }
 };

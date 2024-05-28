@@ -14,50 +14,54 @@ import {
 import { COLOR } from "../../constant/color";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AlbumItem from "../../components/albumItem";
+import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbum } from "../../service/albumService";
-import { useSelector, useDispatch, Provider } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function LikedAlbumTab() {
-    const navigation = useNavigation();
-    const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.user);
-    const { accessTokenForSpotify } = useSelector(
-        (state) => state.spotifyAccessToken
-    );
-    const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
-    const error = useSelector((state) => state.spotifyAccessToken.error);
-    useEffect(() => {
-        if (accessTokenForSpotify) {
-        console.log("Access Token in useEffect album:", accessTokenForSpotify);
-        }
-    }, [user, accessTokenForSpotify]);
-    const [albumList, setAlbumList] = useState([
-        "4aawyAB9vmqN3uQ7FjRGTy",
-        // "1vi1WySkgPGkbR8NnQzlXu",
-        // "5E5U9ckjlBvJ3qkNAAqESY",
-      ]);
-      const [albums, setAlbums] = useState([]);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector(
+      (state) => state.spotifyAccessToken
+  );
+  const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
+  const error = useSelector((state) => state.spotifyAccessToken.error);
+      
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
 
-      useEffect(() => {
-        const fetchAlbums = async () => {
-          try {
-            console.log("calling accesstoken: " + accessTokenForSpotify);
-            if (accessTokenForSpotify) {
-              const albumPromises = albumList.map((albumId) =>
-                getAlbum(accessTokenForSpotify, albumId)
-              );
-              const albumData = await Promise.all(albumPromises);
-              albumData.forEach((album) => {console.log(album)});
-              console.log(albumData);
-              setAlbums(albumData);
-            } else alert("accessToken:" + accessTokenForSpotify);
-          } catch (error) {
-            console.error("Error fetching albums hehe:", error);
-          }
-        };
-    
-        fetchAlbums();
-      }, [accessTokenForSpotify, albumList]);
+  useEffect(() => {
+      if (accessTokenForSpotify) {
+      console.log("Access Token in useEffect album:", accessTokenForSpotify);
+      }
+  }, [user, accessTokenForSpotify]);
+  const [albumList, setAlbumList] = useState([
+    "4aawyAB9vmqN3uQ7FjRGTy",
+    "382ObEPsp2rxGrnsizN5TX",
+  ]);
+  const [albums, setAlbums] = useState([]);
+
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      try {
+        console.log("calling accesstoken: " + accessTokenForSpotify);
+        if (accessTokenForSpotify) {
+          const albumPromises = albumList.map((albumId) =>
+            getAlbum(accessTokenForSpotify, albumId)
+          );
+          const albumData = await Promise.all(albumPromises);
+          albumData.forEach((album) => {});
+          setAlbums(albumData);
+        } else alert("accessToken:" + accessTokenForSpotify);
+      } catch (error) {
+        console.error("Error fetching albums hehe:", error);
+      }
+    };
+  
+      fetchAlbums();
+    }, [accessTokenForSpotify, albumList]);
 
     return(
     <SafeAreaView style={styles.tabContainer}>
@@ -85,18 +89,22 @@ export default function LikedAlbumTab() {
 )}
 
 const styles = StyleSheet.create({
-    tabContainer: {
-      flex: 1,
-      height: "100%",
-    },
-    sort: {
-      marginVertical: 15,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between"
-    },
-    text: {
-        fontSize: 16,
-        color: "white",
-    },
+  tabContainer: {
+    flex: 1,
+    height: "100%",
+  },
+  sort: {
+    marginVertical: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  text: {
+      fontSize: 16,
+      color: "white",
+  },
+  flatlistContainer: {
+    marginLeft: "8.48%",
+    marginRight: "8.48%",
+  },
 });

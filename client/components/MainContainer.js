@@ -16,16 +16,17 @@ import LoginPage from "../pages/LoginPage/loginPage";
 import RegisterPage from "../pages/RegisterPage/registerPage";
 import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
+import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
-import LaunchingPage from "../pages/LaunchingPage/launchingPage";
+import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const homeName = "Home";
 const userName = "User";
-const launchingName = "Launching";
+const exploreName = "Explore";
 const libraryName = "Library";
 
 const theme = {
@@ -38,6 +39,7 @@ function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Favourite" component={FavoritePage} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
       {/* <Stack.Screen name="Playlist" component={PlaylistPage} /> */}
     </Stack.Navigator>
   );
@@ -103,8 +105,8 @@ function BottomBar() {
           }}
         />
         <Tab.Screen
-          name={launchingName}
-          component={launchingPage}
+          name={exploreName}
+          component={ExploreScreen}
           options={{
             tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
             tabBarIcon: ({ color, focused }) => (

@@ -13,7 +13,7 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       console.log("Inside login user in user slice");
-      const response = await fetch("https://c073-42-114-18-62.ngrok-free.app/auth/login", {
+      const response = await fetch("http://10.0.2.2:3005/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

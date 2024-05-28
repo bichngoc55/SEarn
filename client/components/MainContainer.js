@@ -17,10 +17,13 @@ import RegisterPage from "../pages/RegisterPage/registerPage";
 import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
 import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
+import ArtistDetailScreen from "../pages/ArtistDetailScreen/ArtistDetailScreen";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
+import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
+import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
@@ -40,10 +43,21 @@ function FavouriteStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Favourite" component={FavoritePage} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
-      {/* <Stack.Screen name="Playlist" component={PlaylistPage} /> */}
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen}/>
     </Stack.Navigator>
   );
 }
+
+function FavoriteTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Playlist" component={PlaylistPage} />
+      <Tab.Screen name="LikedArtistTab" component={LikedArtistTab} />
+      <Tab.Screen name="LikedAlbumTab" component={LikedAlbumTab} />
+    </Tab.Navigator>
+  );
+}
+
 
 // function ArtistStack() {
 //   <Stack.Navigator screenOptions={{ headerShown: false }}>

@@ -38,7 +38,7 @@ function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Favourite" component={FavoritePage} />
-      <Stack.Screen name="Playlist" component={PlaylistPage} />
+      {/* <Stack.Screen name="Playlist" component={PlaylistPage} /> */}
     </Stack.Navigator>
   );
 }

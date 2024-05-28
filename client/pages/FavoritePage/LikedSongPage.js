@@ -16,7 +16,6 @@ import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getTrack } from "../../service/songService";
-import songItem from "../../components/songItem";
 import { FontAwesome } from "@expo/vector-icons";
 import SongItem from "../../components/songItem";
 
@@ -49,7 +48,7 @@ const LikedSongPage = () => {
           setTracks(trackData);
         } else alert("accessToken:" + accessToken);
       } catch (error) {
-        console.error("Error fetching tracks:", error);
+        
       }
     };
 

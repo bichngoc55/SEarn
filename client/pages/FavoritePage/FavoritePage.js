@@ -11,6 +11,8 @@ import { Provider } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import PlaylistPage from "./PlaylistPage";
+import LikedAlbumTab from "./LikedAlbumTab";
+import LikedArtistTab from "./LikedArtistTab";
 import { store, persistor } from "../../redux/store";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
@@ -21,28 +23,28 @@ const LibraryPage = () => {
     </View>
   );
 
-  const ArtistScreen = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Artist Contents</Text>
-    </View>
-  );
   const AlbumScreen = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Album Content</Text>
+    <View style={{ flex: 1}}>
+      <LikedAlbumTab/>
     </View>
   );
-
+  
+  const ArtistScreen = () => (
+    <View style={{ flex: 1}}>
+      <LikedArtistTab/>
+    </View>
+  );
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "playlist", title: "Playlist" },
-    { key: "album", title: "Album" },
     { key: "artist", title: "Artist" },
+    { key: "album", title: "Album" },
   ]);
 
   const renderScene = SceneMap({
     playlist: PlaylistScreen,
-    album: AlbumScreen,
     artist: ArtistScreen,
+    album: AlbumScreen,
   });
   const renderTabBar = (props) => (
     <TabBar
@@ -59,12 +61,10 @@ const LibraryPage = () => {
         <Pressable
           style={{
             borderWidth: 1,
-            backgroundColor: focused ? "#49A078" : "#1C1B1B",
-            paddingLeft: 20,
-            paddingRight: 20,
-            paddingTop: 5,
-            paddingBottom: 5,
-            borderColor: focused ? "#49A078" : "white",
+            backgroundColor: focused ? "#FED215" : "#1C1B1B",
+            paddingHorizontal: 20,
+            paddingVertical: 5,
+            borderColor: focused ? "#FED215" : "white",
             borderRadius: 20,
             margin: 0,
           }}

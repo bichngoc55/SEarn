@@ -6,7 +6,7 @@ import {
   updatePlaylist,
   getPlaylistDetails,
 } from "../controllers/playlistController.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 // ... now use addPlaylist(...)
 const router = express.Router();

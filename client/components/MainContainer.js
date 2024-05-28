@@ -16,7 +16,9 @@ import LoginPage from "../pages/LoginPage/loginPage";
 import RegisterPage from "../pages/RegisterPage/registerPage";
 import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
+import LikedSongPage from "../pages/FavoritePage/LikedSongPage";
 import { useSelector, useDispatch } from "react-redux";
+import PlaySongPage from "../pages/PlaySongPage/PlaySong";
 import { setUser } from "../redux/userSlice";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import LaunchingPage from "../pages/LaunchingPage/launchingPage";
@@ -38,7 +40,12 @@ function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Favourite" component={FavoritePage} />
-      <Stack.Screen name="Playlist" component={PlaylistPage} />
+      <Stack.Screen name="LikedSong" component={LikedSongPage} />
+      <Stack.Screen
+        name="PlaySong"
+        component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -181,7 +188,6 @@ export default function MainNavigation() {
             <Stack.Screen name="SignUpOrLogin" component={SignUpOrLoginPage} />
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
-            <Stack.Screen name="BottomBar" component={BottomBar} />
           </>
         ) : (
           <Stack.Screen name="BottomBar" component={BottomBar} />

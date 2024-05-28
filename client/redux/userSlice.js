@@ -12,17 +12,19 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      console.log("Inside login user in user slice");
-      const response = await fetch("http://localhost:3005/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
-      console.log("Inside login user in user slice");
+      const response = await fetch(
+        "https://d62f-2405-4802-a43c-92d0-75f2-2bb2-67e0-8fe4.ngrok-free.app/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(credentials),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error("Something went wrong during login.");
+        console.log("Login error" + response);
       }
 
       const data = await response.json();

@@ -9,13 +9,28 @@ import {
   Image,
 } from "react-native";
 import scale from "../constant/responsive";
+import { useSelector, useDispatch, Provider } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import PlaySongPage from "../pages/PlaySongPage/PlaySong";
 import { useNavigation } from "@react-navigation/native";
+import { setCurrentSong } from "../redux/mediaPlayerSlice";
 
 const SongItem = ({ input }) => {
   const navigation = useNavigation();
+  const { mediaPlayer } = useSelector((state) => state.mediaPlayer);
+  const { currentSong, currentPosition, isPlaying } = useSelector(
+    (state) => state.mediaPlayer
+  );
+  const dispatch = useDispatch();
+
+  const handleSongChange = (song) => {
+    dispatch(setCurrentSong(song));
+    dispatch(setCurrentPosition(0));
+    dispatch(togglePlayPause(true));
+  };
+
   const MoveToPlaySong = () => {
+    handleSongChange(input);
     navigation.navigate("PlaySong", {
       song: input,
     });

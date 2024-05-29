@@ -28,6 +28,7 @@ app.use(
     origin: "http://localhost:3005",
   })
 );
+// app.use(cors());
 app.use(morgan("common"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,6 +39,7 @@ app.use(morgan("dev"));
 // app.use(express.static("public"));
 app.use(cookieParser());
 
+app.use(cors());
 //express
 app.use("/auth", authRoutes);
 app.use("/playlists", playlistRoutes);

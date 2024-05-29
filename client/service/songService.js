@@ -27,7 +27,7 @@ const getTrack = async (accessToken, songId) => {
       preview_url: track.preview_url,
     };
   } catch (error) {
-    console.error("Error fetching track:", error);
+    
     throw error;
   }
 };

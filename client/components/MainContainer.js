@@ -16,18 +16,23 @@ import LoginPage from "../pages/LoginPage/loginPage";
 import RegisterPage from "../pages/RegisterPage/registerPage";
 import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
+import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
+import ArtistDetailScreen from "../pages/ArtistDetailScreen/ArtistDetailScreen";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
 import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndConditionPage";
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
+import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
+import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
+import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const homeName = "Home";
 const userName = "User";
-const launchingName = "Launching";
+const exploreName = "Explore";
 const libraryName = "Library";
 
 const theme = {
@@ -40,7 +45,8 @@ function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Favourite" component={FavoritePage} />
-      <Stack.Screen name="Playlist" component={PlaylistPage} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen}/>
     </Stack.Navigator>
   );
 }
@@ -57,6 +63,17 @@ function UserStack() {
     </Stack.Navigator>
   );
 }
+
+function FavoriteTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Playlist" component={PlaylistPage} />
+      <Tab.Screen name="LikedArtistTab" component={LikedArtistTab} />
+      <Tab.Screen name="LikedAlbumTab" component={LikedAlbumTab} />
+    </Tab.Navigator>
+  );
+}
+
 
 // function ArtistStack() {
 //   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -106,8 +123,8 @@ function BottomBar() {
           }}
         />
         <Tab.Screen
-          name={launchingName}
-          component={launchingPage}
+          name={exploreName}
+          component={ExploreScreen}
           options={{
             tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
             tabBarIcon: ({ color, focused }) => (

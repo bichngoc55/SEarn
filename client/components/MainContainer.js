@@ -20,7 +20,10 @@ import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
 import ArtistDetailScreen from "../pages/ArtistDetailScreen/ArtistDetailScreen";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
+import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndConditionPage";
+import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
+import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
@@ -44,6 +47,19 @@ function FavouriteStack() {
       <Stack.Screen name="Favourite" component={FavoritePage} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen}/>
+    </Stack.Navigator>
+  );
+}
+function UserStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="UserProfile" component={UserPage} />
+      <Stack.Screen name="ChangePassword" component={PasswordChangePage} />
+      <Stack.Screen
+        name="TermsAndConditions"
+        component={TermsAndConditionsPage}
+      />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
     </Stack.Navigator>
   );
 }
@@ -72,18 +88,6 @@ function FavoriteTabs() {
 //     <Stack.Screen name={LikedAlbum} component={AlbumPage} />
 //   </Stack.Navigator>;
 // }
-function UserStack() {
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name={User} component={UserPage} />
-
-    {/* <Stack.Screen name={ChangePassword} component={ChangePasswordPage} />
-    <Stack.Screen
-      name={TermsAndConditions}
-      component={TermsAndConditionsPage}
-    />
-    <Stack.Screen name={PrivacyPolicy} component={PrivacyPolicyPage} /> */}
-  </Stack.Navigator>;
-}
 
 function BottomBar() {
   return (
@@ -148,7 +152,7 @@ function BottomBar() {
         />
         <Tab.Screen
           name={userName}
-          component={UserPage}
+          component={UserStack}
           options={{
             tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
             tabBarIcon: ({ color, focused }) => (

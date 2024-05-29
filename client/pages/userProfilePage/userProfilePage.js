@@ -1,26 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { COLOR } from "../../constant/color";
 import ReuseBtn from "../../components/buttonComponent";
 import { useNavigation } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { logoutUser } from "../../redux/userSlice";
 
+import { logoutUser } from "../../redux/userSlice";
+import { MaterialIcons } from "@expo/vector-icons";
+import axios from "axios";
+import { AntDesign } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { refreshAccessToken } from "../../redux/userSlice";
+import * as ImagePicker from "expo-image-picker";
+// import * as ImagePicker from "react-native-image-picker";
 export default function UserPage() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const { accessToken } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
-  useEffect(() => {
-    if (accessToken) {
-      console.log("Access Token in useEffect:", accessToken);
-    }
-  }, [user, accessToken]);
   const handleSubmit = async () => {
     try {
       dispatch(logoutUser());
@@ -31,18 +41,294 @@ export default function UserPage() {
       console.error("Error during logout:", error);
     }
   };
+  const [name, setName] = useState("");
+  const [image, setImage] = useState(null);
+  const [backgroundImage, setbackgroundImage] = useState(null);
+  // const makeAuthenticatedRequest = async (method, endpoint, data) => {
+  //   try {
+  //     console.log("Insidd make authenticate ");
+  //     console.log("Data being sent:", JSON.stringify(data, null, 2));
+  //     console.log("Data being sent: " + data);
+  //     const newaccessToken = await AsyncStorage.getItem("userToken");
+  //     // const url2 = `http://localhost:3005/auth/${endpoint}`;
+  //     // console.log("url2: " + url2);
+  //     // console.log(
+  //     //   "access token vs new access token : ",
+  //     //   accessToken + " " + newaccessToken
+  //     // );
+  //     const response = await axios({
+  //       method: method,
+  //       url: `http://localhost:3005/auth/${endpoint}`,
+  //       data: data,
+  //       headers: {
+  //         authorization: `Bearer ${newaccessToken}`,
+  //         "content-type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error(`Error updating ${endpoint}:`, error);
+  //   }
+  // };
+
+  // const pickImage = async (type) => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   console.log(result);
+
+  //   if (!result.canceled) {
+  //     console.log("Image picked successfully:", result.assets[0].uri);
+  //     const imageUri = result.assets[0].uri;
+  //     const imageName = imageUri.substring(imageUri.lastIndexOf("/") + 1);
+  //     const imageType = imageUri.substring(imageUri.lastIndexOf(".") + 1);
+
+  //     if (type === "avatar") {
+  //       setImage(imageUri);
+  //     } else if (type === "backgroundImage") {
+  //       setbackgroundImage(imageUri);
+  //     }
+
+  //     const formData = new FormData();
+  //     console.log("den day r");
+  //     const sendRequest = async () => {
+  //       if (type === "avatar") {
+  //         formData.append("avatar", {
+  //           uri: imageUri,
+  //           type: `image/${imageType}`,
+  //           name: imageName,
+  //         });
+  //         await makeAuthenticatedRequest("PATCH", "ava", formData);
+  //       } else if (type === "backgroundImage") {
+  //         formData.append("backgroundImage", {
+  //           uri: imageUri,
+  //           type: `image/${imageType}`,
+  //           name: imageName,
+  //         });
+  //         await makeAuthenticatedRequest("PATCH", "backgroundImage", formData);
+  //       }
+  //     };
+
+  //     await sendRequest();
+  //   }
+  // };
+  const makeAuthenticatedRequest = async (method, endpoint, data) => {
+    try {
+      console.log("Insidd make authenticate ");
+      console.log("Data being sent:", JSON.stringify(data, null, 2));
+      // console.log("avatar : " + JSON.stringifydata.avatar);
+      const response = await axios({
+        method: method, // 'PATCH' for updates
+        url: `http://localhost:3005/auth/${endpoint}`,
+        data: data,
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating ${endpoint}:`, error);
+    }
+  };
+
+  const pickImage = async (type) => {
+    // try {
+    //   const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    //   if (status !== 'granted') {
+    //     alert('Sorry, we need camera roll permissions to make this work!');
+    //     return;
+    //   } else {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    // console.log(result);
+
+    if (!result.canceled) {
+      const imageUri = result.assets[0].uri;
+      const imageName = imageUri.substring(imageUri.lastIndexOf("/") + 1);
+      const imageType = imageUri.substring(imageUri.lastIndexOf(".") + 1);
+      // console.log("result uri : " + result.uri);
+      if (type === "avatar") {
+        setImage(imageUri);
+      } else if (type === "backgroundImage") {
+        setbackgroundImage(imageUri);
+      }
+
+      const formData = new FormData();
+      // const data = createFormData(uri);
+
+      if (type === "avatar") {
+        formData.append("avatar", {
+          uri: imageUri,
+          name: imageName,
+          type: `image/${imageType}`,
+        });
+        await makeAuthenticatedRequest("PATCH", "ava", formData);
+      } else if (type === "backgroundImage") {
+        formData.append("backgroundImage", {
+          uri: imageUri,
+          type: `image/${imageType}`,
+          name: imageName,
+        });
+        await makeAuthenticatedRequest("PATCH", "backgroundImage", formData);
+      }
+    }
+  };
+  useEffect(() => {
+    let intervalId;
+
+    const refreshTokens = async () => {
+      const currentAccessToken = await AsyncStorage.getItem("userToken");
+      if (!currentAccessToken) {
+        console.log("No access token found, skipping refresh.");
+        return;
+      }
+      try {
+        const newAccessToken = await dispatch(
+          refreshAccessToken(currentAccessToken)
+        ).unwrap();
+        console.log("Refreshed token:", newAccessToken);
+        await AsyncStorage.setItem("userToken", newAccessToken);
+      } catch (error) {
+        console.error("Failed to refresh access token:", error);
+      }
+    };
+
+    if (accessToken) {
+      intervalId = setInterval(refreshTokens, 600000);
+    }
+    // 800000
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (accessToken) {
+        try {
+          console.log("Access Token is available:", accessToken);
+
+          const storedAccessToken = await AsyncStorage.getItem("userToken");
+          console.log("Stored Access Token:", storedAccessToken);
+        } catch (error) {
+          console.error(
+            "Error fetching user data or using AsyncStorage:",
+            error
+          );
+        }
+      } else {
+        console.log("no access token");
+      }
+    };
+
+    fetchUserProfile();
+  }, [accessToken]);
+  const handlePasswordChange = () => {
+    navigation.navigate("ChangePassword");
+  };
+
+  const handleTermsPress = () => {
+    navigation.navigate("TermsAndConditions");
+  };
+  const handlePrivacyPress = () => {
+    navigation.navigate("PrivacyPolicy");
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, {user?._id}!</Text>
-      <Text style={styles.text}>Hello, {accessToken}!</Text>
-      <Text style={styles.text}>Hello, {accessTokenForSpotify}!</Text>
-      <ReuseBtn
-        onPress={handleSubmit}
-        btnText="Log out"
-        textColor="#ffffff"
-        width={scale(210)}
-        height={scale(65)}
-      />
+      <TouchableOpacity onPress={() => pickImage("backgroundImage")}>
+        <View style={styles.headerContainer}>
+          <View style={[styles.backgroundImage, styles.roundedCorners]}>
+            <ImageBackground
+              source={{ uri: backgroundImage }}
+              style={styles.backgroundImage}
+              resizeMode="cover"
+            />
+          </View>
+          <View style={styles.avatarOverlay}>
+            <TouchableOpacity
+              onPress={() => pickImage("avatar")}
+              style={styles.avatarContainer}
+            >
+              <Image
+                source={{ uri: image }}
+                style={styles.avatarImage}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
+      <View style={styles.nameContainer}>
+        <Text
+          style={styles.nameInput}
+          placeholder="Your Name"
+          value={name}
+          onChangeText={setName}
+        >
+          {user?.name}
+        </Text>
+        <TouchableOpacity style={styles.editNameButton}>
+          <AntDesign name="edit" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        style={styles.scrollViewContent}
+        contentContainerStyle={styles.scrollContentContainer}
+      >
+        <Text style={styles.sectionTitle}>Settings</Text>
+
+        <TouchableOpacity
+          style={styles.settingItem}
+          onPress={handlePasswordChange}
+        >
+          <MaterialIcons name="password" size={24} color="white" />
+          <Text style={styles.settingText}>Password settings</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.sectionTitle}>Options</Text>
+
+        <TouchableOpacity style={styles.settingItem}>
+          <MaterialIcons name="update" size={24} color="white" />
+          <Text style={styles.settingText}>Check for updates</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.settingItem}>
+          <MaterialIcons name="feedback" size={24} color="white" />
+          <Text style={styles.settingText}>Give feedbacks & Report errors</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.settingItem} onPress={handleTermsPress}>
+          <Ionicons name="document-text-outline" size={24} color="white" />
+          <Text style={styles.settingText}>Terms and conditions</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.settingItem}
+          onPress={handlePrivacyPress}
+        >
+          <MaterialIcons name="security" size={24} color="white" />
+          <Text style={styles.settingText}>Privacy Policy</Text>
+        </TouchableOpacity>
+        <View style={styles.btnContainer}>
+          <ReuseBtn
+            onPress={handleSubmit}
+            btnText="Log out"
+            textColor="#ffffff"
+            width={scale(210)}
+            height={scale(65)}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -50,8 +336,8 @@ export default function UserPage() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#1C1B1B",
-    justifyContent: "center",
     alignItems: "center",
+    width: "100%",
     height: "100%",
   },
   text1: {
@@ -68,12 +354,25 @@ const styles = StyleSheet.create({
     top: scale(350),
     textAlign: "center",
   },
-  image: {
-    width: "70%",
-    position: "absolute",
-    top: scale(100),
-    height: scale(200),
-    resizeMode: "contain",
+
+  headerContainer: {
+    width: "100%",
+    aspectRatio: 1.7,
+  },
+  nameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "50%",
+    marginTop: scale(60),
+    justifyContent: "center",
+  },
+  nameInput: {
+    color: COLOR.textPrimaryColor,
+    fontFamily: "Montserrat",
+    width: "100%",
+    fontSize: scale(15),
+    borderBottomWidth: 1,
+    textAlign: "center",
   },
   stack: {
     position: "absolute",
@@ -82,5 +381,59 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "80%",
+  },
+  settingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: scale(10),
+  },
+  settingText: {
+    color: COLOR.textPrimaryColor,
+    paddingLeft: scale(10),
+    fontFamily: "Montserrat",
+    fontSize: scale(15),
+  },
+  avatarOverlay: {
+    position: "absolute",
+    bottom: -50,
+    alignSelf: "center",
+    width: "100%",
+    alignItems: "center",
+  },
+  avatarContainer: {
+    width: scale(130),
+    height: scale(130),
+    borderColor: COLOR.textPrimaryColor,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderRadius: scale(100),
+    overflow: "hidden",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+  },
+  backgroundImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#737163",
+  },
+  roundedCorners: {
+    borderBottomLeftRadius: scale(40),
+    borderBottomRightRadius: scale(40),
+    overflow: "hidden",
+  },
+  sectionTitle: {
+    color: COLOR.textPrimaryColor,
+    fontFamily: "Montserrat",
+    fontSize: scale(20),
+    fontWeight: "bold",
+    marginTop: scale(20),
+  },
+  btnContainer: {
+    marginTop: scale(20),
+    marginBottom: scale(20),
+    alignItems: "center",
   },
 });

@@ -18,8 +18,10 @@ import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
+import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndConditionPage";
+import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
-import LaunchingPage from "../pages/LaunchingPage/launchingPage";
+import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
@@ -42,6 +44,19 @@ function FavouriteStack() {
     </Stack.Navigator>
   );
 }
+function UserStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="UserProfile" component={UserPage} />
+      <Stack.Screen name="ChangePassword" component={PasswordChangePage} />
+      <Stack.Screen
+        name="TermsAndConditions"
+        component={TermsAndConditionsPage}
+      />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
+    </Stack.Navigator>
+  );
+}
 
 // function ArtistStack() {
 //   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -56,18 +71,6 @@ function FavouriteStack() {
 //     <Stack.Screen name={LikedAlbum} component={AlbumPage} />
 //   </Stack.Navigator>;
 // }
-function UserStack() {
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name={User} component={UserPage} />
-
-    {/* <Stack.Screen name={ChangePassword} component={ChangePasswordPage} />
-    <Stack.Screen
-      name={TermsAndConditions}
-      component={TermsAndConditionsPage}
-    />
-    <Stack.Screen name={PrivacyPolicy} component={PrivacyPolicyPage} /> */}
-  </Stack.Navigator>;
-}
 
 function BottomBar() {
   return (
@@ -132,7 +135,7 @@ function BottomBar() {
         />
         <Tab.Screen
           name={userName}
-          component={UserPage}
+          component={UserStack}
           options={{
             tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
             tabBarIcon: ({ color, focused }) => (

@@ -15,6 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { getTrack } from "../../service/songService";
 import SongItem from "../../components/songItem";
 import { useNavigation } from "@react-navigation/native";
+import scale from "../../constant/responsive";
 
 const PlaylistPage = () => {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const PlaylistPage = () => {
   return (
     <SafeAreaView
       style={{
-        marginHorizontal: 25,
+        marginHorizontal: scale(20),
         height: "100%",
       }}
     >
@@ -97,11 +98,11 @@ const PlaylistPage = () => {
 const styles = StyleSheet.create({
   container: {},
   circle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: scale(45),
+    height: scale(45),
+    borderRadius: scale(60),
     marginTop: 15,
-    backgroundColor: "#49A078",
+    backgroundColor: "#FED215",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 20,
@@ -109,11 +110,11 @@ const styles = StyleSheet.create({
   NewPlaylist: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 5,
-    marginBottom: 5,
+    marginVertical: scale(5),
+
   },
   text: {
-    fontSize: 16,
+    fontSize: scale(15),
     color: "white",
   },
   trackContainer: {

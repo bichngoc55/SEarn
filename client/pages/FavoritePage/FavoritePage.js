@@ -15,6 +15,7 @@ import LikedAlbumTab from "./LikedAlbumTab";
 import LikedArtistTab from "./LikedArtistTab";
 import { store, persistor } from "../../redux/store";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import scale from "../../constant/responsive";
 
 const LibraryPage = () => {
   const PlaylistScreen = () => (
@@ -52,7 +53,7 @@ const LibraryPage = () => {
       indicatorStyle={{ backgroundColor: "transparent" }}
       style={{
         backgroundColor: "#1C1B1B",
-        marginHorizontal: 10,
+        marginHorizontal: scale(10),
         outline: "none",
         borderWidth: 0,
         borderColor: "#FFFFFF",
@@ -65,14 +66,14 @@ const LibraryPage = () => {
             paddingHorizontal: 20,
             paddingVertical: 5,
             borderColor: focused ? "#FED215" : "white",
-            borderRadius: 20,
+            borderRadius: scale(15),
             margin: 0,
           }}
         >
           <Text
             style={{
               color: "white",
-              fontSize: 18,
+              fontSize: scale(15),
             }}
           >
             {route.title}
@@ -93,7 +94,6 @@ const LibraryPage = () => {
       <View style={styles.headerL}>
         <Text style={styles.headerText}>My Library</Text>
       </View>
-
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -115,18 +115,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerL: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
-    height: 35,
+    height: scale(30),
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "8.68%",
-    marginBottom: "2.68%",
+    marginTop: scale(30),
+    marginBottom: scale(10),
     flexDirection: "row",
   },
   headerText: {
     color: "#FFFFFF",
-    fontSize: 20,
+    fontSize: scale(20),
     fontWeight: "bold",
   },
 });

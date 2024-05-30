@@ -15,6 +15,9 @@ const getArtist = async (accessToken, artistId) => {
     return {
       name: artist.name,
       id: artist.id,
+      genres: artist.genres.map((genre)=>({
+        typeGenre: genre
+      })),
       images: artist.images.map((image) => ({
         url: image.url,
         height: image.height,

@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   enjoyText: {
     fontSize: scale(25),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     textAlign: "center",
     color: COLOR.textPrimaryColor,
     marginBottom: scale(20),
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     marginLeft: scale(10),
   },
   searnText: {
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     fontSize: 23,
     textAlign: "center",
     marginBottom: scale(20),
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   typingText: {
     fontSize: scale(15),
     marginBottom: scale(30),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     color: COLOR.textPrimaryColor,
     textAlign: "center",
   },

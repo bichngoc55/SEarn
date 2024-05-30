@@ -17,6 +17,8 @@ import ArtistItem from "../../components/artistItem";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getArtist } from "../../service/artistService";
 import { useSelector, useDispatch } from "react-redux";
+import scale from "../../constant/responsive";
+
 
 export default function LikedArtistTab() {
   const navigation = useNavigation();
@@ -100,11 +102,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   text: {
-      fontSize: 16,
-      color: "white",
+    fontSize: 16,
+    color: "white",
   },
   flatlistContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginHorizontal: scale(10)
   },
 });

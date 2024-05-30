@@ -9,13 +9,26 @@ export const authMiddleware = (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
+    console.log("Extracted Token:", token);
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        return res.status(403).json({ msg: "Token is invalid or expired" });
+        if (err.name === "TokenExpiredError") {
+          console.error("JWT Expired:", err);
+          return res.status(401).json({ msg: "Token has expired" });
+        } else if (err.name === "JsonWebTokenError") {
+          console.error("Invalid JWT:", err);
+          return res.status(401).json({ msg: "Invalid token" });
+        } else {
+          console.error("JWT Verification Error:", err);
+          return res.status(403).json({ msg: "Token verification failed" });
+        }
       }
+      console.log("Decoded Token:", decoded);
 
       req.user = decoded.id;
+      console.log("req.user.id:", req.user);
+
       next();
     });
   } catch (err) {

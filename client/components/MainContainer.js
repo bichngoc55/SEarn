@@ -18,11 +18,18 @@ import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
 import LikedSongPage from "../pages/FavoritePage/LikedSongPage";
 import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
+import ArtistDetailScreen from "../pages/ArtistDetailScreen/ArtistDetailScreen";
 import { useSelector, useDispatch } from "react-redux";
 import PlaySongPage from "../pages/PlaySongPage/PlaySong";
 import { setUser } from "../redux/userSlice";
+import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndConditionPage";
+import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
+import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
+import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
+import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
+import scale from "../constant/responsive";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
@@ -41,15 +48,39 @@ function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Favourite" component={FavoritePage} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen name="LikedSong" component={LikedSongPage} />
       <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
         options={{ presentation: "modal" }}
       />
-      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+    </Stack.Navigator>
+  );
+}
+function UserStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="UserProfile" component={UserPage} />
+      <Stack.Screen name="ChangePassword" component={PasswordChangePage} />
+      <Stack.Screen
+        name="TermsAndConditions"
+        component={TermsAndConditionsPage}
+      />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
       {/* <Stack.Screen name="Playlist" component={PlaylistPage} /> */}
     </Stack.Navigator>
+  );
+}
+
+function FavoriteTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Playlist" component={PlaylistPage} />
+      <Tab.Screen name="LikedArtistTab" component={LikedArtistTab} />
+      <Tab.Screen name="LikedAlbumTab" component={LikedAlbumTab} />
+    </Tab.Navigator>
   );
 }
 
@@ -66,18 +97,6 @@ function FavouriteStack() {
 //     <Stack.Screen name={LikedAlbum} component={AlbumPage} />
 //   </Stack.Navigator>;
 // }
-function UserStack() {
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name={User} component={UserPage} />
-
-    {/* <Stack.Screen name={ChangePassword} component={ChangePasswordPage} />
-    <Stack.Screen
-      name={TermsAndConditions}
-      component={TermsAndConditionsPage}
-    />
-    <Stack.Screen name={PrivacyPolicy} component={PrivacyPolicyPage} /> */}
-  </Stack.Navigator>;
-}
 
 function BottomBar() {
   return (
@@ -88,9 +107,9 @@ function BottomBar() {
         inactiveColor="#979797"
         barStyle={{
           backgroundColor: "#737373",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          height: 80,
+          borderTopLeftRadius: scale(15),
+          borderTopRightRadius: scale(15),
+          height: scale(60),
           position: "absolute",
           overflow: "hidden",
           alignContent: "center",
@@ -142,7 +161,7 @@ function BottomBar() {
         />
         <Tab.Screen
           name={userName}
-          component={UserPage}
+          component={UserStack}
           options={{
             tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
             tabBarIcon: ({ color, focused }) => (

@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   }),
   Text: (textColor) => ({
     color: COLOR.textPrimaryColor,
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     fontSize: scale(18),
   }),
 });

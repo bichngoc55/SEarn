@@ -38,7 +38,7 @@ const LikedSongPage = () => {
     }
   }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([
-    "3qhYidu0cemx1v9PgTtpS5",
+    "255vSRpVq5YYKBJiem1BVx",
     "6jcLKVmEKAQIXIVHJZ8vzS",
     "5iZHnufFUgATzrpGgH1K0W",
   ]);
@@ -57,9 +57,7 @@ const LikedSongPage = () => {
         const trackData = await Promise.all(trackPromises);
         trackData.forEach((track) => {});
         setTracks(trackData);
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     };
 
     fetchTracks();
@@ -107,8 +105,8 @@ const LikedSongPage = () => {
           data={tracks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            console.log("Item:", item);
-            return <SongItem input={item} />;
+            console.log("Item:", item.name);
+            return <SongItem input={item} songList={tracks} />;
           }}
         />
       </View>

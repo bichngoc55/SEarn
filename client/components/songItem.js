@@ -13,9 +13,14 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import PlaySongPage from "../pages/PlaySongPage/PlaySong";
 import { useNavigation } from "@react-navigation/native";
-import { setCurrentSong } from "../redux/mediaPlayerSlice";
+import {
+  setCurrentSong,
+  setCurrentPosition,
+  setCurrentPlaylist,
+  setIsPlaying,
+} from "../redux/mediaPlayerSlice";
 
-const SongItem = ({ input }) => {
+const SongItem = ({ input, songList }) => {
   const navigation = useNavigation();
   const { mediaPlayer } = useSelector((state) => state.mediaPlayer);
   const { currentSong, currentPosition, isPlaying } = useSelector(
@@ -25,9 +30,17 @@ const SongItem = ({ input }) => {
 
   const handleSongChange = (song) => {
     dispatch(setCurrentSong(song));
-    dispatch(setCurrentPosition(0));
-    dispatch(togglePlayPause(true));
+    dispatch(setCurrentPosition(currentSongIndex));
+    console.log(currentSongIndex);
+    dispatch(setCurrentPlaylist(songList));
+    dispatch(setIsPlaying(true));
   };
+
+  const getCurrentSongIndex = () => {
+    return songList.findIndex((item) => item.id === input.id);
+  };
+
+  const currentSongIndex = getCurrentSongIndex();
 
   const MoveToPlaySong = () => {
     handleSongChange(input);

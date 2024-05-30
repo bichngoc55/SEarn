@@ -24,6 +24,7 @@ import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
+import scale from "../constant/responsive";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
@@ -94,9 +95,9 @@ function BottomBar() {
         inactiveColor="#979797"
         barStyle={{
           backgroundColor: "#737373",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          height: 80,
+          borderTopLeftRadius: scale(15),
+          borderTopRightRadius: scale(15),
+          height: scale(60),
           position: "absolute",
           overflow: "hidden",
           alignContent: "center",

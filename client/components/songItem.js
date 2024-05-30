@@ -22,7 +22,14 @@ const SongItem = ({ input }) => {
   };
   return (
     <TouchableOpacity style={styles.trackContainer} onPress={MoveToPlaySong}>
-      <Image source={{ uri: input.album.image }} style={styles.circle} />
+      {input.album && input.album.image ? (
+    <Image source={{ uri: input.album.image }} style={styles.circle} />
+  ) : (
+    <Image
+      source={require("../assets/images/logoSEarn.png")}
+      style={styles.circle}
+    />
+  )}
       <View style={{ flexDirection: "column", flex: 1 }}>
         <Text style={styles.textName} numberOfLines={1} ellipsizeMode="tail">
           {input.name}
@@ -42,7 +49,7 @@ const styles = StyleSheet.create({
     width: scale(60),
     height: scale(60),
     borderRadius: scale(60),
-    backgroundColor: "#49A078",
+    backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
     marginRight: scale(10),

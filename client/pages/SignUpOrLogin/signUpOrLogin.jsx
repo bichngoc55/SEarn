@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: 17
   },
   musicifyText: {
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     fontSize: scale(25),
     color: COLOR.textPrimaryColor,
     marginBottom: 17,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: scale(14),
     marginHorizontal: scale(15),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     marginBottom: scale(20),
     color: COLOR.textPrimaryColor,
     textAlign: "center",

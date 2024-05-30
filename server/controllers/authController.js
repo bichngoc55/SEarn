@@ -61,9 +61,8 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    
     const { email, password } = req.body;
-    console.log(email +" " + password);
+    // console.log(email + " " + password);
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "User does not exist." });
 
@@ -78,7 +77,7 @@ export const login = async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
     );
-    console.log("in backend login controller + accessToken" + accessToken);
+    // console.log("in backend login controller + accessToken" + accessToken);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -278,18 +277,62 @@ export const updateAvatar = async (req, res) => {
 };
 
 // 4. Update Liked Songs
-export const updateLikedSongs = async (req, res) => {
+// export const updateLikedSongs = async (req, res) => {
+//   try {
+//     await body("likedSongs").isString().run(req);
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ errors: errors.array() });
+//     }
+
+//     const userId = req.user.id;
+//     const user = await getUserById(userId);
+
+//     user.likedSongs = req.body.likedSongs;
+//     await user.save();
+
+//     res.json({ message: "Liked songs updated", user });
+//   } catch (error) {
+//     handleError(error, res);
+//   }
+// };
+
+const handleError = (error, res) => {
+  console.error("Error:", error);
+  const statusCode = error.statusCode || 500;
+  const errorMessage =
+    statusCode === 500 ? "Internal server error" : error.message;
+  res.status(statusCode).json({ message: errorMessage });
+};
+export const updateLikedAlbums = async (req, res) => {
+  const { id } = req.params;
+  const { albumId } = req.body;
   try {
-    await body("likedSongs").isString().run(req);
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: { likedAlbums: albumId },
+      },
+      { new: true }
+    );
+    await user.save();
 
-    const userId = req.user.id;
-    const user = await getUserById(userId);
-
-    user.likedSongs = req.body.likedSongs;
+    res.json({ message: "Liked album updated", user });
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+export const updateLikedSongs = async (req, res) => {
+  const { id } = req.params;
+  const { songId } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: { likedSongs: songId },
+      },
+      { new: true }
+    );
     await user.save();
 
     res.json({ message: "Liked songs updated", user });
@@ -298,10 +341,55 @@ export const updateLikedSongs = async (req, res) => {
   }
 };
 
-const handleError = (error, res) => {
-  console.error("Error:", error);
-  const statusCode = error.statusCode || 500;
-  const errorMessage =
-    statusCode === 500 ? "Internal server error" : error.message;
-  res.status(statusCode).json({ message: errorMessage });
+export const updateLikedArtist = async (req, res) => {
+  const { id } = req.params;
+  const { artistId } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: { likedArtists: artistId },
+      },
+      { new: true }
+    );
+    await user.save();
+
+    res.json({ message: "Liked artist updated", user });
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getLikedAlbums = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    res.json(user.likedAlbums);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+};
+export const getLikedArtist = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    res.json(user.likedArtists);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+};
+export const getLikedSongs = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    res.json(user.likedSongs);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 };

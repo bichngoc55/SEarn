@@ -19,10 +19,22 @@ import scale from "../../constant/responsive";
 
 const PlaylistPage = () => {
   const dispatch = useDispatch();
-  const accessToken =
-    "BQBwZHWpPLNX0xTkaTCu6RjVn79_eXrBr0FeWk0Qq6EAWZSl0IulY6E6mfcAhzIEwQqF3eQToCKGgps0Va5DdqnoUDrugjsVB1c7dc0GqB0tWNiIxwc";
+  const { user } = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
+
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (accessTokenForSpotify) {
+      console.log("Access Token in useEffect:", accessTokenForSpotify);
+    }
+  }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([
     "3qhYidu0cemx1v9PgTtpS5",
     "6jcLKVmEKAQIXIVHJZ8vzS",
@@ -37,21 +49,21 @@ const PlaylistPage = () => {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        if (accessToken) {
+        if (accessTokenForSpotify) {
           const trackPromises = songList.map((songId) =>
-            getTrack(accessToken, songId)
+            getTrack(accessTokenForSpotify, songId)
           );
           const trackData = await Promise.all(trackPromises);
           trackData.forEach((track) => {});
           setTracks(trackData);
-        } else alert("accessToken:" + accessToken);
+        } else alert("accessToken:" + accessTokenForSpotify);
       } catch (error) {
         console.error("Error fetching tracks:", error);
       }
     };
 
     fetchTracks();
-  }, [accessToken, songList]);
+  }, [accessTokenForSpotify, songList]);
 
   const navigation = useNavigation();
 

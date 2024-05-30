@@ -68,7 +68,7 @@ export const loginUser = createAsyncThunk(
       });
 
       if (!response.ok) {
-        throw new Error("Something went wrong during login.");
+        console.log("Login error" + response);
       }
 
       const data = await response.json();

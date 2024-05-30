@@ -16,9 +16,11 @@ import LoginPage from "../pages/LoginPage/loginPage";
 import RegisterPage from "../pages/RegisterPage/registerPage";
 import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
+import LikedSongPage from "../pages/FavoritePage/LikedSongPage";
 import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
 import ArtistDetailScreen from "../pages/ArtistDetailScreen/ArtistDetailScreen";
 import { useSelector, useDispatch } from "react-redux";
+import PlaySongPage from "../pages/PlaySongPage/PlaySong";
 import { setUser } from "../redux/userSlice";
 import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndConditionPage";
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
@@ -46,8 +48,14 @@ function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Favourite" component={FavoritePage} />
-      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
-      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen}/>
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen name="LikedSong" component={LikedSongPage} />
+      <Stack.Screen
+        name="PlaySong"
+        component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -61,6 +69,7 @@ function UserStack() {
         component={TermsAndConditionsPage}
       />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
+      {/* <Stack.Screen name="Playlist" component={PlaylistPage} /> */}
     </Stack.Navigator>
   );
 }
@@ -74,7 +83,6 @@ function FavoriteTabs() {
     </Tab.Navigator>
   );
 }
-
 
 // function ArtistStack() {
 //   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -202,7 +210,6 @@ export default function MainNavigation() {
             <Stack.Screen name="SignUpOrLogin" component={SignUpOrLoginPage} />
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
-            <Stack.Screen name="BottomBar" component={BottomBar} />
           </>
         ) : (
           <Stack.Screen name="BottomBar" component={BottomBar} />

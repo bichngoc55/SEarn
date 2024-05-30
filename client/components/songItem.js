@@ -9,13 +9,41 @@ import {
   Image,
 } from "react-native";
 import scale from "../constant/responsive";
+import { useSelector, useDispatch, Provider } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import PlaySongPage from "../pages/PlaySongPage/PlaySong";
 import { useNavigation } from "@react-navigation/native";
+import {
+  setCurrentSong,
+  setCurrentPosition,
+  setCurrentPlaylist,
+  setIsPlaying,
+} from "../redux/mediaPlayerSlice";
 
-const SongItem = ({ input }) => {
+const SongItem = ({ input, songList }) => {
   const navigation = useNavigation();
+  const { mediaPlayer } = useSelector((state) => state.mediaPlayer);
+  const { currentSong, currentPosition, isPlaying } = useSelector(
+    (state) => state.mediaPlayer
+  );
+  const dispatch = useDispatch();
+
+  const handleSongChange = (song) => {
+    dispatch(setCurrentSong(song));
+    dispatch(setCurrentPosition(currentSongIndex));
+    console.log(currentSongIndex);
+    dispatch(setCurrentPlaylist(songList));
+    dispatch(setIsPlaying(true));
+  };
+
+  const getCurrentSongIndex = () => {
+    return songList.findIndex((item) => item.id === input.id);
+  };
+
+  const currentSongIndex = getCurrentSongIndex();
+
   const MoveToPlaySong = () => {
+    handleSongChange(input);
     navigation.navigate("PlaySong", {
       song: input,
     });

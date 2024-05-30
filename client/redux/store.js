@@ -14,11 +14,13 @@ import spotifyAccessToken from "./spotifyAccessTokenSlice";
 import { persistStore } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import userReducer from "./userSlice";
+import mediaPlayerReducer from "./mediaPlayerSlice";
 // import useLogout from '../hooks/useLogout';
 
 const appReducer = combineReducers({
   spotifyAccessToken: spotifyAccessToken,
   user: userReducer,
+  mediaPlayer: mediaPlayerReducer,
 });
 
 const rootReducer = (state, action) => {

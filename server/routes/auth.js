@@ -10,6 +10,11 @@ import {
   upload,
   updateLikedSongs,
   refresh,
+  getLikedSongs,
+  updateLikedAlbums,
+  updateLikedArtist,
+  getLikedAlbums,
+  getLikedArtist,
 } from "../controllers/authController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
@@ -32,5 +37,11 @@ router.patch(
 );
 
 router.patch("/ava", authMiddleware, updateAvatar);
-router.patch("/likedSongs", authMiddleware, updateLikedSongs);
+router.patch("/:id/updateLikedSongs", authMiddleware, updateLikedSongs);
+router.patch("/:id/updateLikedAlbums", authMiddleware, updateLikedAlbums);
+router.patch("/:id/updateLikedArtists", authMiddleware, updateLikedArtist);
+router.get("/:id/getLikedSongs", authMiddleware, getLikedSongs);
+router.get("/:id/getLikedAlbums", authMiddleware, getLikedAlbums);
+router.get("/:id/getLikedArtists", authMiddleware, getLikedArtist);
+
 export default router;

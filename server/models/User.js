@@ -36,10 +36,10 @@ const UserSchema = new Schema(
       },
     ],
     recentListeningSong: {
-      artistName: { type: String },
-      imageURL: { type: String },
-      songId: { type: String },
-      songName: { type: String },
+      artistName: { type: String, default: "" },
+      imageURL: { type: String, default: "" },
+      songId: { type: String, default: "" },
+      songName: { type: String, default: "" },
     },
     notificationCount: {
       type: Number,

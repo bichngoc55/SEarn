@@ -28,9 +28,9 @@ router.post("/login", login);
 router.post("/register", register);
 router.post("/changePassword", authMiddleware, changePassword);
 router.post("/refresh", refresh);
-router.patch("/name", authMiddleware, updateName);
+router.patch("/:id/name", authMiddleware, updateName);
 router.patch(
-  "/backgroundImage",
+  "/:id/backgroundImage",
   authMiddleware,
   // upload.single("backgroundImage"),
   updateBackgroundImage

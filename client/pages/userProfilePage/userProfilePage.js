@@ -5,29 +5,43 @@ import {
   StyleSheet,
   Image,
   ImageBackground,
+  TextInput,
+  Button,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import { BlurView } from "expo-blur";
 import { COLOR } from "../../constant/color";
 import ReuseBtn from "../../components/buttonComponent";
 import { useNavigation } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import TextField from "../../components/textField";
 import { logoutUser } from "../../redux/userSlice";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { refreshAccessToken } from "../../redux/userSlice";
+import { updateUserName } from "../../redux/userSlice";
+import Modal from "../../components/modal";
 import * as ImagePicker from "expo-image-picker";
-// import * as ImagePicker from "react-native-image-picker";
+
 export default function UserPage() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const accessToken = useSelector((state) => state.user.accessToken);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(user?.name);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  const handleChangeName = async () => {
+    setIsEditing(true);
+    setName(user.name);
+  };
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
@@ -41,7 +55,6 @@ export default function UserPage() {
       console.error("Error during logout:", error);
     }
   };
-  const [name, setName] = useState("");
   const [image, setImage] = useState(null);
   const [backgroundImage, setbackgroundImage] = useState(null);
   // const makeAuthenticatedRequest = async (method, endpoint, data) => {
@@ -124,7 +137,7 @@ export default function UserPage() {
       // console.log("avatar : " + JSON.stringifydata.avatar);
       const response = await axios({
         method: method, // 'PATCH' for updates
-        url: `http://localhost:3005/auth/${endpoint}`,
+        url: `http://localhost:3005/auth/${user._id}/${endpoint}`,
         data: data,
         headers: {
           authorization: `Bearer ${accessToken}`,
@@ -166,7 +179,6 @@ export default function UserPage() {
       }
 
       const formData = new FormData();
-      // const data = createFormData(uri);
 
       if (type === "avatar") {
         formData.append("avatar", {
@@ -178,10 +190,12 @@ export default function UserPage() {
       } else if (type === "backgroundImage") {
         formData.append("backgroundImage", {
           uri: imageUri,
-          type: `image/${imageType}`,
           name: imageName,
+          type: `image/${imageType}`,
         });
+        console.log("o day r");
         await makeAuthenticatedRequest("PATCH", "backgroundImage", formData);
+        console.log("o day r");
       }
     }
   };
@@ -245,91 +259,186 @@ export default function UserPage() {
   const handlePrivacyPress = () => {
     navigation.navigate("PrivacyPolicy");
   };
+  const submitNameChange = async () => {
+    try {
+      console.log("name : " + name);
+      await axios({
+        method: "PATCH",
+        url: `http://localhost:3005/auth/${user._id}/name`,
+        data: { name },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setIsEditing(false);
+      dispatch(updateUserName(name));
+    } catch (error) {
+      console.error(`Error updating name:`, error);
+    }
+  };
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  const handleChange = (text) => {
+    setFeedback(text);
+  };
+  const handleSendReport = async (feedback) => {
+    try {
+      console.log("content + email : ", feedback + user.email);
+      const response = await axios.patch(
+        `http://localhost:3005/report/${user._id}/addReport`,
+        {
+          content: feedback,
+          email: user.email,
+        }
+      );
+      closeModal();
+      setFeedback("");
+    } catch (error) {
+      console.error("Error sending report:", error);
+    }
+  };
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => pickImage("backgroundImage")}>
-        <View style={styles.headerContainer}>
-          <View style={[styles.backgroundImage, styles.roundedCorners]}>
-            <ImageBackground
-              source={{ uri: backgroundImage }}
-              style={styles.backgroundImage}
-              resizeMode="cover"
-            />
-          </View>
-          <View style={styles.avatarOverlay}>
-            <TouchableOpacity
-              onPress={() => pickImage("avatar")}
-              style={styles.avatarContainer}
-            >
-              <Image
-                source={{ uri: image }}
-                style={styles.avatarImage}
+    <BlurView intensity={isModalOpen ? 80 : 0} style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => pickImage("backgroundImage")}>
+          <View style={styles.headerContainer}>
+            <View style={[styles.backgroundImage, styles.roundedCorners]}>
+              <ImageBackground
+                source={{ uri: backgroundImage }}
+                style={styles.backgroundImage}
                 resizeMode="cover"
               />
-            </TouchableOpacity>
+            </View>
+            <View style={styles.avatarOverlay}>
+              <TouchableOpacity
+                onPress={() => pickImage("avatar")}
+                style={styles.avatarContainer}
+              >
+                <Image
+                  source={{ uri: image }}
+                  style={styles.avatarImage}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
-      <View style={styles.nameContainer}>
-        <Text
-          style={styles.nameInput}
-          placeholder="Your Name"
-          value={name}
-          onChangeText={setName}
-        >
-          {user?.name}
-        </Text>
-        <TouchableOpacity style={styles.editNameButton}>
-          <AntDesign name="edit" size={24} color="white" />
         </TouchableOpacity>
+        <View style={styles.nameContainer}>
+          {isEditing ? (
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setName}
+              value={name}
+              onSubmitEditing={submitNameChange}
+            />
+          ) : (
+            <Text style={styles.nameInput}>{user?.name}</Text>
+          )}
+          <TouchableOpacity style={styles.editNameButton}>
+            <AntDesign
+              name="edit"
+              size={24}
+              color="white"
+              onPress={handleChangeName}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView
+          style={styles.scrollViewContent}
+          contentContainerStyle={styles.scrollContentContainer}
+        >
+          <Text style={styles.sectionTitle}>Settings</Text>
+
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={handlePasswordChange}
+          >
+            <MaterialIcons name="password" size={24} color="white" />
+            <Text style={styles.settingText}>Password settings</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.sectionTitle}>Options</Text>
+
+          <TouchableOpacity style={styles.settingItem}>
+            <MaterialIcons name="update" size={24} color="white" />
+            <Text style={styles.settingText}>Check for updates</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.settingItem} onPress={openModal}>
+            <MaterialIcons name="feedback" size={24} color="white" />
+            <Text style={styles.settingText}>
+              Give feedbacks & Report errors
+            </Text>
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+              <View style={styles.FeedbackContainer}>
+                <Text style={styles.feedbackText}>
+                  This is the feedback modal
+                </Text>
+                <TextField
+                  placeholder="Enter your feedback"
+                  width={scale(310)}
+                  height={scale(65)}
+                  onChangeText={handleChange}
+                  // onBlur={handleBlur("")}
+                  value={feedback}
+                />
+                <View style={styles.btnContainer2}>
+                  <ReuseBtn
+                    width={scale(150)}
+                    height={scale(60)}
+                    btnText="Send Report"
+                    onPress={() => handleSendReport(feedback)}
+                  />
+                  <TouchableOpacity
+                    style={styles.btnClose}
+                    onPress={closeModal}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: scale(18),
+                        fontFamily: "Montserrat",
+                      }}
+                    >
+                      Close Modal
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={handleTermsPress}
+          >
+            <Ionicons name="document-text-outline" size={24} color="white" />
+            <Text style={styles.settingText}>Terms and conditions</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={handlePrivacyPress}
+          >
+            <MaterialIcons name="security" size={24} color="white" />
+            <Text style={styles.settingText}>Privacy Policy</Text>
+          </TouchableOpacity>
+          <View style={styles.btnContainer}>
+            <ReuseBtn
+              onPress={handleSubmit}
+              btnText="Log out"
+              textColor="#ffffff"
+              width={scale(210)}
+              height={scale(65)}
+            />
+          </View>
+        </ScrollView>
       </View>
-
-      <ScrollView
-        style={styles.scrollViewContent}
-        contentContainerStyle={styles.scrollContentContainer}
-      >
-        <Text style={styles.sectionTitle}>Settings</Text>
-
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={handlePasswordChange}
-        >
-          <MaterialIcons name="password" size={24} color="white" />
-          <Text style={styles.settingText}>Password settings</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.sectionTitle}>Options</Text>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <MaterialIcons name="update" size={24} color="white" />
-          <Text style={styles.settingText}>Check for updates</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.settingItem}>
-          <MaterialIcons name="feedback" size={24} color="white" />
-          <Text style={styles.settingText}>Give feedbacks & Report errors</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.settingItem} onPress={handleTermsPress}>
-          <Ionicons name="document-text-outline" size={24} color="white" />
-          <Text style={styles.settingText}>Terms and conditions</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={handlePrivacyPress}
-        >
-          <MaterialIcons name="security" size={24} color="white" />
-          <Text style={styles.settingText}>Privacy Policy</Text>
-        </TouchableOpacity>
-        <View style={styles.btnContainer}>
-          <ReuseBtn
-            onPress={handleSubmit}
-            btnText="Log out"
-            textColor="#ffffff"
-            width={scale(210)}
-            height={scale(65)}
-          />
-        </View>
-      </ScrollView>
-    </View>
+    </BlurView>
   );
 }
 
@@ -357,7 +466,7 @@ const styles = StyleSheet.create({
 
   headerContainer: {
     width: "100%",
-    aspectRatio: 1.7,
+    aspectRatio: 1.9,
   },
   nameContainer: {
     flexDirection: "row",
@@ -435,5 +544,40 @@ const styles = StyleSheet.create({
     marginTop: scale(20),
     marginBottom: scale(20),
     alignItems: "center",
+  },
+  btnContainer2: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: scale(20),
+    marginBottom: scale(20),
+    alignItems: "center",
+  },
+  FeedbackContainer: {
+    backgroundColor: "black",
+    alignItems: "center",
+    borderRadius: scale(20),
+  },
+  feedbackText: {
+    color: "white",
+    fontSize: scale(20),
+    fontWeight: "bold",
+    marginTop: scale(20),
+    marginBottom: scale(20),
+    fontFamily: "Montserrat",
+    textAlign: "center",
+  },
+  btnClose: {
+    width: scale(150),
+    height: scale(60),
+    marginLeft: scale(20),
+    fontFamily: "Montserrat",
+
+    marginRight: scale(10),
+    backgroundColor: "red",
+    borderRadius: scale(15),
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
   },
 });

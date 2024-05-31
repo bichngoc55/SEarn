@@ -59,7 +59,7 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       console.log("Inside login user in user slice");
-      const response = await fetch("http://10.0.2.2:3005/auth/login", {
+      const response = await fetch("http://localhost:3005/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,6 +130,11 @@ const userSlice = createSlice({
     updateAccessToken: (state, action) => {
       state.accessToken = action.payload;
     },
+    updateUserName: (state, action) => {
+      if (state.user) {
+        state.user.name = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -176,6 +181,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearError, updateAccessToken } = userSlice.actions;
+export const { setUser, clearError, updateAccessToken, updateUserName } =
+  userSlice.actions;
 
 export default userSlice.reducer;

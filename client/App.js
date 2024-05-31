@@ -21,6 +21,7 @@ export default function App() {
   });
   const [fontsLoaded] = useFonts({
     regular: require("./assets/fonts/Montserrat-Regular.ttf"),
+    semiBold: require("./assets/fonts/Montserrat-SemiBold.ttf"),
     bold: require("./assets/fonts/Montserrat-Bold.ttf"),
     italic: require("./assets/fonts/Montserrat-Italic.ttf"),
     boldItalic: require("./assets/fonts/Montserrat-BoldItalic.ttf"),

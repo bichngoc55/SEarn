@@ -12,6 +12,7 @@ const playlistSchema = new mongoose.Schema(
     privacyIcon: Number,
     songCount: Number,
     songs: [String],
+    numberOfLikes: { type: Number, default: 0 },
     thumbNail: Number,
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,13 +19,27 @@ const ArtistItem = ({ input }) => {
       artist: input,
     });
   };
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLike = (e) => {
+    e.stopPropagation(); // Ngăn chặn sự kiện lan truyền lên cha
+    setIsLiked(!isLiked);
+  };
+
   return (
     <TouchableOpacity style={styles.albumContainer} onPress={MoveToArtistDetail}>
       <Image source={{ uri: input.images[0].url }} style={styles.circle} />
       <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
           {input.name}
       </Text>
-      <Ionicons style={{}} name="heart-outline" size={scale(25)} color="#FED215" />
+      <TouchableOpacity onPress={handleLike}>
+          <Ionicons
+            style={styles.heartBtn}
+            name={isLiked ? "heart" : "heart-outline"}
+            size={scale(25)}
+            color="#FED215"
+          />
+        </TouchableOpacity>
     </TouchableOpacity>
   );
 };

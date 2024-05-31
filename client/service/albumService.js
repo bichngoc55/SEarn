@@ -15,6 +15,7 @@ const getAlbum = async (accessToken, albumId) => {
     return {
       name: album.name,
       id: album.id,
+      total_tracks: album.total_tracks,
       artists: album.artists.map((artist) => ({
         name: artist.name,
         id: artist.id,

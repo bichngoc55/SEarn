@@ -17,6 +17,7 @@ import AlbumItem from "../../components/albumItem";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbum } from "../../service/albumService";
 import { useSelector, useDispatch } from "react-redux";
+import scale from "../../constant/responsive";
 
 export default function LikedAlbumTab() {
   const navigation = useNavigation();
@@ -104,7 +105,6 @@ const styles = StyleSheet.create({
       color: "white",
   },
   flatlistContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginHorizontal: scale(10)
   },
 });

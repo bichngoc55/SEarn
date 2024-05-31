@@ -15,13 +15,26 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { getTrack } from "../../service/songService";
 import SongItem from "../../components/songItem";
 import { useNavigation } from "@react-navigation/native";
+import scale from "../../constant/responsive";
 
 const PlaylistPage = () => {
   const dispatch = useDispatch();
-  const accessToken =
-    "BQBwZHWpPLNX0xTkaTCu6RjVn79_eXrBr0FeWk0Qq6EAWZSl0IulY6E6mfcAhzIEwQqF3eQToCKGgps0Va5DdqnoUDrugjsVB1c7dc0GqB0tWNiIxwc";
+  const { user } = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
+
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (accessTokenForSpotify) {
+      console.log("Access Token in useEffect:", accessTokenForSpotify);
+    }
+  }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([
     "3qhYidu0cemx1v9PgTtpS5",
     "6jcLKVmEKAQIXIVHJZ8vzS",
@@ -36,21 +49,21 @@ const PlaylistPage = () => {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        if (accessToken) {
+        if (accessTokenForSpotify) {
           const trackPromises = songList.map((songId) =>
-            getTrack(accessToken, songId)
+            getTrack(accessTokenForSpotify, songId)
           );
           const trackData = await Promise.all(trackPromises);
           trackData.forEach((track) => {});
           setTracks(trackData);
-        } else alert("accessToken:" + accessToken);
+        } else alert("accessToken:" + accessTokenForSpotify);
       } catch (error) {
         console.error("Error fetching tracks:", error);
       }
     };
 
     fetchTracks();
-  }, [accessToken, songList]);
+  }, [accessTokenForSpotify, songList]);
 
   const navigation = useNavigation();
 
@@ -61,7 +74,7 @@ const PlaylistPage = () => {
   return (
     <SafeAreaView
       style={{
-        marginHorizontal: 25,
+        marginHorizontal: scale(20),
         height: "100%",
       }}
     >
@@ -97,11 +110,11 @@ const PlaylistPage = () => {
 const styles = StyleSheet.create({
   container: {},
   circle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: scale(45),
+    height: scale(45),
+    borderRadius: scale(60),
     marginTop: 15,
-    backgroundColor: "#49A078",
+    backgroundColor: "#FED215",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 20,
@@ -109,11 +122,11 @@ const styles = StyleSheet.create({
   NewPlaylist: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 5,
-    marginBottom: 5,
+    marginVertical: scale(5),
+
   },
   text: {
-    fontSize: 16,
+    fontSize: scale(15),
     color: "white",
   },
   trackContainer: {

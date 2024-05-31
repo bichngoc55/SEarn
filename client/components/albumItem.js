@@ -15,13 +15,20 @@ import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
 
 const AlbumItem = ({ input }) => {
   const navigation = useNavigation();
-  const MoveToListSong = () => {
+  const MoveToListAlbum = () => {
     navigation.navigate("AlbumDetail", {
       album: input,
     });
   };
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLike = (e) => {
+    e.stopPropagation(); // Ngăn chặn sự kiện lan truyền lên cha
+    setIsLiked(!isLiked);
+  };
+
   return (
-    <TouchableOpacity style={styles.albumContainer} onPress={MoveToListSong}>
+    <TouchableOpacity style={styles.albumContainer} onPress={MoveToListAlbum}>
       <Image source={{ uri: input.images[0].url }} style={styles.circle} />
       <View style={{ flexDirection: "column", flex: 1, marginRight: scale(10), height: scale(60), justifyContent: "space-between"}}>
         <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
@@ -31,7 +38,16 @@ const AlbumItem = ({ input }) => {
           {input.artists.map((artist) => artist.name).join(", ")}{" "}
         </Text>
       </View>
-      <Ionicons style={{}} name="heart-outline" size={scale(25)} color="#FED215" />
+      <TouchableOpacity>
+        <TouchableOpacity onPress={handleLike}>
+          <Ionicons
+            style={styles.heartBtn}
+            name={isLiked ? "heart" : "heart-outline"}
+            size={scale(25)}
+            color="#FED215"
+          />
+        </TouchableOpacity>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };

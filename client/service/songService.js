@@ -12,6 +12,7 @@ const getTrack = async (accessToken, songId) => {
     );
 
     const track = response.data;
+
     return {
       name: track.name,
       id: track.id,
@@ -27,7 +28,6 @@ const getTrack = async (accessToken, songId) => {
       preview_url: track.preview_url,
     };
   } catch (error) {
-    
     throw error;
   }
 };

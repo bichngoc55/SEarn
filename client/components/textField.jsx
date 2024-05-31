@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   container: (width, height, placeholder, isFocused) => ({
     width: width,
     height: height,
-    backgroundColor: "transparent",
+    backgroundColor: "rent",
     borderColor: isFocused ? COLOR.textPrimaryColor : "#3C3B3B",
     borderWidth: 1,
     padding: scale(15),

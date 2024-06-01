@@ -11,6 +11,8 @@ class AudioService {
     this.currentTime = 0;
     this.isPlay = false;
     this.currentTotalTime = 0;
+    this.isRepeat = false;
+    this.isShuffle = false;
     this.currentPlaylist = [];
     this.currentSong = null;
     this.currentAudio = null;
@@ -67,7 +69,11 @@ class AudioService {
     }
 
     if (status.didJustFinish) {
-      await this.playNextAudio();
+      if (this.isRepeat) {
+        await this.playCurrentAudio();
+      } else if (this.isShuffle) {
+        await this.playRandomSong();
+      } else await this.playNextAudio();
     }
     this.onPlaybackStatusChange(status);
   }
@@ -115,7 +121,6 @@ class AudioService {
 
   async playNextAudio() {
     if (this.currentAudio) {
-      // Dừng âm thanh cũ
       await this.currentAudio.sound.stopAsync();
     }
 
@@ -125,6 +130,38 @@ class AudioService {
     }
     this.currentAudio = this.audioMap.get(this.currentAudioIndex);
     this.currentSong = this.currentPlaylist[this.currentAudioIndex];
+    await this.playCurrentAudio();
+  }
+
+  async playPreviousAudio() {
+    if (this.currentAudio) {
+      await this.currentAudio.sound.stopAsync();
+    }
+
+    this.currentAudioIndex--;
+    if (this.currentAudioIndex < 0) {
+      this.currentAudioIndex = this.audioMap.size - 1;
+    }
+    this.currentAudio = this.audioMap.get(this.currentAudioIndex);
+    this.currentSong = this.currentPlaylist[this.currentAudioIndex];
+    await this.playCurrentAudio();
+  }
+
+  async playRandomSong() {
+    if (this.currentAudio) {
+      await this.currentAudio.sound.stopAsync();
+    }
+
+    // Get a random index within the range of the audioMap size
+    let randomIndex;
+    do {
+      randomIndex = Math.floor(Math.random() * this.audioMap.size);
+    } while (randomIndex === this.currentAudioIndex);
+
+    this.currentAudioIndex = randomIndex;
+    this.currentAudio = this.audioMap.get(this.currentAudioIndex);
+    this.currentSong = this.currentPlaylist[this.currentAudioIndex];
+
     await this.playCurrentAudio();
   }
 

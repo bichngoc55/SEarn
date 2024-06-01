@@ -31,7 +31,7 @@ export const refreshAccessToken = createAsyncThunk(
       }
 
       const response = await fetch(
-        "https://77f3-118-71-60-115.ngrok-free.app/auth/refresh",
+        "https://8043-2405-4802-a3f1-4500-91f7-adb8-c182-547d.ngrok-free.app/auth/refresh",
         {
           method: "POST",
           headers: {

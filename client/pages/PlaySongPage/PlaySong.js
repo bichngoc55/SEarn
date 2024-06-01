@@ -34,7 +34,6 @@ import AudioService from "../../service/audioService";
 const PlaySongPage = ({ route }) => {
   const { song } = route.params;
   const navigation = useNavigation();
-  const [isShuffe, setIsShuffe] = useState(false);
   const dispatch = useDispatch();
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
@@ -138,12 +137,12 @@ const PlaySongPage = ({ route }) => {
           style={{ width: "100%", height: "100%" }}
           minimumTrackTintColor="#FED215"
           maximumTrackTintColor="#2b2b2b"
-          value={progress}
+          value={service.currentTime}
           minimumValue={0}
-          maximumValue={total}
+          maximumValue={service.currentTotalTime}
           onValueChange={(value) => {
-            dispatch(setCurrentTime(value));
-            audioPlayer.setPositionAsync(value);
+            service.currentTime = value;
+            service.currentAudio.sound.setPositionAsync(value);
           }}
         />
       </View>
@@ -154,27 +153,40 @@ const PlaySongPage = ({ route }) => {
         </Text>
       </View>
       <View style={styles.iconContainer}>
-        <Feather
-          name="repeat"
-          size={scale(25)}
-          color="#737373"
-          onPress={() => {
-            audioPlayer.setPositionAsync(0);
-          }}
-        />
+        {service.isRepeat ? (
+          <Feather
+            name="repeat"
+            size={scale(25)}
+            color="#FED215"
+            onPress={() => {
+              service.isRepeat = false;
+            }}
+          />
+        ) : (
+          <Feather
+            name="repeat"
+            size={scale(25)}
+            color="#737373"
+            onPress={() => {
+              service.isRepeat = true;
+              service.isShuffle = false;
+            }}
+          />
+        )}
         <FontAwesome6
           name="backward-step"
           size={scale(25)}
           color="#737373"
-          // onPress={() => {
-          //   dispatch(playBackSong({ audioPlayer, playlist, currentPosition }));
-          // }}
+          onPress={() => {
+            service.playPreviousAudio();
+          }}
         />
-        {isPlaying ? (
+        {service.isPlay ? (
           <View
             style={styles.circle}
             onPress={() => {
               service.currentAudio.sound.pauseAsync();
+              service.isPlay = false;
             }}
           >
             <FontAwesome5
@@ -183,6 +195,7 @@ const PlaySongPage = ({ route }) => {
               color="black"
               onPress={() => {
                 service.currentAudio.sound.pauseAsync();
+                service.isPlay = false;
               }}
             />
           </View>
@@ -193,6 +206,7 @@ const PlaySongPage = ({ route }) => {
             color="#FED215"
             onPress={() => {
               service.currentAudio.sound.playAsync();
+              service.isPlay = true;
             }}
           />
         )}
@@ -202,17 +216,16 @@ const PlaySongPage = ({ route }) => {
           size={scale(25)}
           color="#737373"
           onPress={() => {
-            dispatch(playNextSong({ audioPlayer, playlist, currentPosition }));
+            service.playNextAudio();
           }}
         />
-        {isShuffe ? (
+        {service.isShuffle ? (
           <Ionicons
             name="shuffle"
             size={scale(25)}
             color="#FED215"
             onPress={() => {
-              console.log("shuffe: " + isShuffe);
-              setIsShuffe(false);
+              service.isShuffle = false;
             }}
           />
         ) : (
@@ -221,8 +234,8 @@ const PlaySongPage = ({ route }) => {
             size={scale(25)}
             color="#737373"
             onPress={() => {
-              console.log("shuffe: " + isShuffe);
-              setIsShuffe(true);
+              service.isShuffle = true;
+              service.isRepeat = false;
             }}
           />
         )}

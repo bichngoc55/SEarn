@@ -39,12 +39,8 @@ export default function LoginScreen({ navigation }) {
   const handleSubmit = async (values) => {
     try {
       await dispatch(loginUser(values));
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "BottomBar" }],
-        })
-      );
+      navigation.navigate("BottomBar");
+      dispatch(fetchSpotifyAccessToken());
     } catch (error) {
       console.error("Login error:", error);
     }

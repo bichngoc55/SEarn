@@ -12,19 +12,19 @@ export const refreshAccessToken = createAsyncThunk(
   "user/refreshAccessToken",
   async (currentAccessToken, { rejectWithValue, dispatch }) => {
     try {
-      console.log(
-        "Current Access Token inside refresh function:",
-        currentAccessToken
-      );
+      //   console.log(
+      //     "Current Access Token inside refresh function:",
+      //     currentAccessToken
+      //   );
 
       if (!currentAccessToken) {
         throw new Error("Refresh token is missing");
       }
       const refreshToken = await AsyncStorage.getItem("userToken");
-      console.log(
-        " inside refresh access token slice and here is refresh token :" +
-          refreshToken
-      );
+      //   console.log(
+      //     " inside refresh access token slice and here is refresh token :" +
+      //       refreshToken
+      //   );
 
       if (!refreshToken) {
         throw new Error("Refresh token is missing");
@@ -43,7 +43,7 @@ export const refreshAccessToken = createAsyncThunk(
       }
 
       const data = await response.json();
-      console.log("data trong refresh: " + JSON.stringify(data));
+      //   console.log("data trong refresh: " + JSON.stringify(data));
       dispatch(updateAccessToken(data.accessToken));
       //   console.log("Inside refresh function " + state.accessToken);
       await AsyncStorage.setItem("userToken", data.accessToken);
@@ -58,7 +58,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      console.log("Inside login user in user slice");
+      //   console.log("Inside login user in user slice");
       const response = await fetch("http://localhost:3005/auth/login", {
         method: "POST",
         headers: {

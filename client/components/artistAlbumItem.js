@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,13 +12,25 @@ import scale from "../constant/responsive";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const ArtistAlbumItem = ({ input }) => {
+const ArtistAlbumItem = ({ input, onLikeUnlike, isLiked }) => {
   const navigation = useNavigation();
   const MoveToListAlbum = () => {
     navigation.navigate("AlbumDetail", {
       album: input,
     });
   };
+  
+  const [liked, setLiked] = useState(isLiked);
+
+  useEffect(() => {
+    setLiked(isLiked);
+  }, [isLiked]);
+
+  const handleLike = () => {
+    onLikeUnlike(input.id);
+    setLiked(!liked);
+  };
+
   return (
     <TouchableOpacity style={styles.albumContainer} onPress={MoveToListAlbum}>
       <Image source={{ uri: input.images[0].url }} style={styles.img} />
@@ -26,8 +38,13 @@ const ArtistAlbumItem = ({ input }) => {
         <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
             {input.name}
         </Text>
-        <TouchableOpacity>
-          <Ionicons style={styles.heartBtn} name="heart-outline" size={scale(20)} color="#FED215" />
+        <TouchableOpacity onPress={handleLike}>
+          <Ionicons
+            style={styles.heartBtn}
+            name={isLiked ? "heart" : "heart-outline"}
+            size={scale(25)}
+            color="#FED215"
+          />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

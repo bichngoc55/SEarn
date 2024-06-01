@@ -38,12 +38,9 @@ export default function LoginScreen({ navigation }) {
 
   const handleSubmit = async (values) => {
     try {
-      const resultAction = await dispatch(loginUser(values));
-      if (loginUser.fulfilled.match(resultAction)) {
-        dispatch(fetchSpotifyAccessToken());
-      } else {
-        console.error("Login error:", resultAction.error);
-      }
+      await dispatch(loginUser(values));
+      navigation.navigate("BottomBar");
+      dispatch(fetchSpotifyAccessToken());
     } catch (error) {
       console.error("Login error:", error);
     }

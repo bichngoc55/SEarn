@@ -12,19 +12,19 @@ export const refreshAccessToken = createAsyncThunk(
   "user/refreshAccessToken",
   async (currentAccessToken, { rejectWithValue, dispatch }) => {
     try {
-      console.log(
-        "Current Access Token inside refresh function:",
-        currentAccessToken
-      );
+      //   console.log(
+      //     "Current Access Token inside refresh function:",
+      //     currentAccessToken
+      //   );
 
       if (!currentAccessToken) {
         throw new Error("Refresh token is missing");
       }
       const refreshToken = await AsyncStorage.getItem("userToken");
-      console.log(
-        " inside refresh access token slice and here is refresh token :" +
-          refreshToken
-      );
+      //   console.log(
+      //     " inside refresh access token slice and here is refresh token :" +
+      //       refreshToken
+      //   );
 
       if (!refreshToken) {
         throw new Error("Refresh token is missing");
@@ -43,7 +43,7 @@ export const refreshAccessToken = createAsyncThunk(
       }
 
       const data = await response.json();
-      console.log("data trong refresh: " + JSON.stringify(data));
+      //   console.log("data trong refresh: " + JSON.stringify(data));
       dispatch(updateAccessToken(data.accessToken));
       //   console.log("Inside refresh function " + state.accessToken);
       await AsyncStorage.setItem("userToken", data.accessToken);
@@ -58,8 +58,8 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      console.log("Inside login user in user slice");
-      const response = await fetch("http://10.0.2.2:3005/auth/login", {
+      //   console.log("Inside login user in user slice");
+      const response = await fetch("http://localhost:3005/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export const loginUser = createAsyncThunk(
       });
 
       if (!response.ok) {
-        throw new Error("Something went wrong during login.");
+        console.log("Login error" + response);
       }
 
       const data = await response.json();
@@ -130,6 +130,11 @@ const userSlice = createSlice({
     updateAccessToken: (state, action) => {
       state.accessToken = action.payload;
     },
+    updateUserName: (state, action) => {
+      if (state.user) {
+        state.user.name = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -176,6 +181,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearError, updateAccessToken } = userSlice.actions;
+export const { setUser, clearError, updateAccessToken, updateUserName } =
+  userSlice.actions;
 
 export default userSlice.reducer;

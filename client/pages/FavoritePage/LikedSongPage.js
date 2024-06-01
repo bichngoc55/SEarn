@@ -21,39 +21,47 @@ import SongItem from "../../components/songItem";
 
 const LikedSongPage = () => {
   const dispatch = useDispatch();
-  const accessToken =
-    "BQBqgPKB92oVIBbnCkdn_ptGLCoFEfOkhYZqXhdJGJRqmlIYHbcaH51Tz0nt0oUEhojjnxxyym1FPfXo_8GZVUmKgoL7DPesUtA02vWGHBWUUg6FLiI";
+  const { user } = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
+
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (accessTokenForSpotify) {
+      console.log("Access Token in useEffect:", accessTokenForSpotify);
+    }
+  }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([
-    "3qhYidu0cemx1v9PgTtpS5",
+    "255vSRpVq5YYKBJiem1BVx",
     "6jcLKVmEKAQIXIVHJZ8vzS",
     "5iZHnufFUgATzrpGgH1K0W",
   ]);
   const [tracks, setTracks] = useState([]);
 
-  // useEffect(() => {
-  //   dispatch(fetchSpotifyAccessToken());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        if (accessToken) {
-          const trackPromises = songList.map((songId) =>
-            getTrack(accessToken, songId)
-          );
-          const trackData = await Promise.all(trackPromises);
-          trackData.forEach((track) => {});
-          setTracks(trackData);
-        } else alert("accessToken:" + accessToken);
-      } catch (error) {
-        
-      }
+        const trackPromises = songList.map((songId) =>
+          getTrack(accessTokenForSpotify, songId)
+        );
+        const trackData = await Promise.all(trackPromises);
+        trackData.forEach((track) => {});
+        setTracks(trackData);
+      } catch (error) {}
     };
 
     fetchTracks();
-  }, [accessToken, songList]);
+  }, [accessTokenForSpotify, songList]);
 
   const navigation = useNavigation();
   return (
@@ -97,8 +105,8 @@ const LikedSongPage = () => {
           data={tracks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            console.log("Item:", item);
-            return <SongItem input={item} />;
+            console.log("Item:", item.name);
+            return <SongItem input={item} songList={tracks} />;
           }}
         />
       </View>

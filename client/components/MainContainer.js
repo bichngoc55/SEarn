@@ -26,6 +26,7 @@ import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndCond
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
+import Lyricpage from "../pages/LyricPage/Lyricpage";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
@@ -44,6 +45,7 @@ const theme = {
     secondaryContainer: "transparent",
   },
 };
+
 function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -54,6 +56,11 @@ function FavouriteStack() {
       <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="Lyric"
+        component={Lyricpage}
         options={{ presentation: "modal" }}
       />
     </Stack.Navigator>

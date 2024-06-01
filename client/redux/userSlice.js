@@ -30,13 +30,16 @@ export const refreshAccessToken = createAsyncThunk(
         throw new Error("Refresh token is missing");
       }
 
-      const response = await fetch("http://localhost:3005/auth/refresh", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
+      const response = await fetch(
+        "https://77f3-118-71-60-115.ngrok-free.app/auth/refresh",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to refresh access token");

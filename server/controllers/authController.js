@@ -304,14 +304,15 @@ const handleError = (error, res) => {
     statusCode === 500 ? "Internal server error" : error.message;
   res.status(statusCode).json({ message: errorMessage });
 };
-export const updateLikedAlbums = async (req, res) => {
+
+export const addLikedAlbums = async (req, res) => {
   const { id } = req.params;
   const { albumId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
       id,
       {
-        $addToSet: { likedAlbums: albumId },
+        $addToSet: { likedAlbums: { id: albumId, timeAdded: new Date() } },
       },
       { new: true }
     );
@@ -322,6 +323,25 @@ export const updateLikedAlbums = async (req, res) => {
     handleError(error, res);
   }
 };
+export const unlikeAlbum = async (req, res) => {
+  const { id } = req.params;
+  const { albumId } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $pull: { likedAlbums: { id: albumId } },
+      },
+      { new: true }
+    );
+    await user.save();
+
+    res.json({ message: "Unliked album updated", user });
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
 export const updateLikedSongs = async (req, res) => {
   const { id } = req.params;
   const { songId } = req.body;
@@ -341,20 +361,39 @@ export const updateLikedSongs = async (req, res) => {
   }
 };
 
-export const updateLikedArtist = async (req, res) => {
+export const addLikedArtists = async (req, res) => {
+  const { id } = req.params;
+  const { artistId } = req.body;
+  console.log("Đến chưa?");
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: { likedArtists: { id: artistId, timeAdded: new Date() } },
+      },
+      { new: true }
+    );
+    await user.save();
+
+    res.json({ message: "Liked artist added", user });
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+export const unlikeArtists = async (req, res) => {
   const { id } = req.params;
   const { artistId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
       id,
       {
-        $addToSet: { likedArtists: artistId },
+        $pull: { likedArtists: { id: artistId } },
       },
       { new: true }
     );
     await user.save();
 
-    res.json({ message: "Liked artist updated", user });
+    res.json({ message: "Unliked artist deleted", user });
   } catch (error) {
     handleError(error, res);
   }
@@ -362,10 +401,11 @@ export const updateLikedArtist = async (req, res) => {
 
 export const getLikedAlbums = async (req, res) => {
   const { id } = req.params;
-
   try {
     const user = await User.findById(id);
-    res.json(user.likedAlbums);
+    const likedAlbums = user.likedAlbums.map(album => ({ id: album.id, timeAdded: album.timeAdded }));
+    console.log(likedAlbums);
+    res.json(likedAlbums);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -373,10 +413,10 @@ export const getLikedAlbums = async (req, res) => {
 };
 export const getLikedArtist = async (req, res) => {
   const { id } = req.params;
-
   try {
     const user = await User.findById(id);
-    res.json(user.likedArtists);
+    const likedArtists = user.likedArtists.map(artist => ({ id: artist.id, timeAdded: artist.timeAdded }));
+    res.json(likedArtists);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

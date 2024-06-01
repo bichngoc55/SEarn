@@ -15,10 +15,8 @@ import {
 import { COLOR } from "../../constant/color";
 import scale from "../../constant/responsive";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ArtistAlbumItem from "../../components/artistAlbumItem";
 import SongItem from "../../components/songItem";
-import LikedArtistTab from "../FavoritePage/LikedArtistTab";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getArtistAlbum } from "../../service/artistAlbumsService";
 import { getArtistSong } from "../../service/artistSongService";
@@ -48,6 +46,24 @@ const ArtistDetailScreen = ({ route }) => {
   }, [user, accessTokenForSpotify]);
   const [artistAlbums, setArtistAlbums] = useState([]);
   const [artistSongs, setArtistSongs] = useState([]);
+  const [likedAlbumList, setLikedAlbumList] = useState([]);
+
+  //get liked album list on db
+  // useEffect(() => {
+  //   const fetchLikedAlbumList = async () => {
+  //     try {
+  //       if (accessToken) {
+  //         const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
+  //         const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
+  //         setLikedAlbumList(albumIds);
+  //       }
+  //       else alert("Chưa có accessToken");
+  //     } catch (error) {
+  //       console.error("Error fetching liked albums:", error);
+  //     }
+  //   };
+  //   fetchLikedAlbumList();
+  // }, [user?._id, accessToken]);
 
   useEffect(() => {
     const fetchArtistAlbums = async () => {
@@ -82,7 +98,7 @@ const ArtistDetailScreen = ({ route }) => {
         <View style={styles.backButtonContainer}>
             <Pressable
             style={styles.backButton}
-            onPress={() => navigation.navigate("Favourite")}>
+            onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back-sharp" size={24} color="black" />
             </Pressable>
         </View>

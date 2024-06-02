@@ -26,9 +26,11 @@ import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndCond
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
+import Lyricpage from "../pages/LyricPage/Lyricpage";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
+import MiniPlayer from "./miniPlayer";
 import scale from "../constant/responsive";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -44,6 +46,7 @@ const theme = {
     secondaryContainer: "transparent",
   },
 };
+
 function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -54,6 +57,11 @@ function FavouriteStack() {
       <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="Lyric"
+        component={Lyricpage}
         options={{ presentation: "modal" }}
       />
     </Stack.Navigator>
@@ -100,81 +108,92 @@ function FavoriteTabs() {
 
 function BottomBar() {
   return (
-    <View style={styles.tabContainer}>
-      <Tab.Navigator
-        initialRouteName={homeName}
-        activeColor="#FED215"
-        inactiveColor="#979797"
-        barStyle={{
-          backgroundColor: "#737373",
-          borderTopLeftRadius: scale(15),
-          borderTopRightRadius: scale(15),
-          height: scale(60),
+    <>
+      <View style={styles.tabContainer}>
+        <Tab.Navigator
+          initialRouteName={homeName}
+          activeColor="#FED215"
+          inactiveColor="#979797"
+          barStyle={{
+            backgroundColor: "#737373",
+            borderTopLeftRadius: scale(15),
+            borderTopRightRadius: scale(15),
+            height: scale(60),
+            position: "absolute",
+            overflow: "hidden",
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+          shifting={true}
+        >
+          <Tab.Screen
+            name={homeName}
+            component={HomePage}
+            options={{
+              tabBarLabel: <Text style={styles.tabBarLabel}>Home</Text>,
+              tabBarIcon: ({ color, focused }) => (
+                <Ionicons
+                  name={focused ? "home" : "home-outline"}
+                  color={color}
+                  size={30}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name={exploreName}
+            component={ExploreScreen}
+            options={{
+              tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons
+                  name={focused ? "file-find" : "file-find-outline"}
+                  color={color}
+                  size={30}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Favourite"
+            component={FavouriteStack}
+            options={{
+              tabBarLabel: <Text style={styles.tabBarLabel}>Favorite</Text>,
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialIcons
+                  name={focused ? "favorite" : "favorite-outline"}
+                  color={color}
+                  size={30}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name={userName}
+            component={UserStack}
+            options={{
+              tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
+              tabBarIcon: ({ color, focused }) => (
+                <Ionicons
+                  name={focused ? "person" : "person-outline"}
+                  color={color}
+                  size={30}
+                />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </View>
+      <MiniPlayer
+        style={{
           position: "absolute",
-          overflow: "hidden",
-          alignContent: "center",
-          justifyContent: "center",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 10,
         }}
-        shifting={true}
-      >
-        <Tab.Screen
-          name={homeName}
-          component={HomePage}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>Home</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={exploreName}
-          component={ExploreScreen}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                name={focused ? "file-find" : "file-find-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Favourite"
-          component={FavouriteStack}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>Favorite</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialIcons
-                name={focused ? "favorite" : "favorite-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={userName}
-          component={UserStack}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons
-                name={focused ? "person" : "person-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </View>
+      />
+    </>
   );
 }
 
@@ -221,6 +240,7 @@ export default function MainNavigation() {
 const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
+    zIndex: 1,
     backgroundColor: "transparent",
   },
   tabBarLabel: {

@@ -29,6 +29,7 @@
     "expo-av": "~14.0.5",
     "expo-status-bar": "~1.12.1",
     "formik": "^2.4.5",
+    "lottie-react-native": "^6.7.2",
     "react": "18.2.0",
     "react-native": "0.74.1",
     "react-native-gesture-handler": "^2.16.0",

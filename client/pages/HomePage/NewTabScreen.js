@@ -15,7 +15,7 @@ import { TabBar } from "react-native-tab-view";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
-import {  GestureHandlerRootView  } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbumsNewReleases } from "../../service/albumsNewReleases";
@@ -27,17 +27,17 @@ export default function NewsTab() {
   const { user } = useSelector((state) => state.user);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
-  ); 
+  );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
-      
+
   useEffect(() => {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-    console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+      console.log("Access Token in useEffect artist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
   const [albumsNewReleases, setAlbumsNewReleases] = useState([]);
@@ -54,7 +54,9 @@ export default function NewsTab() {
           newAlbumsData.forEach((newAlbum) => {});
           setAlbumsNewReleases(newAlbumsData);
 
-          const { trackItems } = await getTracksRecommendations(accessTokenForSpotify);
+          const { trackItems } = await getTracksRecommendations(
+            accessTokenForSpotify
+          );
           const tracksPromises = [...trackItems];
           const tracksData = await Promise.all(tracksPromises);
           tracksData.forEach((trackRecommendation) => {});
@@ -65,12 +67,13 @@ export default function NewsTab() {
       }
     };
     fetchAlbumsNewReleases();
-    }, [accessTokenForSpotify]);
-  
-    return(
+  }, [accessTokenForSpotify]);
+
+  return (
     <SafeAreaView style={styles.container}>
       <GestureHandlerRootView style={styles.content}>
-        <FlatList style={styles.flatlistContainer}
+        <FlatList
+          style={styles.flatlistContainer}
           data={tracksRecommendations}
           keyExtractor={(item) => item.id}
           ListHeaderComponent={
@@ -97,7 +100,7 @@ export default function NewsTab() {
         />
       </GestureHandlerRootView>
     </SafeAreaView>
-    )
+  );
 }
 const styles = StyleSheet.create({
   container: {
@@ -106,9 +109,9 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1C1B1B",
   },
-  content:{
+  content: {
     marginHorizontal: scale(10),
-    flex:1
+    flex: 1,
   },
   title: {
     marginVertical: scale(10),
@@ -119,4 +122,4 @@ const styles = StyleSheet.create({
   flatlistContainer: {
     marginHorizontal: scale(10),
   },
-})
+});

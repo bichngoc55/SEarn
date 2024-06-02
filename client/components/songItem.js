@@ -16,24 +16,51 @@ import { useNavigation } from "@react-navigation/native";
 import {
   setCurrentSong,
   setCurrentPosition,
+  setAudioPlayer,
   setCurrentPlaylist,
   setIsPlaying,
 } from "../redux/mediaPlayerSlice";
+import { Audio } from "expo-av";
+import AudioService from "../service/audioService";
 
 const SongItem = ({ input, songList }) => {
   const navigation = useNavigation();
   const { mediaPlayer } = useSelector((state) => state.mediaPlayer);
-  const { currentSong, currentPosition, isPlaying } = useSelector(
-    (state) => state.mediaPlayer
-  );
+  const {
+    currentSong,
+    currentPosition,
+    currentSound,
+    audioPlayer,
+    currentTime,
+    isPlaying,
+    playlist,
+  } = useSelector((state) => state.mediaPlayer);
   const dispatch = useDispatch();
 
-  const handleSongChange = (song) => {
-    dispatch(setCurrentSong(song));
-    dispatch(setCurrentPosition(currentSongIndex));
-    console.log(currentSongIndex);
-    dispatch(setCurrentPlaylist(songList));
-    dispatch(setIsPlaying(true));
+  const handleSongChange = async (song) => {};
+
+  const preloadPlaylist = async () => {
+    try {
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: true,
+        playsInSilentModeAndroid: true,
+        shouldDuckAndroid: false,
+      });
+      const playlistAudio = [];
+      for (const song of playlist) {
+        const audioInstance = await Audio.Sound.createAsync({
+          uri: song.preview_url,
+        });
+        playlistAudio.push(audioInstance);
+      }
+      dispatch(setAudioPlayer(playlistAudio));
+      dispatch(setIsPlaying(true));
+      console.log(isPlaying);
+    } catch (error) {
+      console.error("Error loading sound:", error);
+      alert("Error loading sound: " + error);
+    }
   };
 
   const getCurrentSongIndex = () => {
@@ -42,22 +69,27 @@ const SongItem = ({ input, songList }) => {
 
   const currentSongIndex = getCurrentSongIndex();
 
-  const MoveToPlaySong = () => {
-    handleSongChange(input);
+  const MoveToPlaySong = async () => {
+    let service = new AudioService();
+    await service.loadPlaylist(songList);
+    service.currentSong = input;
+    service.currentPlaylist = songList;
+    service.currentAudioIndex = currentSongIndex;
+    service.playCurrentAudio();
     navigation.navigate("PlaySong", {
-      song: input,
+      song: service.currentSong,
     });
   };
   return (
     <TouchableOpacity style={styles.trackContainer} onPress={MoveToPlaySong}>
       {input.album && input.album.image ? (
-    <Image source={{ uri: input.album.image }} style={styles.circle} />
-  ) : (
-    <Image
-      source={require("../assets/images/logoSEarn.png")}
-      style={styles.circle}
-    />
-  )}
+        <Image source={{ uri: input.album.image }} style={styles.circle} />
+      ) : (
+        <Image
+          source={require("../assets/images/logoSEarn.png")}
+          style={styles.circle}
+        />
+      )}
       <View style={{ flexDirection: "column", flex: 1 }}>
         <Text style={styles.textName} numberOfLines={1} ellipsizeMode="tail">
           {input.name}

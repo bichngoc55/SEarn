@@ -7,7 +7,7 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
     try {
       //   console.log("INside fetch function");
       const response = await axios.get(
-        "http://localhost:3005/auth/getAccessToken"
+        "http://10.0.2.2:3005/auth/getAccessToken"
       );
       const data = response.json();
       dispatch(updateSpotifyAccessToken(data.accessToken));

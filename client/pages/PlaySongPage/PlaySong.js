@@ -40,7 +40,6 @@ const PlaySongPage = ({ route }) => {
   let service = new AudioService();
 
   useEffect(() => {
-    console.log(service.currentAudio.status);
     // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
     const handlePlaybackStatus = ({ progress, total }) => {
       setProgress(progress);

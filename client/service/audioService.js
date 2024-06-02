@@ -97,7 +97,6 @@ class AudioService {
   // }
 
   async playCurrentAudio() {
-    console.log("play current audio" + this.currentAudioIndex);
     try {
       if (this.currentAudio != null) {
         await this.currentAudio.sound.stopAsync();

@@ -1,39 +1,52 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
-import { COLOR } from "../constant/color";
-import scale from "../constant/responsive";
+import {
+  Modal as RNModal,
+  ModalProps,
+  KeyboardAvoidingView,
+  View,
+  Platform,
+} from "react-native";
 
-const Modal = ({ width, height, value }) => {
+const Modal = (props) => {
+  const { isOpen, withInput, children, ...rest } = props;
+
+  const content = withInput ? (
+    <KeyboardAvoidingView
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        paddingHorizontal: 12,
+        backgroundColor: "rgba(63, 63, 70, 0.4)",
+      }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      {children}
+    </KeyboardAvoidingView>
+  ) : (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        paddingHorizontal: 12,
+        backgroundColor: "rgba(63, 63, 70, 0.4)",
+      }}
+    >
+      {children}
+    </View>
+  );
+
   return (
-    <TextInput
-      style={[
-        styles.container(width, height, placeholder, isFocused),
-        isFocused && styles.focusedInput,
-      ]}
-      placeholder={placeholder}
-      placeholderTextColor="#6F6F6F"
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      value={value}
-      onChangeText={onChangeText}
-      {...otherProps}
-    />
+    <RNModal
+      visible={isOpen}
+      transparent
+      animationType="fade"
+      statusBarTranslucent
+      {...rest}
+    >
+      {content}
+    </RNModal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: (width, height, placeholder, isFocused) => ({
-    width: width,
-    height: height,
-    backgroundColor: "transparent",
-    borderColor: isFocused ? COLOR.textPrimaryColor : "#3C3B3B",
-    borderWidth: 1,
-    padding: scale(15),
-    borderRadius: scale(15),
-    marginBottom: scale(10),
-    color: COLOR.textPrimaryColor,
-  }),
-  focusedInput: {},
-});
 
 export default Modal;

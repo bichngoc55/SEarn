@@ -8,25 +8,29 @@ import {
   FlatList,
   Image,
 } from "react-native";
+
 import scale from "../constant/responsive";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import AlbumDetailScreen from "../pages/AlbumDetailScreen/AlbumDetailScreen";
 
-const AlbumItem = ({ input }) => {
+const AlbumItem = ({ input, onLikeUnlike, isLiked   }) => { 
   const navigation = useNavigation();
   const MoveToListAlbum = () => {
     navigation.navigate("AlbumDetail", {
       album: input,
     });
   };
-  const [isLiked, setIsLiked] = useState(false);
 
-  const handleLike = (e) => {
-    e.stopPropagation(); // Ngăn chặn sự kiện lan truyền lên cha
-    setIsLiked(!isLiked);
+  const [liked, setLiked] = useState(isLiked);
+
+  useEffect(() => {
+    setLiked(isLiked);
+  }, [isLiked]);
+
+  const handleLike = () => {
+    onLikeUnlike(input.id);
+    setLiked(!liked);
   };
-
   return (
     <TouchableOpacity style={styles.albumContainer} onPress={MoveToListAlbum}>
       <Image source={{ uri: input.images[0].url }} style={styles.circle} />

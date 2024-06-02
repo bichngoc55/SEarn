@@ -15,7 +15,6 @@ import {
 import { COLOR } from "../../constant/color";
 import scale from "../../constant/responsive";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AlbumItem from "../../components/albumItem";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbumTrack } from "../../service/albumTracksService";
 import { useSelector, useDispatch } from "react-redux";
@@ -70,11 +69,11 @@ const AlbumDetailScreen = ({ route }) => {
         style={styles.albumImg}
         resizeMode="cover"/>
         <View style={styles.backButtonContainer}>
-            <Pressable
+          <Pressable
             style={styles.backButton}
-            onPress={() => navigation.navigate("Favourite")}>
+            onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back-sharp" size={24} color="black" />
-            </Pressable>
+          </Pressable>
         </View>
       </View>
     <Text style={styles.albumName}>{album.name}</Text>        
@@ -118,21 +117,21 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
   },
   backButtonContainer: {
-      marginTop: scale(25),
-      marginLeft: scale(15),
+    marginTop: scale(25),
+    marginLeft: scale(15),
   },
   backButton: {
-      width: scale(35),
-      height: scale(35),
-      borderRadius: 17.5,
-      backgroundColor: "lightgray",
-      justifyContent: "center",
-      alignItems: "center",
+    width: scale(35),
+    height: scale(35),
+    borderRadius: 17.5,
+    backgroundColor: "lightgray",
+    justifyContent: "center",
+    alignItems: "center",
   },
   backButtonIcon: {
-      width: scale(25),
-      height: scale(25),
-      marginLeft: scale(10),
+    width: scale(25),
+    height: scale(25),
+    marginLeft: scale(10),
   },
   albumName:{
     marginTop: scale(15),

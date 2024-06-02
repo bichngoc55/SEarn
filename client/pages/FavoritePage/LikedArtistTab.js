@@ -16,6 +16,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import ArtistItem from "../../components/artistItem";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getArtist } from "../../service/artistService";
+import { getLikedArtistList } from "../../service/getLikedArtistList";
 import { useSelector, useDispatch } from "react-redux";
 import scale from "../../constant/responsive";
 
@@ -24,6 +25,7 @@ export default function LikedArtistTab() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector (state=> state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
       (state) => state.spotifyAccessToken
   );
@@ -39,12 +41,32 @@ export default function LikedArtistTab() {
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
       }
   }, [user, accessTokenForSpotify]);
-  const [artistList, setArtistList] = useState([
-    "1O3ZOjqFLEnbpZexcRjocn",
-    "0TnOYISbd1XYRBk9myaseg",
-  ]);
+  const [artistList, setArtistList] = useState([]);
   const [artists, setArtists] = useState([]);
 
+  //get liked artist list on db
+  useEffect(() => {
+    const fetchArtistList = async () => {
+      try {
+        if (accessToken) {
+          const { listLikedArtists } = await getLikedArtistList(accessToken, user._id);
+          const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
+          // const likedArtistsPromises = [...listLikedArtists];
+          // const likedArtistData = await Promise.all(likedArtistsPromises);
+          // likedArtistData.forEach((likedArtist) => {});
+          // setArtistList(likedArtistData);
+          setArtistList(artistIds);
+        }
+        else alert("Chưa có accessToken");
+      } catch (error) {
+        console.error("Error fetching artists:", error);
+      }
+    };
+  
+    fetchArtistList();
+  }, [user?._id, accessToken]);
+
+  //get in4 of artist from Spotify
   useEffect(() => {
     const fetchArtists = async () => {
       try {
@@ -65,6 +87,45 @@ export default function LikedArtistTab() {
       fetchArtists();
     }, [accessTokenForSpotify, artistList]);
 
+ //add like artist to db
+ const addToLikedArtists = async (artistId)=>{
+  fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({ artistId })
+  })
+  .then(response => response.json())
+  .then(updatedUser => console.log(updatedUser))
+  .catch(error => console.error(error));
+}
+//unlike artist on db
+const unlikeArtist = async (artistId) => {
+  fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({ artistId })
+  })
+  .then(response => response.json())
+  .then(updatedUser => console.log(updatedUser))
+  .catch(error => console.error(error));
+};
+// Handle like/unlike action
+const handleLikeUnlike = async (artistId) => {
+  if (artistList.includes(artistId)) {
+    await unlikeArtist(artistId);
+    setArtistList(artistList.filter(id => id !== artistId));
+  } else {
+    await addToLikedArtists(artistId);
+    setArtistList([...artistList, artistId]);
+  }
+};
+
     return(
     <SafeAreaView style={styles.tabContainer}>
         <View style={styles.sort}>
@@ -83,7 +144,9 @@ export default function LikedArtistTab() {
             data={artists}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-                return <ArtistItem input={item} />;
+              return <ArtistItem input={item} 
+              onLikeUnlike={handleLikeUnlike}
+              isLiked={artistList.includes(item.id)}/>;
             }}
             />
         </View>

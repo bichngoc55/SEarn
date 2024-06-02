@@ -14,6 +14,7 @@ import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import FacebookStrategy from "passport-facebook";
 import playlistRoutes from "./routes/playlist.js";
+import reportRoutes from "./routes/report.js";
 //config
 dotenv.config();
 //express app
@@ -43,6 +44,7 @@ app.use(cors());
 //express
 app.use("/auth", authRoutes);
 app.use("/playlists", playlistRoutes);
+app.use("/report", reportRoutes);
 //connect to mongodb
 mongoose
   .connect(process.env.URI)

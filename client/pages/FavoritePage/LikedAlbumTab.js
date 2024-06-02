@@ -16,6 +16,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AlbumItem from "../../components/albumItem";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbum } from "../../service/albumService";
+import { getLikedAlbumList } from "../../service/getLikedAlbumList";
 import { useSelector, useDispatch } from "react-redux";
 import scale from "../../constant/responsive";
 
@@ -23,8 +24,9 @@ export default function LikedAlbumTab() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector (state=> state.user.accessToken); 
   const { accessTokenForSpotify } = useSelector(
-      (state) => state.spotifyAccessToken
+    (state) => state.spotifyAccessToken
   );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
@@ -34,20 +36,38 @@ export default function LikedAlbumTab() {
   }, [dispatch]);
 
   useEffect(() => {
-      if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect album:", accessTokenForSpotify);
-      }
+    if (accessTokenForSpotify) {
+    console.log("Access Token in useEffect album:", accessTokenForSpotify);
+    }
   }, [user, accessTokenForSpotify]);
-  const [albumList, setAlbumList] = useState([
-    "4aawyAB9vmqN3uQ7FjRGTy",
-    "382ObEPsp2rxGrnsizN5TX",
-  ]);
-  const [albums, setAlbums] = useState([]);
 
+  const [albumList, setAlbumList] = useState([]);
+  const [albums, setAlbums] = useState([]);
+  //get liked album list on db
+  useEffect(() => {
+    const fetchAlbumList = async () => {
+      try {
+        if (accessToken) {
+          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
+          const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
+          // const likedAlbumsPromises = [...listLikedAlbums];
+          // const likedAlbumData = await Promise.all(likedAlbumsPromises);
+          // likedAlbumData.forEach((likedAlbum) => {});
+          // setAlbumList(likedAlbumData);
+          setAlbumList(albumIds);
+        }
+        else alert("Chưa có accessToken");
+      } catch (error) {
+        console.error("Error fetching albums:", error);
+      }
+    };
+  
+    fetchAlbumList();
+  }, [user?._id, accessToken]);
+  //Get in4 for albums
   useEffect(() => {
     const fetchAlbums = async () => {
-      try {
-        console.log("calling accesstoken: " + accessTokenForSpotify);
+      try {        
         if (accessTokenForSpotify) {
           const albumPromises = albumList.map((albumId) =>
             getAlbum(accessTokenForSpotify, albumId)
@@ -55,14 +75,53 @@ export default function LikedAlbumTab() {
           const albumData = await Promise.all(albumPromises);
           albumData.forEach((album) => {});
           setAlbums(albumData);
-        } else alert("accessToken:" + accessTokenForSpotify);
+        } else alert("accessToken: " + accessTokenForSpotify);
       } catch (error) {
-        console.error("Error fetching albums hehe:", error);
+        console.error("Error fetching liked albums hehe:", error);
       }
     };
   
-      fetchAlbums();
-    }, [accessTokenForSpotify, albumList]);
+    fetchAlbums();
+  }, [accessTokenForSpotify, albumList]);
+
+  //add like album to db
+  const addToLikedAlbums = async (albumId)=>{
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ albumId })
+    })
+    .then(response => response.json())
+    .then(updatedUser => console.log(updatedUser))
+    .catch(error => console.error(error));
+  }
+  //unlike album on db
+  const unlikeAlbum = async (albumId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ albumId })
+    })
+    .then(response => response.json())
+    .then(updatedUser => console.log(updatedUser))
+    .catch(error => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlike = async (albumId) => {
+    if (albumList.includes(albumId)) {
+      await unlikeAlbum(albumId);
+      setAlbumList(albumList.filter(id => id !== albumId));
+    } else {
+      await addToLikedAlbums(albumId);
+      setAlbumList([...albumList, albumId]);
+    }
+  };
 
     return(
     <SafeAreaView style={styles.tabContainer}>
@@ -81,8 +140,12 @@ export default function LikedAlbumTab() {
             <FlatList
             data={albums}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-                return <AlbumItem input={item} />;
+            renderItem={({ item }) => { 
+              return <AlbumItem
+              input={item}
+              onLikeUnlike={handleLikeUnlike}
+              isLiked={albumList.includes(item.id)}
+              />;
             }}
             />
         </View>

@@ -5,10 +5,13 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
   "accessToken/fetchAccessToken",
   async (_, { rejectWithValue }) => {
     try {
-      console.log("INside fetch function");
+      //   console.log("INside fetch function");
       const response = await axios.get(
         "https://2e9a-2405-4802-a3f1-4500-b4a2-f97a-cf47-ecf4.ngrok-free.app/auth/getAccessToken"
       );
+      const data = response.json();
+      dispatch(updateSpotifyAccessToken(data.accessToken));
+      await AsyncStorage.setItem("spotifyAccessToken", data.accessToken);
       return response.data.accessToken;
     } catch (error) {
       return rejectWithValue("error.response.data");
@@ -35,6 +38,9 @@ const accessTokenSlice = createSlice({
     fetchAccessTokenFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    updateSpotifyAccessToken: (state, action) => {
+      state.accessTokenForSpotify = action.payload;
     },
   },
   extraReducers: (builder) => {

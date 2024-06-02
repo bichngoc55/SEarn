@@ -9,17 +9,28 @@ const app = express();
 app.use(cookieParser());
 
 const refreshTokens = [];
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/");
+//   },
+//   filename: (req, file, cb) => {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     const fileExtension = file.originalname.split(".").pop();
+
+//     cb(null, file.fieldname + "-" + uniqueSuffix + "." + fileExtension);
+//   },
+// });
+// export const upload = multer({ storage: storage });
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, "./uploads");
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const fileExtension = file.originalname.split(".").pop();
-
-    cb(null, file.fieldname + "-" + uniqueSuffix + "." + fileExtension);
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
+
 export const upload = multer({ storage: storage });
 
 /* REGISTER USER */
@@ -159,22 +170,21 @@ const getUserById = async (userId) => {
 
 // 1. Update Name
 export const updateName = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
   try {
-    await body("name").isString().trim().isLength({ min: 1, max: 50 }).run(req);
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        name: name,
+      },
+      { new: true }
+    );
 
-    const userId = req.user.id;
-    const user = await getUserById(userId);
-
-    user.name = req.body.name;
-    await user.save();
-
-    res.json({ message: "Name updated successfully", user });
-  } catch (error) {
-    handleError(error, res);
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 };
 
@@ -188,21 +198,27 @@ export const updateBackgroundImage = async (req, res) => {
       console.error("Unknown Error:", err);
       return res.status(500).send({ error: "Internal Server Error" });
     }
-
+    if (!req.file) {
+      console.error("No file was uploaded.");
+      return res.status(400).json({ error: "No file was uploaded" });
+    }
     try {
-      const userId = req.user;
-      console.log(userId);
-      const user = await getUserById(userId);
+      const { id } = req.params;
 
-      if (req.file) {
-        user.backgroundImageUrl = req.file.path;
-      } else {
-        return res.status(400).json({ error: "No file provided" });
+      try {
+        const user = await User.findByIdAndUpdate(
+          id,
+          {
+            backgroundImageUrl: "/uploads/" + req.file.filename,
+          },
+          { new: true }
+        );
+
+        res.json(user);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
       }
-
-      await user.save();
-
-      res.json({ message: "background URL updated", user });
     } catch (error) {
       console.error("Error updating background URL:", error);
       res.status(500).send({ error: "Failed to update background" });
@@ -304,14 +320,15 @@ const handleError = (error, res) => {
     statusCode === 500 ? "Internal server error" : error.message;
   res.status(statusCode).json({ message: errorMessage });
 };
-export const updateLikedAlbums = async (req, res) => {
+
+export const addLikedAlbums = async (req, res) => {
   const { id } = req.params;
   const { albumId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
       id,
       {
-        $addToSet: { likedAlbums: albumId },
+        $addToSet: { likedAlbums: { id: albumId, timeAdded: new Date() } },
       },
       { new: true }
     );
@@ -322,6 +339,25 @@ export const updateLikedAlbums = async (req, res) => {
     handleError(error, res);
   }
 };
+export const unlikeAlbum = async (req, res) => {
+  const { id } = req.params;
+  const { albumId } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $pull: { likedAlbums: { id: albumId } },
+      },
+      { new: true }
+    );
+    await user.save();
+
+    res.json({ message: "Unliked album updated", user });
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
 export const updateLikedSongs = async (req, res) => {
   const { id } = req.params;
   const { songId } = req.body;
@@ -341,20 +377,39 @@ export const updateLikedSongs = async (req, res) => {
   }
 };
 
-export const updateLikedArtist = async (req, res) => {
+export const addLikedArtists = async (req, res) => {
+  const { id } = req.params;
+  const { artistId } = req.body;
+  console.log("Đến chưa?");
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: { likedArtists: { id: artistId, timeAdded: new Date() } },
+      },
+      { new: true }
+    );
+    await user.save();
+
+    res.json({ message: "Liked artist added", user });
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+export const unlikeArtists = async (req, res) => {
   const { id } = req.params;
   const { artistId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
       id,
       {
-        $addToSet: { likedArtists: artistId },
+        $pull: { likedArtists: { id: artistId } },
       },
       { new: true }
     );
     await user.save();
 
-    res.json({ message: "Liked artist updated", user });
+    res.json({ message: "Unliked artist deleted", user });
   } catch (error) {
     handleError(error, res);
   }
@@ -362,10 +417,11 @@ export const updateLikedArtist = async (req, res) => {
 
 export const getLikedAlbums = async (req, res) => {
   const { id } = req.params;
-
   try {
     const user = await User.findById(id);
-    res.json(user.likedAlbums);
+    const likedAlbums = user.likedAlbums.map(album => ({ id: album.id, timeAdded: album.timeAdded }));
+    console.log(likedAlbums);
+    res.json(likedAlbums);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -373,10 +429,10 @@ export const getLikedAlbums = async (req, res) => {
 };
 export const getLikedArtist = async (req, res) => {
   const { id } = req.params;
-
   try {
     const user = await User.findById(id);
-    res.json(user.likedArtists);
+    const likedArtists = user.likedArtists.map(artist => ({ id: artist.id, timeAdded: artist.timeAdded }));
+    res.json(likedArtists);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

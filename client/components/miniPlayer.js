@@ -53,7 +53,7 @@ const MiniPlayer = () => {
   return (
     <View style={styles.container} activeOpacity={0.9}>
       <TouchableOpacity
-        style={{ flexDirection: "row", flex: 1 }}
+        style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
         onPress={() => {
           OpenPlaySong();
         }}

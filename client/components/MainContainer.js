@@ -27,6 +27,7 @@ import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
 import Lyricpage from "../pages/LyricPage/Lyricpage";
+import PlaylistDetailMongo from "../pages/PlaylistDetailMongo/PlaylistDetailMongo";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
@@ -63,6 +64,10 @@ function FavouriteStack() {
         name="Lyric"
         component={Lyricpage}
         options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
       />
     </Stack.Navigator>
   );

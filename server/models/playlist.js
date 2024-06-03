@@ -14,7 +14,7 @@ const playlistSchema = new mongoose.Schema(
     songs: [String],
     numberOfLikes: { type: Number, default: 0 },
     thumbNail: Number,
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    userIdOwner: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

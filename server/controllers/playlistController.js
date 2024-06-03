@@ -17,7 +17,7 @@ export const addPlaylist = async (req, res) => {
     await playlist.save();
     res.status(201).json(playlist);
   } catch (error) {
-    res.status(500).json({ error: "Failed to add playlist" });
+    res.status(500).json({ error: error.message });
   }
 };
 

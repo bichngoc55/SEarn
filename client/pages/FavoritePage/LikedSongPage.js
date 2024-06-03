@@ -32,11 +32,11 @@ const LikedSongPage = () => {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (accessTokenForSpotify) {
-  //     console.log("Access Token in useEffect:", accessTokenForSpotify);
-  //   }
-  // }, [user, accessTokenForSpotify]);
+  useEffect(() => {
+    if (accessTokenForSpotify) {
+      console.log("Access Token in useEffect:", accessTokenForSpotify);
+    }
+  }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([
     "255vSRpVq5YYKBJiem1BVx",
     "6jcLKVmEKAQIXIVHJZ8vzS",

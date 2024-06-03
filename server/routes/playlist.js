@@ -12,7 +12,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 /* READ */
-router.get("/", authMiddleware, getAllPlaylists);
+router.get("/", getAllPlaylists);
 router.get("/:id", authMiddleware, getPlaylistDetails);
 
 /* CREATE */

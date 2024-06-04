@@ -37,6 +37,9 @@ const LikedSongPage = () => {
   const [songList, setSongList] = useState([]);
   const [tracks, setTracks] = useState([]);
 
+  useEffect(() => {
+    getLikedSong();
+  }, []);
   const getLikedSong = async () => {
     try {
       const response = await fetch(
@@ -50,8 +53,9 @@ const LikedSongPage = () => {
         }
       );
       const likedSong = await response.json();
-      console.log(likedSong);
       setSongList(likedSong);
+      console.log(likedSong);
+      console.log(songList);
     } catch (error) {
       alert("Error in likedsong: " + error);
     }
@@ -61,7 +65,6 @@ const LikedSongPage = () => {
     const fetchTracks = async () => {
       dispatch(fetchSpotifyAccessToken());
       try {
-        console.log("Fetching tracks with at la : " + accessTokenForSpotify);
         const trackPromises = songList.map((songId) =>
           getTrack(accessTokenForSpotify, songId)
         );
@@ -70,9 +73,9 @@ const LikedSongPage = () => {
         setTracks(trackData);
       } catch (error) {}
     };
-    getLikedSong();
+
     fetchTracks();
-  }, [dispatch]);
+  }, [songList, accessTokenForSpotify]);
 
   const navigation = useNavigation();
   return (

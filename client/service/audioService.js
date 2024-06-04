@@ -53,6 +53,7 @@ class AudioService {
       } else console.log("map rỗng");
       this.isPlay = true;
     } catch (error) {
+      alert("Sound is not available");
       console.error("Lỗi khi tải playlist:", error);
       throw error;
     }
@@ -60,6 +61,7 @@ class AudioService {
 
   async onPlaybackStatusUpdated(status) {
     this.currentTime = status.positionMillis;
+    console.log("Current time: ", this.currentTime);
     this.currentTotalTime = status.durationMillis;
     if (this.playbackStatusCallback) {
       this.playbackStatusCallback({
@@ -108,8 +110,9 @@ class AudioService {
       });
 
       // Phát audio từ vị trí hiện tại
-      await this.currentAudio.sound.playAsync();
-
+      if (this.currentTime) {
+        await this.currentAudio.sound.playAsync();
+      }
       // Cập nhật trạng thái phát
       this.isPlay = true;
     } catch (error) {

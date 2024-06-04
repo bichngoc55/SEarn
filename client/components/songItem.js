@@ -74,8 +74,9 @@ const SongItem = ({ input, songList }) => {
     await service.loadPlaylist(songList);
     service.currentSong = input;
     service.currentPlaylist = songList;
+    service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
-    service.playCurrentAudio();
+    await service.playCurrentAudio();
     navigation.navigate("PlaySong", {
       song: service.currentSong,
     });
@@ -89,13 +90,6 @@ const SongItem = ({ input, songList }) => {
           source={require("../assets/images/logoSEarn.png")}
           style={styles.circle}
         />
-      )}
-      <Image source={{ uri: input.album.image }} style={styles.circle} />
-      ) : (
-      <Image
-        source={require("../assets/images/logoSEarn.png")}
-        style={styles.circle}
-      />
       )}
       <View style={{ flexDirection: "column", flex: 1 }}>
         <Text style={styles.textName} numberOfLines={1} ellipsizeMode="tail">

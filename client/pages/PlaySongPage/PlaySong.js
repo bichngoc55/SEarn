@@ -38,12 +38,11 @@ const PlaySongPage = ({ route }) => {
   };
 
   useEffect(() => {
-    // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
     const handlePlaybackStatus = ({ progress, total }) => {
       setProgress(progress);
       setTotal(total);
     };
-    console.log(progress);
+    console.log("progress" + progress);
 
     service.registerPlaybackStatusCallback(handlePlaybackStatus);
 
@@ -51,9 +50,7 @@ const PlaySongPage = ({ route }) => {
     //   handlePlaybackStatus({ progress, total }),
     //   1000
     // );
-    return () => {
-      //service.unregisterPlaybackStatusCallback(handlePlaybackStatus);
-    };
+    return () => {};
   }, [service.currentAudio]);
 
   const {

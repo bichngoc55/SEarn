@@ -51,7 +51,7 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.iconandtext}>
-            <Entypo name="share" size={24} color="black" />
+            <Entypo name="share" size={24} color="white" />
             <Text style={styles.textSmall}>Share</Text>
           </TouchableOpacity>
 

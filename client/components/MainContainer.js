@@ -6,9 +6,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"; // 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import HomePage from "../pages/HomePage/HomePage";
+import HomePage from "../pages/HomePage/HomeScreen";
 import launchingPage from "../pages/LaunchingPage/launchingPage";
-import LibraryPage from "../pages/FavoritePage/FavoritePage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserPage from "../pages/userProfilePage/userProfilePage";
 import gettingStartedPage from "../pages/GettingStartedPage/gettingStartedPage";
@@ -40,14 +39,44 @@ const Tab = createMaterialBottomTabNavigator();
 const homeName = "Home";
 const userName = "User";
 const exploreName = "Explore";
-const libraryName = "Library";
 
 const theme = {
   colors: {
-    primaryContainer: "#737373",
+    primaryContainer: "transparent",
     secondaryContainer: "transparent",
   },
 };
+
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomePage} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen
+        name="PlaySong"
+        component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function ExploreStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Explore" component={ExploreScreen} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen
+        name="PlaySong"
+        component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 
 function FavouriteStack() {
   return (
@@ -114,83 +143,92 @@ function FavoriteTabs() {
 
 function BottomBar() {
   return (
-    <>
-      <View style={styles.tabContainer}>
-        <Tab.Navigator
-          initialRouteName={homeName}
-          activeColor="#FED215"
-          inactiveColor="#979797"
-          barStyle={{
-            backgroundColor: "#737373",
-            borderTopLeftRadius: scale(15),
-            borderTopRightRadius: scale(15),
-            height: scale(60),
-            position: "absolute",
-            overflow: "hidden",
-            alignContent: "center",
-            justifyContent: "center",
+  <>
+    <View style={styles.tabContainer}>
+      <Tab.Navigator
+        initialRouteName={homeName}
+        activeColor="#FED215"
+        inactiveColor="#979797"
+        barStyle={{
+          backgroundColor: "rgba(30, 30, 30, 0.75)",
+          borderTopLeftRadius: scale(15),
+          borderTopRightRadius: scale(15),
+          height: scale(60),
+          position: "absolute",
+          overflow:"hidden",
+          alignContent: "center",
+          justifyContent: "center",
+          shadowColor:"red",
+          shadowOpacity: 0.4,
+          shadowRadius: 12,
+          shadowOffset: {
+            width: 5,
+            height: 3,
+          },
+          elevation:20
+        }}
+        shifting={true}
+      >
+        <Tab.Screen
+          backgroundColor="white"
+          name={homeName}
+          component={HomeStack}
+          options={{
+            tabBarLabel: <Text style={styles.tabBarLabel}>Home</Text>,
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? "home" : "home-outline"}
+                color={color}
+                size={30}
+              />
+            ),
           }}
-          shifting={true}
-        >
-          <Tab.Screen
-            name={homeName}
-            component={HomePage}
-            options={{
-              tabBarLabel: <Text style={styles.tabBarLabel}>Home</Text>,
-              tabBarIcon: ({ color, focused }) => (
-                <Ionicons
-                  name={focused ? "home" : "home-outline"}
-                  color={color}
-                  size={30}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name={exploreName}
-            component={ExploreScreen}
-            options={{
-              tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
-              tabBarIcon: ({ color, focused }) => (
-                <MaterialCommunityIcons
-                  name={focused ? "file-find" : "file-find-outline"}
-                  color={color}
-                  size={30}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Favourite"
-            component={FavouriteStack}
-            options={{
-              tabBarLabel: <Text style={styles.tabBarLabel}>Favorite</Text>,
-              tabBarIcon: ({ color, focused }) => (
-                <MaterialIcons
-                  name={focused ? "favorite" : "favorite-outline"}
-                  color={color}
-                  size={30}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name={userName}
-            component={UserStack}
-            options={{
-              tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
-              tabBarIcon: ({ color, focused }) => (
-                <Ionicons
-                  name={focused ? "person" : "person-outline"}
-                  color={color}
-                  size={30}
-                />
-              ),
-            }}
-          />
-        </Tab.Navigator>
-      </View>
-      <MiniPlayer
+        />
+        <Tab.Screen
+          name={exploreName}
+          component={ExploreStack}
+          options={{
+            tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
+            tabBarIcon: ({ color, focused }) => (
+              <MaterialCommunityIcons
+                name={focused ? "file-find" : "file-find-outline"}
+                color={color}
+                size={30}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Favourite"
+          component={FavouriteStack}
+          options={{
+            tabBarLabel: <Text style={styles.tabBarLabel}>Favorite</Text>,
+            tabBarIcon: ({ color, focused }) => (
+              <MaterialIcons
+                name={focused ? "favorite" : "favorite-outline"}
+                color={color}
+                size={30}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name={userName}
+          component={UserStack}
+          options={{
+            tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? "person" : "person-outline"}
+                color={color}
+                size={30}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </View>
+    <MiniPlayer
         style={{
           position: "absolute",
           bottom: 0,
@@ -224,7 +262,7 @@ export default function MainNavigation() {
 
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false,  }}>
         {!user ? (
           <>
             <Stack.Screen name="Launching" component={launchingPage} />
@@ -248,7 +286,9 @@ const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
     zIndex: 1,
-    backgroundColor: "transparent",
+
+    backgroundColor: "red",
+    
   },
   tabBarLabel: {
     fontSize: 15,

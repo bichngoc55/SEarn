@@ -1,10 +1,9 @@
 import axios from "axios";
 
-const getAlbumsNewReleases = async (accessToken) => {
-  try {    console.log("Có gọi đc ko")
-
+const getCategorysPlaylists = async (accessToken, categoryId) => {
+  try {
     const response = await axios.get(
-      `https://api.spotify.com/v1/browse/new-releases`,
+      `https://api.spotify.com/v1/browse/categories/${categoryId}/playlists`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -12,12 +11,12 @@ const getAlbumsNewReleases = async (accessToken) => {
       }
     );
 
-    const albumsNewReleases = response.data;
-    console.log(albumsNewReleases)
+    const categorysPlaylists = response.data;
     return {
-      items: albumsNewReleases.albums.items.map((item) => ({
+      items: categorysPlaylists.playlists.items.map((item) => ({
         id: item.id,
         name: item.name,
+        description: item.description,
         images: item.images.map((image)=>({
             url: image.url,
             height: image.height,
@@ -26,9 +25,9 @@ const getAlbumsNewReleases = async (accessToken) => {
       })),
     };
   } catch (error) {
-    console.error("Error fetching albums new releases:", error);
+    console.error("Error fetching get Category's Playlists:", error);
     throw error;
   }
 };
 
-export { getAlbumsNewReleases };
+export { getCategorysPlaylists };

@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     flex: 1,
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     fontSize: scale(12),
     color: COLOR.textPrimaryColor,
     lineHeight: scale(20),
@@ -204,13 +204,13 @@ const styles = StyleSheet.create({
     fontSize: scale(15),
     fontWeight: "bold",
     marginBottom: scale(8),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     color: COLOR.btnBackgroundColor,
   },
   contentText: {
     fontSize: scale(13),
     lineHeight: scale(24),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     color: COLOR.textPrimaryColor,
   },
   ThankYouContainer: {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   ThankYouText: {
     fontSize: scale(10),
     lineHeight: scale(15),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     color: COLOR.textPrimaryColor,
   },
 });

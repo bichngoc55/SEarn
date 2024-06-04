@@ -51,6 +51,6 @@ export default function App() {
 const styles = StyleSheet.create({
   co: {
     flex: 1,
-    backgroundColor: "#121212",
+    backgroundColor: "transparent",
   },
 });

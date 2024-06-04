@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -11,17 +10,16 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import { TabBar } from "react-native-tab-view";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import {  GestureHandlerRootView  } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbumsNewReleases } from "../../service/albumsNewReleases";
 import { getTracksRecommendations } from "../../service/songsRecommendations";
 import ArtistAlbumItem from "../../components/artistAlbumItem";
-
+import SongItem from "../../components/songItem";
 export default function NewsTab() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -35,18 +33,20 @@ export default function NewsTab() {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect artist:", accessTokenForSpotify);
-    }
-  }, [user, accessTokenForSpotify]);
+
+  // useEffect(() => {
+  //   if (accessTokenForSpotify) { 
+  //   console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+  //   }
+  // }, [user, accessTokenForSpotify]);
   const [albumsNewReleases, setAlbumsNewReleases] = useState([]);
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
 
   useEffect(() => {
     const fetchAlbumsNewReleases = async () => {
       try {
-        console.log("Gọi in4 từ spotify");
+        console.log("Gọi in4 Home từ spotify");
+        console.log(accessTokenForSpotify)
         if (accessTokenForSpotify) {
           const { items } = await getAlbumsNewReleases(accessTokenForSpotify);
           const albumsPromises = [...items];
@@ -54,10 +54,9 @@ export default function NewsTab() {
           newAlbumsData.forEach((newAlbum) => {});
           setAlbumsNewReleases(newAlbumsData);
 
-          const { trackItems } = await getTracksRecommendations(
-            accessTokenForSpotify
-          );
-          const tracksPromises = [...trackItems];
+
+          const { items: trackItems } = await getTracksRecommendations(accessTokenForSpotify);
+          const tracksPromises = trackItems.map((item) => item.track);
           const tracksData = await Promise.all(tracksPromises);
           tracksData.forEach((trackRecommendation) => {});
           setTracksRecommendations(tracksData);
@@ -94,9 +93,10 @@ export default function NewsTab() {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} />;
+            return <SongItem input={item} songList={tracksRecommendations}/>;
           }}
           nestedScrollEnabled={true}
+          ListFooterComponent={<View style={{ height: scale(60) }} />}
         />
       </GestureHandlerRootView>
     </SafeAreaView>

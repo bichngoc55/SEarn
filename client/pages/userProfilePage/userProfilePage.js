@@ -54,6 +54,7 @@ export default function UserPage() {
       await AsyncStorage.removeItem("accessToken");
       await AsyncStorage.removeItem("spotifyAccessToken");
       navigation.navigate("GettingStarted");
+
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -140,7 +141,7 @@ export default function UserPage() {
       // console.log("avatar : " + JSON.stringifydata.avatar);
       const response = await axios({
         method: method, // 'PATCH' for updates
-        url: `http://localhost:3005/auth/${user._id}/${endpoint}`,
+        url: `http://10.0.2.2:3005/auth/${user._id}/${endpoint}`,
         data: data,
         headers: {
           authorization: `Bearer ${accessToken}`,
@@ -267,7 +268,7 @@ export default function UserPage() {
       console.log("name : " + name);
       await axios({
         method: "PATCH",
-        url: `http://localhost:3005/auth/${user._id}/name`,
+        url: `http://10.0.2.2:3005/auth/${user._id}/name`,
         data: { name },
         headers: {
           "Content-Type": "application/json",
@@ -294,7 +295,7 @@ export default function UserPage() {
     try {
       // console.log("content + email : ", feedback + user.email);
       const response = await axios.patch(
-        `http://localhost:3005/report/${user._id}/addReport`,
+        `http://10.0.2.2:3005/report/${user._id}/addReport`,
         {
           content: feedback,
           email: user.email,
@@ -421,7 +422,7 @@ export default function UserPage() {
                       style={{
                         color: "white",
                         fontSize: scale(18),
-                        fontFamily: "Montserrat",
+                        fontFamily: "regular",
                       }}
                     >
                       Close Modal
@@ -500,7 +501,7 @@ const styles = StyleSheet.create({
   },
   nameInput: {
     color: COLOR.textPrimaryColor,
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     width: "100%",
     fontSize: scale(15),
     borderBottomWidth: 1,
@@ -522,7 +523,7 @@ const styles = StyleSheet.create({
   settingText: {
     color: COLOR.textPrimaryColor,
     paddingLeft: scale(10),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     fontSize: scale(15),
   },
   avatarOverlay: {
@@ -558,7 +559,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: COLOR.textPrimaryColor,
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     fontSize: scale(20),
     fontWeight: "bold",
     marginTop: scale(20),
@@ -587,14 +588,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: scale(20),
     marginBottom: scale(20),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     textAlign: "center",
   },
   btnClose: {
     width: scale(150),
     height: scale(60),
     marginLeft: scale(20),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
 
     marginRight: scale(10),
     backgroundColor: "red",

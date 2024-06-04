@@ -12,8 +12,7 @@ const getTracksRecommendations = async (accessToken) => {
     );
 
     const tracksRecommendations = await response.data;
-    for (let item of tracksRecommendations.tracks.items) {
-      const track = item.track;
+
     return {
     //   items: tracksRecommendations.items.map((item) => ({
     //     id: item.track.id,
@@ -42,12 +41,12 @@ const getTracksRecommendations = async (accessToken) => {
             name: item.track.album.name,
             image: item.track.album.images[0].url,
           },
+          preview_url: item.track.preview_url,
         }
       })),
     };
-  }
   } catch (error) {
-    console.error("Error fetching artist's album:", error);
+    console.error("Error fetching song recommendation:", error);
     throw error;
   }
 };

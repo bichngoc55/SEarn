@@ -83,7 +83,7 @@ export const login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });
 
     const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "60m",
     });
     const refreshToken = jwt.sign(
       { id: user._id },

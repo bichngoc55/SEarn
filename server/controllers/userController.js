@@ -35,6 +35,7 @@ const refreshAccessToken = () => {
 };
 
 export const getAccessToken = async (req, res) => {
+  console.log("lam on hay chay di");
   if (accessToken && expiresAt && Date.now() < expiresAt) {
     return res.json({
       accessToken,

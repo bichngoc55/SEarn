@@ -23,7 +23,6 @@ import SongItem from "../../components/songItem";
 const AlbumDetailScreen = ({ route }) => {
   const { album } = route.params;
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { accessTokenForSpotify } = useSelector(
@@ -38,6 +37,7 @@ const AlbumDetailScreen = ({ route }) => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
+
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
@@ -61,9 +61,32 @@ const AlbumDetailScreen = ({ route }) => {
       } catch (error) {
         console.error("Error fetching album tracks hehe:", error);
       }
-    };
-    fetchAlbumTracks();
-  }, [accessTokenForSpotify, album.id]);
+//     };
+//     fetchAlbumTracks();
+//   }, [accessTokenForSpotify, album.id]);
+
+    }, [user, accessTokenForSpotify]);
+    
+    const [albumTracks, setAlbumTracks] = useState([]);
+  
+    useEffect(() => {
+      const fetchAlbumTracks = async () => {
+        try {
+          console.log("calling accesstoken: " + accessTokenForSpotify);
+          if (accessTokenForSpotify) {
+            const { items } = await getAlbumTrack(accessTokenForSpotify, album.id);
+            const albumTracksPromises = [...items];
+            const albumTrackData = await Promise.all(albumTracksPromises);
+            albumTrackData.forEach((albumTrack) => {});
+            setAlbumTracks(albumTrackData);
+            console.log(albumTracks)
+          } else alert("accessToken:" + accessTokenForSpotify);
+        } catch (error) {
+          console.error("Error fetching album tracks hehe:", error);
+        }
+      };
+      fetchAlbumTracks();
+      }, [accessTokenForSpotify, album.id]);
 
   return (
     <SafeAreaView style={styles.Container}>
@@ -82,21 +105,21 @@ const AlbumDetailScreen = ({ route }) => {
           </Pressable>
         </View>
       </View>
-      <Text style={styles.albumName}>{album.name}</Text>
-      <Text style={styles.textTotal_tracks}>
-        Total tracks: {album.total_tracks}
-      </Text>
-      <View style={styles.content}>
-        <View style={styles.flatlistContainer}>
-          <FlatList
-            data={albumTracks}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              return <SongItem input={item} songList={albumTracks} />;
-            }}
-            nestedScrollEnabled={true}
-          />
-        </View>
+
+    <Text style={styles.albumName}>{album.name}</Text>        
+    <Text style={styles.textTotal_tracks}>
+      Total tracks: {album.total_tracks}
+    </Text>
+    <View style={styles.content}>
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={albumTracks}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return <SongItem input={item} songList={albumTracks}/>;
+          }}
+          nestedScrollEnabled={true}
+        />
       </View>
     </SafeAreaView>
   );
@@ -106,8 +129,8 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
-    marginBottom: scale(40),
-    paddingBottom: scale(20),
+
+    paddingBottom: scale(60)
   },
   img_and_backBtn: {
     width: "100%",

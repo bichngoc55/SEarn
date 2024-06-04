@@ -7,6 +7,7 @@ let accessToken = null;
 let expiresAt = null;
 
 const refreshAccessToken = () => {
+  console.log("Refreshing access token...");
   const authOptions = {
     url: "https://accounts.spotify.com/api/token",
     headers: {
@@ -24,7 +25,6 @@ const refreshAccessToken = () => {
     if (!error && response.statusCode === 200) {
       accessToken = body.access_token;
       expiresAt = Date.now() + body.expires_in * 1000;
-
       const refreshInterval = (body.expires_in - 60) * 1000;
       console.log("Next refresh in", refreshInterval / 1000, "seconds");
       setTimeout(refreshAccessToken, refreshInterval);
@@ -43,9 +43,11 @@ export const getAccessToken = async (req, res) => {
     });
   } else {
     refreshAccessToken();
-    return res
-      .status(500)
-      .json({ error: "Token expired, please try again later" });
+    console.log("access token cho ba noi spotìy : " + accessToken);
+    return res.json({
+      accessToken,
+      expires_in: (expiresAt - Date.now()) / 1000,
+    });
   }
 };
 

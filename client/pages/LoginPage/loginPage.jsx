@@ -38,7 +38,7 @@ export default function LoginScreen({ navigation }) {
   const { accessToken } = useSelector((state) => state.user);
   const handleSubmit = async (values) => {
     try {
-      console.log(values);
+      // console.log(values);
       await dispatch(loginUser(values));
       await dispatch(fetchSpotifyAccessToken());
 

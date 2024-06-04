@@ -21,23 +21,50 @@ import { useSelector, useDispatch } from "react-redux";
 import SongItem from "../../components/songItem";
 
 const AlbumDetailScreen = ({ route }) => {
-    const { album } = route.params;
-    const navigation = useNavigation();
+  const { album } = route.params;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
+  const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
+  const error = useSelector((state) => state.spotifyAccessToken.error);
 
-    const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.user);
-    const { accessTokenForSpotify } = useSelector(
-      (state) => state.spotifyAccessToken
-    );
-        
-    useEffect(() => {
-      dispatch(fetchSpotifyAccessToken());
-    }, [dispatch]);
-  
-    useEffect(() => {
-      if (accessTokenForSpotify) {
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (accessTokenForSpotify) {
+
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+    }
+  }, [user, accessTokenForSpotify]);
+  const [albumTracks, setAlbumTracks] = useState([]);
+
+  useEffect(() => {
+    const fetchAlbumTracks = async () => {
+      try {
+        console.log("calling accesstoken: " + accessTokenForSpotify);
+        if (accessTokenForSpotify) {
+          const { items } = await getAlbumTrack(
+            accessTokenForSpotify,
+            album.id
+          );
+          const albumTracksPromises = [...items];
+          const albumTrackData = await Promise.all(albumTracksPromises);
+          albumTrackData.forEach((albumTrack) => {});
+          setAlbumTracks(albumTrackData);
+          console.log(albumTracks);
+        } else alert("accessToken:" + accessTokenForSpotify);
+      } catch (error) {
+        console.error("Error fetching album tracks hehe:", error);
       }
+//     };
+//     fetchAlbumTracks();
+//   }, [accessTokenForSpotify, album.id]);
+
     }, [user, accessTokenForSpotify]);
     
     const [albumTracks, setAlbumTracks] = useState([]);
@@ -64,17 +91,21 @@ const AlbumDetailScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.Container}>
       <View style={styles.img_and_backBtn}>
-        <Image source={{ uri: album.images[0].url }}
-        style={styles.albumImg}
-        resizeMode="cover"/>
+        <Image
+          source={{ uri: album.images[0].url }}
+          style={styles.albumImg}
+          resizeMode="cover"
+        />
         <View style={styles.backButtonContainer}>
           <Pressable
             style={styles.backButton}
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.goBack()}
+          >
             <Ionicons name="chevron-back-sharp" size={24} color="black" />
           </Pressable>
         </View>
       </View>
+
     <Text style={styles.albumName}>{album.name}</Text>        
     <Text style={styles.textTotal_tracks}>
       Total tracks: {album.total_tracks}
@@ -90,26 +121,26 @@ const AlbumDetailScreen = ({ route }) => {
           nestedScrollEnabled={true}
         />
       </View>
-    </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
+
     paddingBottom: scale(60)
   },
   img_and_backBtn: {
     width: "100%",
     height: scale(300),
     backgroundColor: "red",
-    overflow: "hidden", 
+    overflow: "hidden",
     borderBottomLeftRadius: scale(20),
-    borderBottomRightRadius: scale(20)
+    borderBottomRightRadius: scale(20),
   },
-  albumImg:{
+  albumImg: {
     position: "absolute",
     width: "100%",
     aspectRatio: 1,
@@ -131,12 +162,12 @@ const styles = StyleSheet.create({
     height: scale(25),
     marginLeft: scale(10),
   },
-  albumName:{
+  albumName: {
     marginTop: scale(15),
     color: COLOR.hightlightText,
     fontSize: 24,
     fontFamily: "bold",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   textTotal_tracks: {
     fontSize: 18,
@@ -144,11 +175,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontFamily: "regular",
     marginVertical: scale(5),
-    textAlign:"center"
+    textAlign: "center",
   },
-  content:{
+  content: {
     marginHorizontal: scale(10),
-    flex:1,
+    flex: 1,
     marginTop: scale(10),
   },
   flatlistContainer: {

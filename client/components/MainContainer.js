@@ -25,9 +25,13 @@ import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndCond
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
-import ExploreScreen from "../pages/Explore/ExploreScreen";
+import Lyricpage from "../pages/LyricPage/Lyricpage";
+import PlaylistDetailMongo from "../pages/PlaylistDetailMongo/PlaylistDetailMongo";
+import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
+import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
+import MiniPlayer from "./miniPlayer";
 import scale from "../constant/responsive";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -42,6 +46,7 @@ const theme = {
     secondaryContainer: "transparent",
   },
 };
+
 function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -72,6 +77,7 @@ function ExploreStack() {
   );
 }
 
+
 function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -83,6 +89,15 @@ function FavouriteStack() {
         name="PlaySong"
         component={PlaySongPage}
         options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="Lyric"
+        component={Lyricpage}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
       />
     </Stack.Navigator>
   );
@@ -97,7 +112,7 @@ function UserStack() {
         component={TermsAndConditionsPage}
       />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
-      {/* <Stack.Screen name="Playlist" component={PlaylistPage} /> */}
+      <Stack.Screen name="publicPlaylist" component={PublicPlaylist} />
     </Stack.Navigator>
   );
 }
@@ -128,6 +143,7 @@ function FavoriteTabs() {
 
 function BottomBar() {
   return (
+  <>
     <View style={styles.tabContainer}>
       <Tab.Navigator
         initialRouteName={homeName}
@@ -212,6 +228,16 @@ function BottomBar() {
         />
       </Tab.Navigator>
     </View>
+    <MiniPlayer
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 10,
+        }}
+      />
+    </>
   );
 }
 
@@ -247,6 +273,7 @@ export default function MainNavigation() {
             <Stack.Screen name="SignUpOrLogin" component={SignUpOrLoginPage} />
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
+            <Stack.Screen name="BottomBar" component={BottomBar} />
           </>
         ) : (
           <Stack.Screen name="BottomBar" component={BottomBar} />
@@ -258,6 +285,8 @@ export default function MainNavigation() {
 const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
+    zIndex: 1,
+
     backgroundColor: "red",
     
   },

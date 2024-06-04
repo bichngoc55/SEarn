@@ -20,26 +20,26 @@ import { getLikedArtistList } from "../../service/getLikedArtistList";
 import { useSelector, useDispatch } from "react-redux";
 import scale from "../../constant/responsive";
 
-
 export default function LikedArtistTab() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const accessToken = useSelector (state=> state.user.accessToken);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
-      (state) => state.spotifyAccessToken
+    (state) => state.spotifyAccessToken
   );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
-      
-  // useEffect(() => {
-  //   dispatch(fetchSpotifyAccessToken());
-  // }, [dispatch]);
 
   useEffect(() => {
-      if (accessTokenForSpotify) {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
+
+
+  useEffect(() => {
+    if (accessTokenForSpotify) {
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
-      }
+    }
   }, [user, accessTokenForSpotify]);
   const [artistList, setArtistList] = useState([]);
   const [artists, setArtists] = useState([]);
@@ -49,19 +49,24 @@ export default function LikedArtistTab() {
     const fetchArtistList = async () => {
       try {
         if (accessToken) {
-          const { listLikedArtists } = await getLikedArtistList(accessToken, user._id);
-          const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
+          const { listLikedArtists } = await getLikedArtistList(
+            accessToken,
+            user._id
+          );
+          const artistIds = listLikedArtists.map(
+            (likedArtist) => likedArtist.id
+          );
           // const likedArtistsPromises = [...listLikedArtists];
           // const likedArtistData = await Promise.all(likedArtistsPromises);
           // likedArtistData.forEach((likedArtist) => {});
           // setArtistList(likedArtistData);
           setArtistList(artistIds);
-        }
-        else alert("Chưa có accessToken");
+        } else alert("Chưa có accessToken");
       } catch (error) {
         console.error("Error fetching artists:", error);
       }
     };
+
     if (!artistList.length && accessToken && user?._id) {
       fetchArtistList();
     } 
@@ -84,58 +89,74 @@ export default function LikedArtistTab() {
         console.error("Error fetching artists hehe:", error);
       }
     };
-  
-      fetchArtists();
-    }, [accessTokenForSpotify, artistList]);
 
- //add like artist to db
- const addToLikedArtists = async (artistId)=>{
-  fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': `Bearer ${accessToken}`
-    },
-    body: JSON.stringify({ artistId })
-  })
-  .then(response => response.json())
-  .then(updatedUser => console.log(updatedUser))
-  .catch(error => console.error(error));
-}
-//unlike artist on db
-const unlikeArtist = async (artistId) => {
-  fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': `Bearer ${accessToken}`
-    },
-    body: JSON.stringify({ artistId })
-  })
-  .then(response => response.json())
-  .then(updatedUser => console.log(updatedUser))
-  .catch(error => console.error(error));
-};
-// Handle like/unlike action
-const handleLikeUnlike = async (artistId) => {
-  if (artistList.includes(artistId)) {
-    await unlikeArtist(artistId);
-    setArtistList(artistList.filter(id => id !== artistId));
-  } else {
-    await addToLikedArtists(artistId);
-    setArtistList([...artistList, artistId]);
-  }
-};
+    fetchArtists();
+  }, [accessTokenForSpotify, artistList]);
 
-    return(
+  //add like artist to db
+  const addToLikedArtists = async (artistId) => {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike artist on db
+  const unlikeArtist = async (artistId) => {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlike = async (artistId) => {
+    if (artistList.includes(artistId)) {
+      await unlikeArtist(artistId);
+      setArtistList(artistList.filter((id) => id !== artistId));
+    } else {
+      await addToLikedArtists(artistId);
+      setArtistList([...artistList, artistId]);
+    }
+  };
+
+  return (
     <SafeAreaView style={styles.tabContainer}>
-        <View style={styles.sort}>
-            <Text style={styles.text}>Sort By</Text>
-            <TouchableOpacity style={{flexDirection:"row", alignItems: "center"}}>
-              <MaterialCommunityIcons
-                name="sort-clock-ascending-outline"
-                color={COLOR.btnBackgroundColor}
-                size={30}
+      <View style={styles.sort}>
+        <Text style={styles.text}>Sort By</Text>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center" }}
+        >
+          <MaterialCommunityIcons
+            name="sort-clock-ascending-outline"
+            color={COLOR.btnBackgroundColor}
+            size={30}
+          />
+          <Text style={[styles.text, { marginLeft: 5 }]}>Recently Added</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={artists}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
+              <ArtistItem
+                input={item}
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={artistList.includes(item.id)}
               />
               <Text style={[styles.text, {marginLeft:5}]}>Recently Added</Text>
             </TouchableOpacity>
@@ -153,7 +174,8 @@ const handleLikeUnlike = async (artistId) => {
             />
         </View>
     </SafeAreaView>
-)}
+  );
+}
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -164,13 +186,13 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   text: {
     fontSize: 16,
     color: "white",
   },
   flatlistContainer: {
-    marginHorizontal: scale(10)
+    marginHorizontal: scale(10),
   },
 });

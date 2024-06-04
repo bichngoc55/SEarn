@@ -7,8 +7,9 @@ const mediaPlayerSlice = createSlice({
   name: "mediaPlayer",
   initialState: {
     currentSong: null,
-    currentPosition: null,
+    currentPosition: 0,
     currentSound: null,
+    audioPlayer: null,
     currentTime: 0,
     isPlaying: false,
     playlist: [],
@@ -26,6 +27,9 @@ const mediaPlayerSlice = createSlice({
     setCurrentTime: (state, action) => {
       state.currentTime = action.payload;
     },
+    setAudioPlayer: (state, action) => {
+      state.audioPlayer = action.payload;
+    },
     setCurrentPlaylist: (state, action) => {
       state.playlist = action.payload;
     },
@@ -39,55 +43,57 @@ export const {
   setCurrentSong,
   setCurrentSound,
   setCurrentPosition,
+  setAudioPlayer,
   setCurrentPlaylist,
   setIsPlaying,
   setCurrentTime,
 } = mediaPlayerSlice.actions;
 
-export const preloadPlaylist = createAsyncThunk(
-  "audio/preloadPlaylist",
-  async ({ currentSong, currentPosition, playlist }, { dispatch }) => {
-    try {
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: true,
-        playsInSilentModeAndroid: true,
-        shouldDuckAndroid: false,
-      });
+// export const preloadPlaylist = createAsyncThunk(
+//   "audio/preloadPlaylist",
+//   async ({ currentSong, currentPosition, playlist }, { dispatch }) => {
+//     try {
+//       await Audio.setAudioModeAsync({
+//         playsInSilentModeIOS: true,
+//         staysActiveInBackground: true,
+//         playsInSilentModeAndroid: true,
+//         shouldDuckAndroid: false,
+//       });
 
-      const audioPlayer = new Audio.Sound();
+//       console.log("playlist" + playlist);
+//       const audioPlayer = new Audio.Sound();
 
-      // Preload all songs in the playlist
-      await Promise.all(
-        Object.values(playlist).map(async (song) => {
-          const soundObject = new Audio.Sound();
-          await soundObject.loadAsync({ uri: song.preview_url });
-        })
-      );
+//       // Preload all songs in the playlist
+//       await Promise.all(
+//         Object.values(playlist).map(async (song) => {
+//           const soundObject = new Audio.Sound();
+//           await soundObject.loadAsync({ uri: song.preview_url });
+//         })
+//       );
 
-      // Load the current song
-      await audioPlayer.loadAsync({
-        uri: currentSong.preview_url,
-      });
+//       // Load the current song
+//       await audioPlayer.loadAsync({
+//         uri: currentSong.preview_url,
+//       });
 
-      // Listen for audio interruptions
-      audioPlayer.setOnPlaybackStatusUpdate((status) => {
-        if (status.isInterruptedByOtherAudio) {
-          audioPlayer.pauseAsync();
-        }
-      });
+//       // Listen for audio interruptions
+//       audioPlayer.setOnPlaybackStatusUpdate((status) => {
+//         if (status.isInterruptedByOtherAudio) {
+//           audioPlayer.pauseAsync();
+//         }
+//       });
 
-      // Update the Redux state with the new audioPlayer instance
-      // return audioPlayer;
-      return new Promise((resolve) => {
-        resolve(audioPlayer);
-      });
-    } catch (error) {
-      console.error("Error preloading playlist:", error);
-      throw error;
-    }
-  }
-);
+//       // Update the Redux state with the new audioPlayer instance
+//       // return audioPlayer;
+//       return new Promise((resolve) => {
+//         resolve(audioPlayer);
+//       });
+//     } catch (error) {
+//       console.error("Error preloading playlist:", error);
+//       throw error;
+//     }
+//   }
+// );
 
 export const playPause = createAsyncThunk(
   "audio/playPause",
@@ -99,7 +105,7 @@ export const playPause = createAsyncThunk(
           dispatch(setIsPlaying(false));
           console.log("Dừng");
         } else {
-          await audioPlayer.playAsync();
+          await audioPlayer.sound.playAsync();
           dispatch(setIsPlaying(true));
           console.log("Phát");
         }
@@ -141,10 +147,6 @@ export const playNextSong = createAsyncThunk(
   async ({ audioPlayer, playlist, currentPosition }, { dispatch }) => {
     try {
       const audioPlayerStatus = await audioPlayer.getStatusAsync();
-      // If the audioPlayer is not loaded, try to load it
-      if (audioPlayerStatus.isLoaded === false) {
-        await audioPlayer.loadAsync();
-      }
       await audioPlayer.stopAsync();
       console.log(currentPosition);
 
@@ -158,10 +160,14 @@ export const playNextSong = createAsyncThunk(
       dispatch(setIsPlaying(true));
       audioPlayer.setPositionAsync(0);
       dispatch(setCurrentTime(0));
-      await audioPlayer.unloadAsync();
-      await audioPlayer.loadAsync({
-        uri: playlist[nextIndex].preview_url,
-      });
+      //await audioPlayer.unloadAsync();
+      await audioPlayer.setStatusAsync(
+        { shouldPlay: false },
+        { uri: playlist[nextIndex].preview_url }
+      );
+      // await audioPlayer.setAudioModeAsync({
+      //   uri: playlist[nextIndex].preview_url,
+      // });
       await audioPlayer.playAsync();
       console.log(nextIndex);
     } catch (error) {

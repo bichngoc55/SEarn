@@ -38,10 +38,10 @@ export default function LoginScreen({ navigation }) {
 
   const handleSubmit = async (values) => {
     try {
+      console.log(values);
       await dispatch(loginUser(values));
       navigation.navigate("BottomBar");
-      dispatch(fetchSpotifyAccessToken());
-      console.log("dispatch r ");
+      await dispatch(fetchSpotifyAccessToken());
     } catch (error) {
       console.error("Login error:", error);
     }

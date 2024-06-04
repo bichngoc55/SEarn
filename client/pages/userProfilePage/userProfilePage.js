@@ -27,6 +27,7 @@ import { refreshAccessToken } from "../../redux/userSlice";
 import { updateUserName } from "../../redux/userSlice";
 import Modal from "../../components/modal";
 import * as ImagePicker from "expo-image-picker";
+import SuccessfulModal from "../../components/successfulModal";
 
 export default function UserPage() {
   const navigation = useNavigation();
@@ -37,6 +38,7 @@ export default function UserPage() {
   const [name, setName] = useState(user?.name);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
 
   const handleChangeName = async () => {
     setIsEditing(true);
@@ -49,7 +51,10 @@ export default function UserPage() {
     try {
       dispatch(logoutUser());
       await AsyncStorage.removeItem("user");
-      await AsyncStorage.removeItem("accessToken"); 
+      await AsyncStorage.removeItem("accessToken");
+      await AsyncStorage.removeItem("spotifyAccessToken");
+      navigation.navigate("GettingStarted");
+
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -288,7 +293,7 @@ export default function UserPage() {
   };
   const handleSendReport = async (feedback) => {
     try {
-      console.log("content + email : ", feedback + user.email);
+      // console.log("content + email : ", feedback + user.email);
       const response = await axios.patch(
         `http://10.0.2.2:3005/report/${user._id}/addReport`,
         {
@@ -298,9 +303,17 @@ export default function UserPage() {
       );
       closeModal();
       setFeedback("");
+      setIsSuccessModalVisible(true);
+
+      setTimeout(() => {
+        setIsSuccessModalVisible(false);
+      }, 4000);
     } catch (error) {
       console.error("Error sending report:", error);
     }
+  };
+  const handlePublicPlaylist = async () => {
+    navigation.navigate("publicPlaylist");
   };
   return (
     <BlurView intensity={isModalOpen ? 80 : 0} style={{ flex: 1 }}>
@@ -362,7 +375,14 @@ export default function UserPage() {
             <MaterialIcons name="password" size={24} color="white" />
             <Text style={styles.settingText}>Password settings</Text>
           </TouchableOpacity>
-
+          {/* publicPlaylist */}
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={handlePublicPlaylist}
+          >
+            <MaterialIcons name="password" size={24} color="white" />
+            <Text style={styles.settingText}>Public Playlist</Text>
+          </TouchableOpacity>
           <Text style={styles.sectionTitle}>Options</Text>
 
           <TouchableOpacity style={styles.settingItem}>
@@ -411,6 +431,11 @@ export default function UserPage() {
                 </View>
               </View>
             </Modal>
+            <SuccessfulModal
+              text={"You have sent report successfully"}
+              isVisible={isSuccessModalVisible}
+              onClose={() => setIsSuccessModalVisible(false)}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.settingItem}

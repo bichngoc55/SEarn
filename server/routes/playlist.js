@@ -5,16 +5,19 @@ import {
   deletePlaylist,
   updatePlaylist,
   getPlaylistDetails,
+  getUserLikePlaylist,
+  getAllPublicPlaylist,
 } from "../controllers/playlistController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
-// ... now use addPlaylist(...)
 const router = express.Router();
 
 /* READ */
-router.get("/", authMiddleware, getAllPlaylists);
+router.get("/public", getAllPublicPlaylist);
+router.get("/", getAllPlaylists);
 router.get("/:id", authMiddleware, getPlaylistDetails);
-
+router.get("/liked/:id", getUserLikePlaylist);
+// router.put("/liked/:id", likeUnlikePlaylist);
 /* CREATE */
 router.post("/add", addPlaylist);
 

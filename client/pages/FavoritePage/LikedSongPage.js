@@ -41,6 +41,8 @@ const LikedSongPage = () => {
     "255vSRpVq5YYKBJiem1BVx",
     "6jcLKVmEKAQIXIVHJZ8vzS",
     "5iZHnufFUgATzrpGgH1K0W",
+    "5cml547MByVlaVrKU2lJTg",
+    "0dBKcPEAsdxWJsqNDNHcPz",
   ]);
   const [tracks, setTracks] = useState([]);
 
@@ -105,7 +107,6 @@ const LikedSongPage = () => {
           data={tracks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            console.log("Item:", item.name);
             return <SongItem input={item} songList={tracks} />;
           }}
         />

@@ -5,7 +5,6 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
   "accessToken/fetchAccessToken",
   async (_, { rejectWithValue }) => {
     try {
-      //   console.log("INside fetch function");
       const response = await axios.get(
         "http://localhost:3005/auth/getAccessToken"
       );
@@ -40,9 +39,9 @@ const accessTokenSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    updateSpotifyAccessToken: (state, action) => {
-      state.accessTokenForSpotify = action.payload;
-    },
+    // updateSpotifyAccessToken: (state, action) => {
+    //   state.accessTokenForSpotify = action.payload;
+    // },
   },
   extraReducers: (builder) => {
     builder

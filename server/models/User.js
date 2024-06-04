@@ -44,8 +44,7 @@ const UserSchema = new Schema(
     notificationCount: {
       type: Number,
     },
-    likedArtists: [{ type: String }],
-    likedAlbums: [{ albumId: String, timestamp: Date }],
+ 
     userCoin: {
       type: Number,
       default: 0,
@@ -54,6 +53,16 @@ const UserSchema = new Schema(
       type: String,
       default: "",
     },
+ 
+    likedArtists: [{
+      id: { type: String },
+      timeAdded: { type: Date }
+    }],
+    likedAlbums: [{
+      id: { type: String },
+      timeAdded: { type: Date }
+    }],
+ 
   },
   { timestamps: true }
 );

@@ -15,15 +15,13 @@ import {
 import { COLOR } from "../../constant/color";
 import scale from "../../constant/responsive";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ArtistAlbumItem from "../../components/artistAlbumItem";
 import SongItem from "../../components/songItem";
-import LikedArtistTab from "../FavoritePage/LikedArtistTab";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getArtistAlbum } from "../../service/artistAlbumsService";
 import { getArtistSong } from "../../service/artistSongService";
 import { useSelector, useDispatch } from "react-redux";
-import {  GestureHandlerRootView  } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const ArtistDetailScreen = ({ route }) => {
   const { artist } = route.params;
@@ -36,31 +34,55 @@ const ArtistDetailScreen = ({ route }) => {
   );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
-      
+
   useEffect(() => {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-    console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+      console.log("Access Token in useEffect artist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
   const [artistAlbums, setArtistAlbums] = useState([]);
   const [artistSongs, setArtistSongs] = useState([]);
+  const [likedAlbumList, setLikedAlbumList] = useState([]);
+
+  //get liked album list on db
+  // useEffect(() => {
+  //   const fetchLikedAlbumList = async () => {
+  //     try {
+  //       if (accessToken) {
+  //         const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
+  //         const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
+  //         setLikedAlbumList(albumIds);
+  //       }
+  //       else alert("Chưa có accessToken");
+  //     } catch (error) {
+  //       console.error("Error fetching liked albums:", error);
+  //     }
+  //   };
+  //   fetchLikedAlbumList();
+  // }, [user?._id, accessToken]);
 
   useEffect(() => {
     const fetchArtistAlbums = async () => {
       try {
         console.log("calling accesstoken: " + accessTokenForSpotify);
         if (accessTokenForSpotify) {
-          const { items } = await getArtistAlbum(accessTokenForSpotify, artist.id);
+          const { items } = await getArtistAlbum(
+            accessTokenForSpotify,
+            artist.id
+          );
           const artistAlbumsPromises = [...items];
           const artistAlbumData = await Promise.all(artistAlbumsPromises);
           artistAlbumData.forEach((artistAlbum) => {});
           setArtistAlbums(artistAlbumData);
 
-          const { tracks } = await getArtistSong(accessTokenForSpotify, artist.id);
+          const { tracks } = await getArtistSong(
+            accessTokenForSpotify,
+            artist.id
+          );
           const artistSongsPromises = [...tracks];
           const artistSongData = await Promise.all(artistSongsPromises);
           artistSongData.forEach((artistSong) => {});
@@ -71,29 +93,33 @@ const ArtistDetailScreen = ({ route }) => {
       }
     };
     fetchArtistAlbums();
-    }, [accessTokenForSpotify, artist.id]);
+  }, [accessTokenForSpotify, artist.id]);
 
   return (
     <SafeAreaView style={styles.Container}>
       <View style={styles.img_and_backBtn}>
-        <Image source={{ uri: artist.images[0].url }}
-        style={styles.artistImg}
-        resizeMode="cover"/>
+        <Image
+          source={{ uri: artist.images[0].url }}
+          style={styles.artistImg}
+          resizeMode="cover"
+        />
         <View style={styles.backButtonContainer}>
-            <Pressable
+          <Pressable
             style={styles.backButton}
-            onPress={() => navigation.navigate("Favourite")}>
+            onPress={() => navigation.goBack()}
+          >
             <Ionicons name="chevron-back-sharp" size={24} color="black" />
-            </Pressable>
+          </Pressable>
         </View>
       </View>
-      <Text style={styles.artistName}>{artist.name}</Text>        
+      <Text style={styles.artistName}>{artist.name}</Text>
       <Text style={styles.textGenre}>
-       Genres {artist.genres.map((genre) => genre.typeGenre).join(", ")}{" "}
+        Genres {artist.genres.map((genre) => genre.typeGenre).join(", ")}{" "}
       </Text>
-      
+
       <GestureHandlerRootView style={styles.content}>
-        <FlatList style={styles.flatlistContainer}
+        <FlatList
+          style={styles.flatlistContainer}
           data={artistSongs}
           keyExtractor={(item) => item.id}
           ListHeaderComponent={
@@ -114,58 +140,58 @@ const ArtistDetailScreen = ({ route }) => {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} />;
+            return <SongItem input={item} songList={artistSongs} />;
           }}
           nestedScrollEnabled={true}
         />
       </GestureHandlerRootView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
     marginBottom: scale(40),
-    paddingBottom: scale(20)
+    paddingBottom: scale(20),
   },
   img_and_backBtn: {
     width: "100%",
     height: scale(250),
     backgroundColor: "red",
-    overflow: "hidden", 
+    overflow: "hidden",
     borderBottomLeftRadius: scale(20),
-    borderBottomRightRadius: scale(20)
+    borderBottomRightRadius: scale(20),
   },
-  artistImg:{
+  artistImg: {
     position: "absolute",
     width: "100%",
     aspectRatio: 1,
   },
   backButtonContainer: {
-      marginTop: scale(25),
-      marginLeft: scale(15),
+    marginTop: scale(25),
+    marginLeft: scale(15),
   },
   backButton: {
-      width: scale(35),
-      height: scale(35),
-      borderRadius: 17.5,
-      backgroundColor: "lightgray",
-      justifyContent: "center",
-      alignItems: "center",
+    width: scale(35),
+    height: scale(35),
+    borderRadius: 17.5,
+    backgroundColor: "lightgray",
+    justifyContent: "center",
+    alignItems: "center",
   },
   backButtonIcon: {
-      width: scale(25),
-      height: scale(25),
-      marginLeft: scale(10),
+    width: scale(25),
+    height: scale(25),
+    marginLeft: scale(10),
   },
-  artistName:{
+  artistName: {
     marginTop: scale(15),
     color: COLOR.hightlightText,
     fontSize: 24,
     fontFamily: "bold",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   textGenre: {
     fontSize: 18,
@@ -173,11 +199,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontFamily: "regular",
     marginVertical: scale(5),
-    textAlign:"center"
+    textAlign: "center",
   },
-  content:{
+  content: {
     marginHorizontal: scale(10),
-    flex:1
+    flex: 1,
   },
   title: {
     marginVertical: scale(10),

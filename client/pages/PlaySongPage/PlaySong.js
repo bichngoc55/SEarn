@@ -25,124 +25,64 @@ import { Feather } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import {
   setCurrentSong,
-  setCurrentSound,
-  setCurrentPosition,
-  setCurrentPlaylist,
-  setIsPlaying,
   setCurrentTime,
   playPause,
-  playRandomSong,
   playNextSong,
-  playBackSong,
 } from "../../redux/mediaPlayerSlice";
-
-let audioPlayer;
+import AudioService from "../../service/audioService";
 
 const PlaySongPage = ({ route }) => {
   const { song } = route.params;
   const navigation = useNavigation();
-  const { mediaPlayer } = useSelector((state) => state.mediaPlayer);
+  const dispatch = useDispatch();
+  const [progress, setProgress] = useState(0);
+  const [total, setTotal] = useState(0);
+  let service = new AudioService();
+
+  useEffect(() => {
+    // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
+    const handlePlaybackStatus = ({ progress, total }) => {
+      setProgress(progress);
+      setTotal(total);
+    };
+    console.log(progress);
+
+    service.registerPlaybackStatusCallback(handlePlaybackStatus);
+
+    // const intervalId = setInterval(
+    //   handlePlaybackStatus({ progress, total }),
+    //   1000
+    // );
+    return () => {
+      //service.unregisterPlaybackStatusCallback(handlePlaybackStatus);
+    };
+  }, [service.currentAudio]);
+
   const {
     currentSong,
     currentPosition,
     currentSound,
+    audioPlayer,
     currentTime,
     isPlaying,
     playlist,
   } = useSelector((state) => state.mediaPlayer);
-  const [isShuffe, setIsShuffe] = useState(false);
-  const dispatch = useDispatch();
-  const [progress, setProgress] = useState(null);
-  const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    preloadPlaylist();
-    if (audioPlayer != null) {
-      audioPlayer.unloadAsync();
-    }
-    const intervalId = setInterval(setUpProgress, 1000);
-    return () => {
-      // Không cần dọn dẹp âm thanh vì nó được quản lý bên ngoài component
-    };
-  }, []);
-
-  const preloadPlaylist = async () => {
-    try {
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: true,
-        playsInSilentModeAndroid: true,
-        shouldDuckAndroid: false,
-      });
-      for (const song of playlist) {
-        await Audio.Sound.createAsync({ uri: song.preview_url });
-      }
-
-      audioPlayer = new Audio.Sound();
-      const status = await audioPlayer.loadAsync({
-        uri: currentSong.preview_url,
-      });
-
-      // Listen for audio interruptions
-      audioPlayer.setOnPlaybackStatusUpdate((status) => {
-        if (status.isInterruptedByOtherAudio) {
-          audioPlayer.pauseAsync();
-        }
-      });
-
-      //await audioPlayer.playAsync();
-      await audioPlayer.playFromPositionAsync(currentPosition * 1000);
-      dispatch(setIsPlaying(true));
-      console.log(isPlaying);
-      setUpProgress();
-    } catch (error) {
-      console.error("Error loading sound:", error);
-      alert("Error loading sound: " + error);
-    }
-  };
 
   const setUpProgress = async () => {
-    if (isPlaying && audioPlayer) {
+    if (service.isPlay && service.currentAudio) {
       try {
-        const status = await audioPlayer.getStatusAsync();
-
-        setProgress(status.positionMillis);
-        setTotal(status.durationMillis);
-        dispatch(setCurrentTime(status.positionMillis));
-
-        if (
-          Math.floor(status.positionMillis / 1000) ==
-          Math.floor(status.durationMillis / 1000)
-        ) {
-          console.log("Hết bài");
-          await audioPlayer.pauseAsync();
-          if (isShuffe == true) {
-            console.log("playing random");
-            let index = Math.floor(Math.random() * playlist.length);
-            while (index == currentPosition) {
-              index = Math.floor(Math.random() * playlist.length);
-            }
-            dispatch(setCurrentSong(playlist[index]));
-            dispatch(setCurrentPosition(index));
-            dispatch(setIsPlaying(true));
-            audioPlayer.setPositionAsync(0);
-            dispatch(setCurrentTime(0));
-            await audioPlayer.unloadAsync();
-            await audioPlayer.loadAsync({
-              uri: playlist[index].preview_url,
-            });
-            await audioPlayer.playAsync();
-          } else {
-            console.log("playing next");
-            await dispatch(
-              playNextSong({ audioPlayer, playlist, currentPosition })
-            );
-          }
-        }
-      } catch (error) {}
+        // const status = await service.currentAudio.status;
+        // console.log(status);
+        // setProgress(status.positionMillis);
+        // setTotal(status.durationMillis);
+        // service.currentTime = status.positionMillis;
+        // console.log("service time " + status.positionMillis);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      if (audioPlayer) {
-        await audioPlayer.pauseAsync();
+      if (service.currentAudio) {
+        await service.currentAudio.pauseAsync();
       }
     }
   };
@@ -154,6 +94,12 @@ const PlaySongPage = ({ route }) => {
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
       .padStart(2, "0")}`;
+  };
+
+  const MoveToLyric = () => {
+    navigation.navigate("Lyric", {
+      song: song,
+    });
   };
 
   return (
@@ -170,15 +116,17 @@ const PlaySongPage = ({ route }) => {
       </View>
       <View style={styles.imageContain}>
         <Image
-          source={{ uri: currentSong.album.image }}
+          source={{ uri: service.currentSong.album.image }}
           style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
         />
       </View>
       <View style={styles.textIcon}>
         <View>
-          <Text style={styles.songname}>{currentSong.name}</Text>
+          <Text style={styles.songname}>{service.currentSong.name}</Text>
           <Text style={styles.songartist}>
-            {currentSong.artists.map((artist) => artist.name).join(", ")}
+            {service.currentSong.artists
+              .map((artist) => artist.name)
+              .join(", ")}
           </Text>
         </View>
         <Ionicons name="heart-outline" size={scale(30)} color="#FED215" />
@@ -188,42 +136,56 @@ const PlaySongPage = ({ route }) => {
           style={{ width: "100%", height: "100%" }}
           minimumTrackTintColor="#FED215"
           maximumTrackTintColor="#2b2b2b"
-          value={currentTime}
+          value={service.currentTime}
           minimumValue={0}
-          maximumValue={total}
+          maximumValue={service.currentTotalTime}
           onValueChange={(value) => {
-            dispatch(setCurrentTime(value));
-            audioPlayer.setPositionAsync(value);
+            service.currentTime = value;
+            service.currentAudio.sound.setPositionAsync(value);
           }}
         />
       </View>
       <View style={styles.textDuration}>
-        <Text style={styles.songartist}>{formatTime(currentTime)}</Text>
-        <Text style={styles.songartist}>{formatTime(total)}</Text>
+        <Text style={styles.songartist}>{formatTime(service.currentTime)}</Text>
+        <Text style={styles.songartist}>
+          {formatTime(service.currentTotalTime)}
+        </Text>
       </View>
       <View style={styles.iconContainer}>
-        <Feather
-          name="repeat"
-          size={scale(25)}
-          color="#737373"
-          onPress={() => {
-            audioPlayer.setPositionAsync(0);
-          }}
-        />
+        {service.isRepeat ? (
+          <Feather
+            name="repeat"
+            size={scale(25)}
+            color="#FED215"
+            onPress={() => {
+              service.isRepeat = false;
+            }}
+          />
+        ) : (
+          <Feather
+            name="repeat"
+            size={scale(25)}
+            color="#737373"
+            onPress={() => {
+              service.isRepeat = true;
+              service.isShuffle = false;
+            }}
+          />
+        )}
         <FontAwesome6
           name="backward-step"
           size={scale(25)}
           color="#737373"
           onPress={() => {
-            dispatch(playBackSong({ audioPlayer, playlist, currentPosition }));
+            service.playPreviousAudio();
           }}
         />
-        {isPlaying ? (
+        {service.isPlay ? (
           <View
             style={styles.circle}
             onPress={() => {
-              console.log("Đã nhấn pause");
-              dispatch(playPause({ audioPlayer, isPlaying }));
+              service.currentAudio.sound.pauseAsync();
+              service.isPlay = false;
             }}
           >
             <FontAwesome5
@@ -231,8 +193,8 @@ const PlaySongPage = ({ route }) => {
               size={scale(27)}
               color="black"
               onPress={() => {
-                console.log("Đã nhấn pause");
-                dispatch(playPause({ audioPlayer, isPlaying }));
+                service.currentAudio.sound.pauseAsync();
+                service.isPlay = false;
               }}
             />
           </View>
@@ -242,8 +204,8 @@ const PlaySongPage = ({ route }) => {
             size={scale(70)}
             color="#FED215"
             onPress={() => {
-              dispatch(playPause({ audioPlayer, isPlaying }));
-              console.log("Đã nhấn nút pause");
+              service.currentAudio.sound.playAsync();
+              service.isPlay = true;
             }}
           />
         )}
@@ -253,17 +215,16 @@ const PlaySongPage = ({ route }) => {
           size={scale(25)}
           color="#737373"
           onPress={() => {
-            dispatch(playNextSong({ audioPlayer, playlist, currentPosition }));
+            service.playNextAudio();
           }}
         />
-        {isShuffe ? (
+        {service.isShuffle ? (
           <Ionicons
             name="shuffle"
             size={scale(25)}
             color="#FED215"
             onPress={() => {
-              console.log("shuffe: " + isShuffe);
-              setIsShuffe(false);
+              service.isShuffle = false;
             }}
           />
         ) : (
@@ -272,16 +233,21 @@ const PlaySongPage = ({ route }) => {
             size={scale(25)}
             color="#737373"
             onPress={() => {
-              console.log("shuffe: " + isShuffe);
-              setIsShuffe(true);
+              service.isShuffle = true;
+              service.isRepeat = false;
             }}
           />
         )}
       </View>
-      <View style={styles.bottomContain}>
+      <TouchableOpacity
+        style={styles.bottomContain}
+        onPress={() => {
+          MoveToLyric();
+        }}
+      >
         <Entypo name="chevron-small-up" size={scale(30)} color="#737373" />
         <Text style={styles.songartist}>Lyrics</Text>
-      </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

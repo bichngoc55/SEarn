@@ -68,7 +68,14 @@ export const loginUser = createAsyncThunk(
       });
 
       if (!response.ok) {
-        console.log("Login error" + response);
+        const data = await response.json();
+        if (data.msg === "User does not exist.") {
+          throw new Error("User does not exist.");
+        } else if (data.msg === "Invalid credentials.") {
+          throw new Error("Invalid credentials.");
+        } else {
+          throw new Error("Login failed");
+        }
       }
 
       const data = await response.json();
@@ -78,10 +85,10 @@ export const loginUser = createAsyncThunk(
       if (data && data.accessToken) {
         await AsyncStorage.setItem("userToken", data.accessToken);
       }
-      console.log(
-        "Inside frontend login user in user slice and acceess token ( please compare) : " +
-          data.accessToken
-      );
+      //   console.log(
+      //     "Inside frontend login user in user slice and acceess token ( please compare) : " +
+      //       data.accessToken
+      //   );
 
       //   console.log(data.accessToken);
       return data;

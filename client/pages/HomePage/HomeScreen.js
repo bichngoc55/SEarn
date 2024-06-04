@@ -12,6 +12,7 @@ import { COLOR } from "../../constant/color";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
 import NewsTab from "./NewTabScreen";
+import RelatedArtist from "./RelatedArtists";
 
 const HomePage = () => {
   const NewsTabScreen = () => (
@@ -20,24 +21,22 @@ const HomePage = () => {
     </View>
   );
   
-  // const ArtistScreen = () => (
-  //   <View style={{ flex: 1}}>
-  //     <LikedArtistTab/>
-  //   </View>
-  // );
+  const RelatedArtistScreen = () => (
+    <View style={{ flex: 1}}>
+      <RelatedArtist/>
+    </View>
+  );
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "news", title: "News" },
-    // { key: "artist", title: "Artist" },
-    // { key: "album", title: "Album" },
+    { key: "artist", title: "Artist" },
   ]);
 
   const renderScene = SceneMap({
     news: NewsTabScreen,
-    // artist: ArtistScreen,
-    // album: AlbumScreen,
+    artist: RelatedArtistScreen,
   });
-  const renderTabBar = (props) => (
+  const renderTabBar = (props) => ( 
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: "transparent" }}
@@ -46,7 +45,6 @@ const HomePage = () => {
         marginHorizontal: scale(10),
         outline: "none",
         borderWidth: 0,
-        borderColor: "#FFFFFF",
       }}
       renderLabel={({ route, focused }) => (
         <Pressable
@@ -62,7 +60,7 @@ const HomePage = () => {
         >
           <Text
             style={{
-              color: "white",
+              color: focused ? "#FED215" : "white",
               fontSize: scale(15),
             }}
           >
@@ -108,7 +106,7 @@ const styles = StyleSheet.create({
   },
   recentSongContainer: {
     width:"100%",
-    height: scale(250),
+    height: scale(200),
     backgroundColor: "grey",
     flexDirection:"row",
     alignItems:"center",
@@ -126,9 +124,6 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
-  },
-  scrollView: {
-    flex: 1,
   },
 });
 

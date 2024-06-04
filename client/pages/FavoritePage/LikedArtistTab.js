@@ -32,9 +32,9 @@ export default function LikedArtistTab() {
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
       
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchSpotifyAccessToken());
+  // }, [dispatch]);
 
   useEffect(() => {
       if (accessTokenForSpotify) {
@@ -62,8 +62,9 @@ export default function LikedArtistTab() {
         console.error("Error fetching artists:", error);
       }
     };
-  
-    fetchArtistList();
+    if (!artistList.length && accessToken && user?._id) {
+      fetchArtistList();
+    } 
   }, [user?._id, accessToken]);
 
   //get in4 of artist from Spotify
@@ -141,13 +142,14 @@ const handleLikeUnlike = async (artistId) => {
         </View>
         <View style={styles.flatlistContainer}>
             <FlatList
-            data={artists}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              return <ArtistItem input={item} 
-              onLikeUnlike={handleLikeUnlike}
-              isLiked={artistList.includes(item.id)}/>;
-            }}
+              data={artists}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                return <ArtistItem input={item} 
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={artistList.includes(item.id)}/>;
+              }}
+              ListFooterComponent={<View style={{ height: scale(60) }} />}
             />
         </View>
     </SafeAreaView>

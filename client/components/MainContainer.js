@@ -6,9 +6,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"; // 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import HomePage from "../pages/HomePage/HomePage";
+import HomePage from "../pages/HomePage/HomeScreen";
 import launchingPage from "../pages/LaunchingPage/launchingPage";
-import LibraryPage from "../pages/FavoritePage/FavoritePage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserPage from "../pages/userProfilePage/userProfilePage";
 import gettingStartedPage from "../pages/GettingStartedPage/gettingStartedPage";
@@ -26,7 +25,7 @@ import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndCond
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
-import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
+import ExploreScreen from "../pages/Explore/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
 import scale from "../constant/responsive";
@@ -36,14 +35,43 @@ const Tab = createMaterialBottomTabNavigator();
 const homeName = "Home";
 const userName = "User";
 const exploreName = "Explore";
-const libraryName = "Library";
 
 const theme = {
   colors: {
-    primaryContainer: "#737373",
+    primaryContainer: "transparent",
     secondaryContainer: "transparent",
   },
 };
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomePage} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen
+        name="PlaySong"
+        component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function ExploreStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Explore" component={ExploreScreen} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen
+        name="PlaySong"
+        component={PlaySongPage}
+        options={{ presentation: "modal" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -106,20 +134,29 @@ function BottomBar() {
         activeColor="#FED215"
         inactiveColor="#979797"
         barStyle={{
-          backgroundColor: "#737373",
+          backgroundColor: "rgba(30, 30, 30, 0.75)",
           borderTopLeftRadius: scale(15),
           borderTopRightRadius: scale(15),
           height: scale(60),
           position: "absolute",
-          overflow: "hidden",
+          overflow:"hidden",
           alignContent: "center",
           justifyContent: "center",
+          shadowColor:"red",
+          shadowOpacity: 0.4,
+          shadowRadius: 12,
+          shadowOffset: {
+            width: 5,
+            height: 3,
+          },
+          elevation:20
         }}
         shifting={true}
       >
         <Tab.Screen
+          backgroundColor="white"
           name={homeName}
-          component={HomePage}
+          component={HomeStack}
           options={{
             tabBarLabel: <Text style={styles.tabBarLabel}>Home</Text>,
             tabBarIcon: ({ color, focused }) => (
@@ -133,7 +170,7 @@ function BottomBar() {
         />
         <Tab.Screen
           name={exploreName}
-          component={ExploreScreen}
+          component={ExploreStack}
           options={{
             tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
             tabBarIcon: ({ color, focused }) => (
@@ -199,7 +236,7 @@ export default function MainNavigation() {
 
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false,  }}>
         {!user ? (
           <>
             <Stack.Screen name="Launching" component={launchingPage} />
@@ -221,7 +258,8 @@ export default function MainNavigation() {
 const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
-    backgroundColor: "transparent",
+    backgroundColor: "red",
+    
   },
   tabBarLabel: {
     fontSize: 15,

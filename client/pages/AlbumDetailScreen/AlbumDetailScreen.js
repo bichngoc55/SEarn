@@ -29,8 +29,6 @@ const AlbumDetailScreen = ({ route }) => {
     const { accessTokenForSpotify } = useSelector(
       (state) => state.spotifyAccessToken
     );
-    const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
-    const error = useSelector((state) => state.spotifyAccessToken.error);
         
     useEffect(() => {
       dispatch(fetchSpotifyAccessToken());
@@ -41,6 +39,7 @@ const AlbumDetailScreen = ({ route }) => {
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
       }
     }, [user, accessTokenForSpotify]);
+    
     const [albumTracks, setAlbumTracks] = useState([]);
   
     useEffect(() => {
@@ -86,7 +85,7 @@ const AlbumDetailScreen = ({ route }) => {
           data={albumTracks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            return <SongItem input={item} />;
+            return <SongItem input={item} songList={albumTracks}/>;
           }}
           nestedScrollEnabled={true}
         />
@@ -100,8 +99,7 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
-    marginBottom: scale(40),
-    paddingBottom: scale(20)
+    paddingBottom: scale(60)
   },
   img_and_backBtn: {
     width: "100%",

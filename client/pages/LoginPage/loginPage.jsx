@@ -41,6 +41,7 @@ export default function LoginScreen({ navigation }) {
       await dispatch(loginUser(values));
       navigation.navigate("BottomBar");
       dispatch(fetchSpotifyAccessToken());
+      console.log("dispatch r ");
     } catch (error) {
       console.error("Login error:", error);
     }

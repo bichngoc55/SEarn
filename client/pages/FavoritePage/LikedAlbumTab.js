@@ -138,15 +138,16 @@ export default function LikedAlbumTab() {
         </View>
         <View style={styles.flatlistContainer}>
             <FlatList
-            data={albums}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => { 
-              return <AlbumItem
-              input={item}
-              onLikeUnlike={handleLikeUnlike}
-              isLiked={albumList.includes(item.id)}
-              />;
-            }}
+              data={albums}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => { 
+                return <AlbumItem
+                input={item}
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={albumList.includes(item.id)}
+                />;
+              }}
+              ListFooterComponent={<View style={{ height: scale(60) }} />}
             />
         </View>
     </SafeAreaView>

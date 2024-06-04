@@ -130,7 +130,7 @@ const ArtistDetailScreen = ({ route }) => {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} />;
+            return <SongItem input={item} songList={artistSongs}/>;
           }}
           nestedScrollEnabled={true}
         />
@@ -143,8 +143,7 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
-    marginBottom: scale(40),
-    paddingBottom: scale(20)
+    paddingBottom: scale(60)
   },
   img_and_backBtn: {
     width: "100%",

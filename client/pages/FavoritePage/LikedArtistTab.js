@@ -35,7 +35,6 @@ export default function LikedArtistTab() {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
-
   useEffect(() => {
     if (accessTokenForSpotify) {
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
@@ -69,7 +68,7 @@ export default function LikedArtistTab() {
 
     if (!artistList.length && accessToken && user?._id) {
       fetchArtistList();
-    } 
+    }
   }, [user?._id, accessToken]);
 
   //get in4 of artist from Spotify
@@ -95,28 +94,34 @@ export default function LikedArtistTab() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ artistId }),
-    })
+    fetch(
+      `https://3268-1-53-10-45.ngrok-free.app/auth/${user._id}/addLikedArtists`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ artistId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ artistId }),
-    })
+    fetch(
+      `https://3268-1-53-10-45.ngrok-free.app/auth/${user._id}/unlikeArtists`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ artistId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -153,26 +158,36 @@ export default function LikedArtistTab() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
+              <TouchableOpacity>
+                <ArtistItem
+                  input={item}
+                  onLikeUnlike={handleLikeUnlike}
+                  isLiked={artistList.includes(item.id)}
+                />
+                <Text style={[styles.text, { marginLeft: 5 }]}>
+                  Recently Added
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={artists}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
               <ArtistItem
                 input={item}
                 onLikeUnlike={handleLikeUnlike}
                 isLiked={artistList.includes(item.id)}
               />
-              <Text style={[styles.text, {marginLeft:5}]}>Recently Added</Text>
-            </TouchableOpacity>
-        </View>
-        <View style={styles.flatlistContainer}>
-            <FlatList
-              data={artists}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => {
-                return <ArtistItem input={item} 
-                onLikeUnlike={handleLikeUnlike}
-                isLiked={artistList.includes(item.id)}/>;
-              }}
-              ListFooterComponent={<View style={{ height: scale(60) }} />}
-            />
-        </View>
+            );
+          }}
+          ListFooterComponent={<View style={{ height: scale(60) }} />}
+        />
+      </View>
     </SafeAreaView>
   );
 }

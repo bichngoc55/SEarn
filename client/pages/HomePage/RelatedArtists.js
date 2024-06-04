@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,11 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
-import {  GestureHandlerRootView  } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getRelatedArtists } from "../../service/getRelatedArtists";
 import ArtistItem from "../../components/artistItem";
@@ -23,13 +23,13 @@ import { getLikedArtistList } from "../../service/getLikedArtistList";
 export default function RelatedArtist() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const accessToken = useSelector (state=> state.user.accessToken);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
-  ); 
+  );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
-      
+
   useEffect(() => {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
@@ -42,12 +42,17 @@ export default function RelatedArtist() {
   const fetchArtistList = useCallback(async () => {
     try {
       if (accessToken) {
-        const { listLikedArtists } = await getLikedArtistList(accessToken, user._id);
+        const { listLikedArtists } = await getLikedArtistList(
+          accessToken,
+          user._id
+        );
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
 
         let finalArtistList = artistIds;
         if (artistIds.length > 5) {
-          finalArtistList = artistIds.sort(() => 0.5 - Math.random()).slice(0, 5);
+          finalArtistList = artistIds
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 5);
         }
 
         setArtistList(finalArtistList);
@@ -57,7 +62,7 @@ export default function RelatedArtist() {
     } catch (error) {
       console.error("Error fetching liked artists:", error);
     }
-  }, [accessToken, user._id]);
+  }, [accessToken, user?._id]);
 
   const fetchRelatedArtists = useCallback(async () => {
     try {
@@ -67,7 +72,9 @@ export default function RelatedArtist() {
         );
         const relatedArtistsData = await Promise.all(artistPromises);
 
-        const allRelatedArtists = relatedArtistsData.flatMap((data) => data.artists);
+        const allRelatedArtists = relatedArtistsData.flatMap(
+          (data) => data.artists
+        );
         setRelatedArtists(allRelatedArtists);
       } else {
         alert("accessToken:" + accessTokenForSpotify);
@@ -95,8 +102,8 @@ export default function RelatedArtist() {
       }
     }, [isDataFetched, fetchArtistList, fetchRelatedArtists])
   );
-    
-  return(
+
+  return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.flatlistContainer}>
@@ -112,7 +119,7 @@ export default function RelatedArtist() {
         </View>
       </View>
     </SafeAreaView>
-    )
+  );
 }
 const styles = StyleSheet.create({
   container: {
@@ -121,10 +128,10 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1C1B1B",
   },
-  content:{
+  content: {
     marginHorizontal: scale(10),
-    flex:1, 
-    marginTop: scale(10)
+    flex: 1,
+    marginTop: scale(10),
   },
   title: {
     marginVertical: scale(10),
@@ -135,5 +142,4 @@ const styles = StyleSheet.create({
   flatlistContainer: {
     marginHorizontal: scale(10),
   },
-})
-  
+});

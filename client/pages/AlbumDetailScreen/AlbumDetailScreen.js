@@ -37,10 +37,10 @@ const AlbumDetailScreen = ({ route }) => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
+
   const [albumTracks, setAlbumTracks] = useState([]);
 
   useEffect(() => {
@@ -61,32 +61,35 @@ const AlbumDetailScreen = ({ route }) => {
       } catch (error) {
         console.error("Error fetching album tracks hehe:", error);
       }
-//     };
-//     fetchAlbumTracks();
-//   }, [accessTokenForSpotify, album.id]);
+      //     };
+      //     fetchAlbumTracks();
+      //   }, [accessTokenForSpotify, album.id]);
+    };
+  }, [user, accessTokenForSpotify]);
 
-    }, [user, accessTokenForSpotify]);
-    
-    const [albumTracks, setAlbumTracks] = useState([]);
-  
-    useEffect(() => {
-      const fetchAlbumTracks = async () => {
-        try {
-          console.log("calling accesstoken: " + accessTokenForSpotify);
-          if (accessTokenForSpotify) {
-            const { items } = await getAlbumTrack(accessTokenForSpotify, album.id);
-            const albumTracksPromises = [...items];
-            const albumTrackData = await Promise.all(albumTracksPromises);
-            albumTrackData.forEach((albumTrack) => {});
-            setAlbumTracks(albumTrackData);
-            console.log(albumTracks)
-          } else alert("accessToken:" + accessTokenForSpotify);
-        } catch (error) {
-          console.error("Error fetching album tracks hehe:", error);
-        }
-      };
-      fetchAlbumTracks();
-      }, [accessTokenForSpotify, album.id]);
+  //const [albumTracks, setAlbumTracks] = useState([]);
+
+  useEffect(() => {
+    const fetchAlbumTracks = async () => {
+      try {
+        console.log("calling accesstoken: " + accessTokenForSpotify);
+        if (accessTokenForSpotify) {
+          const { items } = await getAlbumTrack(
+            accessTokenForSpotify,
+            album.id
+          );
+          const albumTracksPromises = [...items];
+          const albumTrackData = await Promise.all(albumTracksPromises);
+          albumTrackData.forEach((albumTrack) => {});
+          setAlbumTracks(albumTrackData);
+          console.log(albumTracks);
+        } else alert("accessToken:" + accessTokenForSpotify);
+      } catch (error) {
+        console.error("Error fetching album tracks hehe:", error);
+      }
+    };
+    fetchAlbumTracks();
+  }, [accessTokenForSpotify, album.id]);
 
   return (
     <SafeAreaView style={styles.Container}>
@@ -106,20 +109,21 @@ const AlbumDetailScreen = ({ route }) => {
         </View>
       </View>
 
-    <Text style={styles.albumName}>{album.name}</Text>        
-    <Text style={styles.textTotal_tracks}>
-      Total tracks: {album.total_tracks}
-    </Text>
-    <View style={styles.content}>
-      <View style={styles.flatlistContainer}>
-        <FlatList
-          data={albumTracks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            return <SongItem input={item} songList={albumTracks}/>;
-          }}
-          nestedScrollEnabled={true}
-        />
+      <Text style={styles.albumName}>{album.name}</Text>
+      <Text style={styles.textTotal_tracks}>
+        Total tracks: {album.total_tracks}
+      </Text>
+      <View style={styles.content}>
+        <View style={styles.flatlistContainer}>
+          <FlatList
+            data={albumTracks}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              return <SongItem input={item} songList={albumTracks} />;
+            }}
+            nestedScrollEnabled={true}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#121212",
 
-    paddingBottom: scale(60)
+    paddingBottom: scale(60),
   },
   img_and_backBtn: {
     width: "100%",

@@ -54,7 +54,6 @@ export default function UserPage() {
       await AsyncStorage.removeItem("accessToken");
       await AsyncStorage.removeItem("spotifyAccessToken");
       navigation.navigate("GettingStarted");
-
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -67,7 +66,7 @@ export default function UserPage() {
   //     console.log("Data being sent:", JSON.stringify(data, null, 2));
   //     console.log("Data being sent: " + data);
   //     const newaccessToken = await AsyncStorage.getItem("userToken");
-  //     // const url2 = `http://localhost:3005/auth/${endpoint}`;
+  //     // const url2 = `https://3268-1-53-10-45.ngrok-free.app/auth/${endpoint}`;
   //     // console.log("url2: " + url2);
   //     // console.log(
   //     //   "access token vs new access token : ",
@@ -75,7 +74,7 @@ export default function UserPage() {
   //     // );
   //     const response = await axios({
   //       method: method,
-  //       url: `http://localhost:3005/auth/${endpoint}`,
+  //       url: `https://3268-1-53-10-45.ngrok-free.app/auth/${endpoint}`,
   //       data: data,
   //       headers: {
   //         authorization: `Bearer ${newaccessToken}`,

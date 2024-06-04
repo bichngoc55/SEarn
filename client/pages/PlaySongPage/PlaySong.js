@@ -23,6 +23,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   setCurrentSong,
   setCurrentTime,

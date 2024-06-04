@@ -33,47 +33,49 @@ const storage = multer.diskStorage({
 
 export const upload = multer({ storage: storage });
 
-/* REGISTER USER */
+// /* REGISTER USER */
 
-export const register = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    const isValidEmail = validator.isEmail(email);
+// export const register = async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+//     const isValidEmail = validator.isEmail(email);
 
-    if (!isValidEmail) {
-      return res
-        .status(400)
-        .json({ msg: "Please provide a valid Gmail email address" });
-    }
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ msg: "User already exists" });
-    }
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ msg: "Password must be at least 6 characters" });
-    }
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
+//     if (!isValidEmail) {
+//       return res
+//         .status(400)
+//         .json({ msg: "Please provide a valid Gmail email address" });
+//     }
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({ msg: "User already exists" });
+//     }
+//     if (password.length < 6) {
+//       return res
+//         .status(400)
+//         .json({ msg: "Password must be at least 6 characters" });
+//     }
+//     const salt = await bcrypt.genSalt();
+//     const passwordHash = await bcrypt.hash(password, salt);
+// //  const p
+//     const newUser = new User({
+//       name,
+//       email,
+//       password: passwordHash,
+//       // userAddressEthereum:
 
-    const newUser = new User({
-      name,
-      email,
-      password: passwordHash,
-    });
-    const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+//     });
+//     const savedUser = await newUser.save();
+//     res.status(201).json(savedUser);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
 //login
 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // console.log(email + " " + password);
+    console.log(email + " " + password);
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "User does not exist." });
 
@@ -88,7 +90,7 @@ export const login = async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
     );
-    // console.log("in backend login controller + accessToken" + accessToken);
+    console.log("in backend login controller + accessToken" + accessToken);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,

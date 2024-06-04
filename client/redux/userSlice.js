@@ -73,28 +73,15 @@ export const loginUser = createAsyncThunk(
 
       const data = await response.json();
       await AsyncStorage.setItem("user", JSON.stringify(data.user));
-      _storeData = async () => {
-        try {
-          await AsyncStorage.setItem("user", JSON.stringify(data.user));
-        } catch (error) {
-          // Error saving data
-        }
-      };
+
       //   await AsyncStorage.setItem("accessToken", data.accessToken);
       if (data && data.accessToken) {
         await AsyncStorage.setItem("userToken", data.accessToken);
       }
-      _storeData = async () => {
-        try {
-          await AsyncStorage.setItem("user", JSON.stringify(data.user));
-        } catch (error) {
-          // Error saving data
-        }
-      };
-      //   console.log(
-      //     "Inside frontend login user in user slice and acceess token ( please compare)" +
-      //       data.accessToken
-      //   );
+      console.log(
+        "Inside frontend login user in user slice and acceess token ( please compare) : " +
+          data.accessToken
+      );
 
       //   console.log(data.accessToken);
       return data;

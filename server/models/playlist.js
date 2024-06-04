@@ -5,19 +5,21 @@ const { Schema } = mongoose;
 const playlistSchema = new mongoose.Schema(
   {
     description: String,
-    imageResource: Number,
-    imageURL: String,
+    imageURL: {
+      type: String,
+      default: "/uploads/avatar-1716923032362-461644826.jpg",
+    },
     name: { type: String, required: true },
-    privacy: String,
-    privacyIcon: Number,
+    privacyOrPublic: { type: Boolean, required: true },
     songCount: Number,
     songs: [String],
     numberOfLikes: { type: Number, default: 0 },
-    thumbNail: Number,
     userIdOwner: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    listUserIdLikes: [{ type: String }],
+    thumbNail: Number,
   },
   { timestamps: true }
 );
-
 const Playlist = mongoose.model("Playlist", playlistSchema);
+
 export default Playlist;

@@ -44,6 +44,16 @@ const UserSchema = new Schema(
     notificationCount: {
       type: Number,
     },
+ 
+    userCoin: {
+      type: Number,
+      default: 0,
+    },
+    userAddressEthereum: {
+      type: String,
+      default: "",
+    },
+ 
     likedArtists: [{
       id: { type: String },
       timeAdded: { type: Date }
@@ -52,6 +62,7 @@ const UserSchema = new Schema(
       id: { type: String },
       timeAdded: { type: Date }
     }],
+ 
   },
   { timestamps: true }
 );

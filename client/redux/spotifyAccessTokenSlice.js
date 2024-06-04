@@ -10,6 +10,7 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
         "http://localhost:3005/auth/getAccessToken"
       );
       const data = response.json();
+      console.log("data reponse: " + JSON.stringify(data));
       dispatch(updateSpotifyAccessToken(data.accessToken));
       await AsyncStorage.setItem("spotifyAccessToken", data.accessToken);
       return response.data.accessToken;

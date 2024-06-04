@@ -29,6 +29,7 @@ import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
 import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
+import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
 import scale from "../constant/responsive";
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -69,7 +70,7 @@ function UserStack() {
         component={TermsAndConditionsPage}
       />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
-      {/* <Stack.Screen name="Playlist" component={PlaylistPage} /> */}
+      <Stack.Screen name="publicPlaylist" component={PublicPlaylist} />
     </Stack.Navigator>
   );
 }
@@ -210,6 +211,7 @@ export default function MainNavigation() {
             <Stack.Screen name="SignUpOrLogin" component={SignUpOrLoginPage} />
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
+            <Stack.Screen name="BottomBar" component={BottomBar} />
           </>
         ) : (
           <Stack.Screen name="BottomBar" component={BottomBar} />

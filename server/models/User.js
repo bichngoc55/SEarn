@@ -45,7 +45,15 @@ const UserSchema = new Schema(
       type: Number,
     },
     likedArtists: [{ type: String }],
-    likedAlbums: [{ type: String }],
+    likedAlbums: [{ albumId: String, timestamp: Date }],
+    userCoin: {
+      type: Number,
+      default: 0,
+    },
+    userAddressEthereum: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

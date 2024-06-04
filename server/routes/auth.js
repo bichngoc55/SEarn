@@ -2,7 +2,6 @@ import express from "express";
 import { getAccessToken } from "../controllers/userController.js";
 import {
   login,
-  register,
   changePassword,
   updateName,
   updateBackgroundImage,
@@ -25,7 +24,7 @@ const router = express.Router();
 // router.post("/refresh", refresh);
 router.get("/getAccessToken", getAccessToken);
 router.post("/login", login);
-router.post("/register", register);
+// router.post("/register", register);
 router.post("/changePassword", authMiddleware, changePassword);
 router.post("/refresh", refresh);
 router.patch("/:id/name", authMiddleware, updateName);

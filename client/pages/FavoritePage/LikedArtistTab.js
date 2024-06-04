@@ -94,34 +94,28 @@ export default function LikedArtistTab() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(
-      `https://3268-1-53-10-45.ngrok-free.app/auth/${user._id}/addLikedArtists`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ artistId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(
-      `https://3268-1-53-10-45.ngrok-free.app/auth/${user._id}/unlikeArtists`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ artistId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));

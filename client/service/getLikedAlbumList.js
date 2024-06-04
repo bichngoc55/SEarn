@@ -1,7 +1,7 @@
 const getLikedAlbumList = async (accessToken, userId) => {
   try {
     const response = await fetch(
-      `https://3268-1-53-10-45.ngrok-free.app/auth/${userId}/getLikedAlbums`,
+      `http://localhost:3005/auth/${userId}/getLikedAlbums`,
       {
         method: "GET",
         headers: {

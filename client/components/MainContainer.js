@@ -25,12 +25,11 @@ import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndCond
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
-import LyricPage from "../pages/LyricPage/LyricPage";
+import LyricPage from "../pages/LyricPage/Lyricpage";
 import PlaylistDetailMongo from "../pages/PlaylistDetailMongo/PlaylistDetailMongo";
 import ExploreScreen from "../pages/Explore/ExploreScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 
-import PlaySongAndLyricPage from "../pages/PlaySongAndLyric/PlaySongAndLyric";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
 import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
 import MiniPlayer from "./miniPlayer";
@@ -86,11 +85,7 @@ function FavouriteStack() {
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen name="LikedSong" component={LikedSongPage} />
-      <Stack.Screen
-        name="PlaySongAndLyric"
-        component={PlaySongAndLyricPage}
-        options={{ presentation: "modal" }}
-      />
+
       <Stack.Screen
         name="Lyric"
         component={LyricPage}

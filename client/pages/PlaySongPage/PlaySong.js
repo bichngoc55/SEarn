@@ -22,14 +22,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { Audio } from "expo-av";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  setCurrentSong,
-  setCurrentTime,
-  playPause,
-  playNextSong,
-} from "../../redux/mediaPlayerSlice";
+import MenuOfPlaysong from "../../components/MenuOfPlaysong/MenuOfPlaysong";
 import AudioService from "../../service/audioService";
 
 const PlaySongPage = ({ route }) => {
@@ -39,6 +32,10 @@ const PlaySongPage = ({ route }) => {
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
   let service = new AudioService();
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   useEffect(() => {
     // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
@@ -113,7 +110,17 @@ const PlaySongPage = ({ route }) => {
           onPress={navigation.goBack}
         />
         <Text style={styles.headerText}>Now playing</Text>
-        <Entypo name="dots-three-vertical" size={24} color="#737373" />
+        <Entypo
+          name="dots-three-vertical"
+          size={24}
+          color="#737373"
+          onPress={toggleModal}
+        />
+        <MenuOfPlaysong
+          visible={modalVisible}
+          onClose={toggleModal}
+          song={service.currentSong}
+        />
       </View>
       <View style={styles.imageContain}>
         <Image

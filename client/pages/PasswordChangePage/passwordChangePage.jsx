@@ -44,7 +44,7 @@ export default function PasswordChangePage() {
         throw new Error("No token found. Please log in again.");
       }
       const response = await fetch(
-        "https://3268-1-53-10-45.ngrok-free.app/auth/changePassword",
+        "http://localhost:3005/auth/changePassword",
         {
           method: "POST",
           headers: {

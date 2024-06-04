@@ -34,16 +34,13 @@ export default function RegisterScreen({ navigation }) {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await fetch(
-        "https://3268-1-53-10-45.ngrok-free.app/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      );
+      const response = await fetch("http://localhost:3005/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
 
       if (!response.ok) {
         throw new Error("Something went wrong during registration.");

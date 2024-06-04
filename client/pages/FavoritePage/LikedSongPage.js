@@ -25,34 +25,43 @@ const LikedSongPage = () => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
+  const accessToken = useSelector((state) => state.user.accessToken);
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
-
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
 
   useEffect(() => {
     if (accessTokenForSpotify) {
       console.log("Access Token in useEffect:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
-  const [songList, setSongList] = useState([
-    "255vSRpVq5YYKBJiem1BVx",
-    "6jcLKVmEKAQIXIVHJZ8vzS",
-    "5iZHnufFUgATzrpGgH1K0W",
-    "5cml547MByVlaVrKU2lJTg",
-    "0dBKcPEAsdxWJsqNDNHcPz",
-  ]);
+  const [songList, setSongList] = useState([]);
   const [tracks, setTracks] = useState([]);
 
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  const getLikedSong = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const likedSong = await response.json();
+      console.log(likedSong);
+      setSongList(likedSong);
+    } catch (error) {
+      alert("Error in likedsong: " + error);
+    }
+  };
 
   useEffect(() => {
     const fetchTracks = async () => {
+      dispatch(fetchSpotifyAccessToken());
       try {
+        console.log("Fetching tracks with at la : " + accessTokenForSpotify);
         const trackPromises = songList.map((songId) =>
           getTrack(accessTokenForSpotify, songId)
         );
@@ -61,9 +70,9 @@ const LikedSongPage = () => {
         setTracks(trackData);
       } catch (error) {}
     };
-
+    getLikedSong();
     fetchTracks();
-  }, [accessTokenForSpotify, songList]);
+  }, [dispatch]);
 
   const navigation = useNavigation();
   return (

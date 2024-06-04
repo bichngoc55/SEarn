@@ -58,7 +58,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      //   console.log("Inside login user in user slice");
+      console.log("Inside login user in user slice");
       const response = await fetch("http://localhost:3005/auth/login", {
         method: "POST",
         headers: {

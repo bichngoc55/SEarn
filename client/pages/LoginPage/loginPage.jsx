@@ -35,13 +35,13 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const loginError = useSelector((state) => state.user.error);
-
+  const { accessToken } = useSelector((state) => state.user);
   const handleSubmit = async (values) => {
     try {
-      console.log(values);
+      // console.log(values);
       await dispatch(loginUser(values));
       await dispatch(fetchSpotifyAccessToken());
-      const { accessToken } = useSelector((state) => state.user);
+
       if (accessToken) {
         navigation.navigate("BottomBar");
       } else {

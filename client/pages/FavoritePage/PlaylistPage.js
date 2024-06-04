@@ -43,7 +43,7 @@ const PlaylistPage = () => {
     if (accessTokenForSpotify) {
       console.log("Access Token in useEffect:", accessTokenForSpotify);
     }
-  }, [dispatch, user.id, accessTokenForSpotify]);
+  }, [dispatch, user?.id, accessTokenForSpotify]);
 
   const fetchPlaylist = async () => {
     try {

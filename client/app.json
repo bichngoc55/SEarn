@@ -8,7 +8,7 @@
     "entryPoint": "App.js",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/logoSEE.png",
+      "image": "./assets/images/logoSEarn.png",
       "resizeMode": "contain",
       "backgroundColor": "black"
     },

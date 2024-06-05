@@ -43,6 +43,7 @@ export default function LikedAlbumTab() {
 
   const [albumList, setAlbumList] = useState([]);
   const [albums, setAlbums] = useState([]);
+
   //get liked album list on db
   useEffect(() => {
     const fetchAlbumList = async () => {
@@ -88,34 +89,28 @@ export default function LikedAlbumTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(
-      `https://c432-2405-4802-a632-dc60-bdf2-dcb0-6216-5931.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(
-      `https://c432-2405-4802-a632-dc60-bdf2-dcb0-6216-5931.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -152,27 +147,6 @@ export default function LikedAlbumTab() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity>
-                <AlbumItem
-                  input={item}
-                  onLikeUnlike={handleLikeUnlike}
-                  isLiked={albumList.includes(item.id)}
-                />
-                <Text style={[styles.text, { marginLeft: 5 }]}>
-                  Recently Added
-                </Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      </View>
-
-      <View style={styles.flatlistContainer}>
-        <FlatList
-          data={albums}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            return (
               <AlbumItem
                 input={item}
                 onLikeUnlike={handleLikeUnlike}
@@ -180,7 +154,7 @@ export default function LikedAlbumTab() {
               />
             );
           }}
-          ListFooterComponent={<View style={{ height: scale(60) }} />}
+          ListFooterComponent={<View style={{ height: scale(120) }} />}
         />
       </View>
     </SafeAreaView>

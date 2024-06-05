@@ -12,7 +12,6 @@ import scale from "../constant/responsive";
 import { useSelector, useDispatch, Provider } from "react-redux";
 
 import { useNavigation } from "@react-navigation/native";
-import { getAlbum } from "../service/albumService";
 
 const PlayListItem = ({ input }) => {
 
@@ -28,14 +27,14 @@ const PlayListItem = ({ input }) => {
 //   }, [user, accessTokenForSpotify]);
 
   const navigation = useNavigation();
-  const moveToDetail = () => {
-    navigation.navigate("ArtistDetail", {
-        artist: input,
+  const moveToPlaylistDetail = () => {
+    navigation.navigate("PlaylistExplore", {
+      playlist: input,
     });
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={moveToDetail}>
+    <TouchableOpacity style={styles.container} onPress={moveToPlaylistDetail}>
       <Image source={{ uri: input.images[0].url }} style={styles.circle} />
       <View style={{ flexDirection: "column", flex: 1, marginHorizontal: scale(10), height: scale(60), justifyContent: "space-between"}}>
         <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">

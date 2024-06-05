@@ -86,13 +86,9 @@ const AlbumDetailScreen = ({ route }) => {
       } catch (error) {
         console.error("Error fetching album tracks hehe:", error);
       }
-      //     };
-      //     fetchAlbumTracks();
-      //   }, [accessTokenForSpotify, album.id]);
     };
-  }, [user, accessTokenForSpotify]);
-
-  //const [albumTracks, setAlbumTracks] = useState([]);
+    fetchAlbumTracks();
+  }, [accessTokenForSpotify, album.id]);
 
   useEffect(() => {
     const fetchAlbumTracks = async () => {
@@ -133,7 +129,6 @@ const AlbumDetailScreen = ({ route }) => {
           </Pressable>
         </View>
       </View>
-
       <Text style={styles.albumName}>{album.name}</Text>
       <Text style={styles.textTotal_tracks}>
         Total tracks: {album.total_tracks}

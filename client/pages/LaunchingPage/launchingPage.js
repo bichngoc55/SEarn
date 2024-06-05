@@ -24,7 +24,7 @@ const LaunchingPage = ({ navigation }) => {
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <Image
-        source={require("../../assets/images/logoSEE.png")}
+        source={require("../../assets/images/logoSEarn.png")}
         style={styles.logo}
         resizeMode="contain"
       />

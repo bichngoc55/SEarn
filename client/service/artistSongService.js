@@ -17,14 +17,15 @@ const getArtistSong = async (accessToken, artistId) => {
         id: track.id,
         name: track.name,
         artists: track.artists.map((artist) => ({
-            name: artist.name,
-            id: artist.id,
+          name: artist.name,
+          id: artist.id,
         })),
         album: {
-            id: track.album.id,
-            name: track.album.name,
-            image: track.album.images[0].url,
-          },
+          id: track.album.id,
+          name: track.album.name,
+          image: track.album.images[0].url,
+        },
+        preview_url: track.preview_url,
       })),
     };
   } catch (error) {

@@ -6,12 +6,12 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:3005/auth/getAccessToken"
+        "http://10.0.2.2:3005/auth/getAccessToken"
       );
-      const data = response.json();
-      console.log("data reponse: " + JSON.stringify(data));
-      dispatch(updateSpotifyAccessToken(data.accessToken));
-      await AsyncStorage.setItem("spotifyAccessToken", data.accessToken);
+      // const data = response.json();
+      // console.log("data reponse: " + JSON.stringify(data));
+      // dispatch(updateSpotifyAccessToken(data.accessToken));
+      // await AsyncStorage.setItem("spotifyAccessToken", data.accessToken);
       return response.data.accessToken;
     } catch (error) {
       return rejectWithValue("error.response.data");

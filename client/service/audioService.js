@@ -30,20 +30,23 @@ class AudioService {
       });
       for (let i = 0; i < audioList.length; i++) {
         const audioUrl = audioList[i];
-        const { sound, status } = await Audio.Sound.createAsync(
-          {
-            uri: audioUrl.preview_url,
-          },
-          { shouldPlay: false },
-          this.onPlaybackStatusUpdated.bind(this)
-        );
+        if (audioUrl.preview_url==''||audioUrl.preview_url==null) i++
+        else {
+          const { sound, status } = await Audio.Sound.createAsync(
+            {
+              uri: audioUrl.preview_url,
+            },
+            { shouldPlay: false },
+            this.onPlaybackStatusUpdated.bind(this)
+          );
 
-        await status.isLoaded;
+          await status.isLoaded;
 
-        if (status.isLoaded) {
-          this.audioMap.set(i, { sound, status });
-        } else {
-          console.error(`Không thể tải âm thanh ${audioUrl.preview_url}`);
+          if (status.isLoaded) {
+            this.audioMap.set(i, { sound, status });
+          } else {
+            console.error(`Không thể tải âm thanh ${audioUrl.preview_url}`);
+          }
         }
       }
 

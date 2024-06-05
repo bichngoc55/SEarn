@@ -112,7 +112,7 @@ export default function ExploreScreen() {
             numColumns={2}
             key={2}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
+            renderItem={({ item }) => { 
               return <CategoryItem input={item} />;
             }}
             nestedScrollEnabled={true}

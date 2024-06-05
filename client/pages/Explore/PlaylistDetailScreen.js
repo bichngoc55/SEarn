@@ -16,12 +16,12 @@ import { COLOR } from "../../constant/color";
 import scale from "../../constant/responsive";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
-import { getAlbumTrack } from "../../service/albumTracksService";
+import { getPlaylistTracks } from "../../service/getPlaylistTracks";
 import { useSelector, useDispatch } from "react-redux";
 import SongItem from "../../components/songItem";
 
-const AlbumDetailScreen = ({ route }) => {
-  const { album } = route.params;
+const PlaylistDetailScreen = ({ route }) => {
+  const { playlist } = route.params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -38,57 +38,34 @@ const AlbumDetailScreen = ({ route }) => {
   useEffect(() => {
     if (accessTokenForSpotify) {
 
-      console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+      console.log("Access Token in useEffect playlist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
-  const [albumTracks, setAlbumTracks] = useState([]);
+  const [playlistTracks, setPlaylistTracks] = useState([]);
 
   useEffect(() => {
-    const fetchAlbumTracks = async () => {
+    const fetchPlaylistTracks = async () => {
       try {
         console.log("calling accesstoken: " + accessTokenForSpotify);
         if (accessTokenForSpotify) {
-          const { items } = await getAlbumTrack(
-            accessTokenForSpotify,
-            album.id
-          );
-          const albumTracksPromises = [...items];
-          const albumTrackData = await Promise.all(albumTracksPromises);
-          albumTrackData.forEach((albumTrack) => {});
-          setAlbumTracks(albumTrackData);
-          console.log(albumTracks);
+          const { items } = await getPlaylistTracks(accessTokenForSpotify, playlist.id);
+          const playlistTracksPromises = [...items];
+          const playlistTracksData = await Promise.all(playlistTracksPromises);
+          playlistTracksData.forEach((playlistTrack) => {});
+          setPlaylistTracks(playlistTracksData);
         } else alert("accessToken:" + accessTokenForSpotify);
       } catch (error) {
-        console.error("Error fetching album tracks hehe:", error);
+        console.error("Error fetching playlist tracks hehe:", error);
       }
     };
-    fetchAlbumTracks();
-  }, [accessTokenForSpotify, album.id]);
-  
-    useEffect(() => {
-      const fetchAlbumTracks = async () => {
-        try {
-          console.log("calling accesstoken: " + accessTokenForSpotify);
-          if (accessTokenForSpotify) {
-            const { items } = await getAlbumTrack(accessTokenForSpotify, album.id);
-            const albumTracksPromises = [...items];
-            const albumTrackData = await Promise.all(albumTracksPromises);
-            albumTrackData.forEach((albumTrack) => {});
-            setAlbumTracks(albumTrackData);
-            console.log(albumTracks)
-          } else alert("accessToken:" + accessTokenForSpotify);
-        } catch (error) {
-          console.error("Error fetching album tracks hehe:", error);
-        }
-      };
-      fetchAlbumTracks();
-      }, [accessTokenForSpotify, album.id]);
+    fetchPlaylistTracks();
+  }, [accessTokenForSpotify, playlist.id]);
 
   return (
     <SafeAreaView style={styles.Container}>
       <View style={styles.img_and_backBtn}>
-        <Image source={{ uri: album.images[0].url }}
-        style={styles.albumImg}
+        <Image source={{ uri: playlist.images[0].url }}
+        style={styles.playlistImg}
         resizeMode="cover"/>
         <View style={styles.backButtonContainer}>
           <Pressable
@@ -98,17 +75,15 @@ const AlbumDetailScreen = ({ route }) => {
           </Pressable>
         </View>
       </View>
-    <Text style={styles.albumName}>{album.name}</Text>        
-    <Text style={styles.textTotal_tracks}>
-      Total tracks: {album.total_tracks}
-    </Text>
+    <Text style={styles.playlistName}>{playlist.name}</Text>  
+    
     <View style={styles.content}>
       <View style={styles.flatlistContainer}>
         <FlatList
-          data={albumTracks}
-          keyExtractor={(item) => item.id} 
+          data={playlistTracks}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={albumTracks}/>;
+            return <SongItem input={item} songList={playlistTracks}/>;
           }}
           nestedScrollEnabled={true}
         />
@@ -133,7 +108,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: scale(20),
     borderBottomRightRadius: scale(20),
   },
-  albumImg: {
+  playlistImg: {
     position: "absolute",
     width: "100%",
     aspectRatio: 1,
@@ -155,7 +130,7 @@ const styles = StyleSheet.create({
     height: scale(25),
     marginLeft: scale(10),
   },
-  albumName: {
+  playlistName: {
     marginTop: scale(15),
     color: COLOR.hightlightText,
     fontSize: 24,
@@ -180,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AlbumDetailScreen;
+export default PlaylistDetailScreen;

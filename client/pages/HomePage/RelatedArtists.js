@@ -37,6 +37,7 @@ export default function RelatedArtist() {
   const [artistList, setArtistList] = useState([]);
   const [relatedArtists, setRelatedArtists] = useState([]);
   const [isDataFetched, setIsDataFetched] = useState(false);
+  const [likedArtistList, setLikedArtistList] = useState([]);
 
   //get >=5 liked artist list on db
   const fetchArtistList = useCallback(async () => {
@@ -44,6 +45,7 @@ export default function RelatedArtist() {
       if (accessToken) {
         const { listLikedArtists } = await getLikedArtistList(accessToken, user._id);
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
+        setLikedArtistList(artistIds) //Lấy liked artists từ db
 
         let finalArtistList = artistIds;
         if (artistIds.length > 5) {
@@ -57,7 +59,7 @@ export default function RelatedArtist() {
     } catch (error) {
       console.error("Error fetching liked artists:", error);
     }
-  }, [accessToken, user._id]);
+  }, [accessToken, user?._id]);
 
   const fetchRelatedArtists = useCallback(async () => {
     try {
@@ -79,7 +81,7 @@ export default function RelatedArtist() {
   useEffect(() => {
     if (!isDataFetched) {
       fetchArtistList().then(() => {
-        fetchRelatedArtists();
+        fetchRelatedArtists(); 
         setIsDataFetched(true);
       });
     }
@@ -95,6 +97,45 @@ export default function RelatedArtist() {
       }
     }, [isDataFetched, fetchArtistList, fetchRelatedArtists])
   );
+
+  //add like artist to db
+  const addToLikedArtists = async (artistId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike artist on db
+  const unlikeArtist = async (artistId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlike = async (artistId) => {
+    if (likedArtistList.includes(artistId)) {
+      await unlikeArtist(artistId);
+      setLikedArtistList(likedArtistList.filter((id) => id !== artistId));
+    } else {
+      await addToLikedArtists(artistId);
+      setLikedArtistList([...likedArtistList, artistId]);
+    }
+  };
     
   return(
     <SafeAreaView style={styles.container}>
@@ -104,7 +145,8 @@ export default function RelatedArtist() {
             data={relatedArtists}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              return <ArtistItem input={item} />;
+              return <ArtistItem input={item} onLikeUnlike={handleLikeUnlike}
+              isLiked={likedArtistList.includes(item.id)}/>;
             }}
             nestedScrollEnabled={true}
             ListFooterComponent={<View style={{ height: scale(60) }} />}

@@ -22,13 +22,13 @@ import playlistRoutes from "./routes/playlist.js";
 import reportRoutes from "./routes/report.js";
 // Import PlaylistLikes.json with type assertion
 // import type { PlaylistLikesJson } from "./contracts/PlaylistLikes.json"; // 1. Type import
-import configuration from "./contracts/PlaylistLikes.json" with { type: "json" }; // 2. Data import
-import contractData from "./contracts/PlaylistLikes.json" assert { type: "json" };
+// import configuration from "./contracts/PlaylistLikes.json" with { type: "json" }; // 2. Data import
+// import contractData from "./contracts/PlaylistLikes.json" assert { type: "json" };
 
-const { abi, bytecode } = contractData;
+// const { abi, bytecode } = contractData;
 // const contract_abi = configuration.abi;
 // const contract_address = configuration.networks["5777"].address;
-let sender,web3,contract ;
+// let sender,web3,contract ;
 //config
 dotenv.config();
 //express app
@@ -104,7 +104,7 @@ const init = async () => {
   console.log("coin : "+coin);
 
 };
-init();
+// init();
  
  
 /* REGISTER USER */

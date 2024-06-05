@@ -31,6 +31,7 @@ import {
 } from "../../redux/mediaPlayerSlice";
 import AudioService from "../../service/audioService";
 
+
 const PlaySongPage = ({ route }) => {
   const { song } = route.params;
   const navigation = useNavigation();
@@ -38,6 +39,13 @@ const PlaySongPage = ({ route }) => {
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
   let service = new AudioService();
+
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
 
   useEffect(() => {
     // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
@@ -102,6 +110,24 @@ const PlaySongPage = ({ route }) => {
     });
   };
 
+  const [img, setImage] = useState(null);
+
+  useEffect(() => {
+    const getSongImg = async () => {
+      try {
+        if (accessTokenForSpotify) {
+          const songData = await getTrack(accessTokenForSpotify, service.currentSong.id);
+          setImage(songData.album.img);
+        } else {
+          alert("accessToken: " + accessTokenForSpotify);
+        }
+      } catch (error) {
+        console.error("Error fetching get song image:", error);
+      }
+    };
+    getSongImg();
+  }, [accessTokenForSpotify]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerL}>
@@ -115,10 +141,17 @@ const PlaySongPage = ({ route }) => {
         <Entypo name="dots-three-vertical" size={24} color="#737373" />
       </View>
       <View style={styles.imageContain}>
-        <Image
-          source={{ uri: service.currentSong.album.image }}
-          style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
-        />
+        {service.currentSong && service.currentSong.album ? (
+          <Image
+            source={{ uri: service.currentSong.album.image }}
+            style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
+          />
+        ) : (
+          <Image
+            source={{ uri: img }}
+            style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
+          />
+        )}
       </View>
       <View style={styles.textIcon}>
         <View>

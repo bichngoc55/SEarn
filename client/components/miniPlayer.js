@@ -59,7 +59,7 @@ const MiniPlayer = () => {
         }}
       >
         <View style={styles.imageContainer}>
-          {service.currentSong ? (
+          {service.currentSong && service.currentSong.album? (
             <Image
               style={{ width: "100%", height: "100%", borderRadius: scale(50) }}
               source={{

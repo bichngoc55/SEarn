@@ -15,15 +15,15 @@ import { useNavigation } from "@react-navigation/native";
 
 const CategoryItem = ({ input }) => {
   const navigation = useNavigation();
-  const MoveToCategory = () => {
-    // navigation.navigate("AlbumDetail", {
-    //   album: input,
-    // });
+  const MoveToCategoryDetail = () => {
+    navigation.navigate("CategoryDetail", {
+      category: input,
+    });
   };
   
 
   return (
-    <TouchableOpacity style={styles.container} onPress={MoveToCategory}>
+    <TouchableOpacity style={styles.container} onPress={MoveToCategoryDetail}>
       <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
         {input.name}
       </Text>

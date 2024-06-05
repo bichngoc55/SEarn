@@ -13,6 +13,7 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 
 import { useNavigation } from "@react-navigation/native";
 import { getAlbum } from "../service/albumService";
+import { getTrack } from "../service/songService";
 
 const SearchItem = ({ input }) => {
 
@@ -37,21 +38,32 @@ const SearchItem = ({ input }) => {
       moveToAlbumDetail()
     }
     else 
-      navigation.navigate("PlaySong", {
-        song: input,
-      });
+      moveToPlaySong()
   };
+
   const moveToAlbumDetail = async () => {
     try {        
       if (accessTokenForSpotify) {
         const albumData = await getAlbum(accessTokenForSpotify, input.id)
-        console.log(albumData)
         navigation.navigate("AlbumDetail", {
           album: albumData,
         });
       } else alert("accessToken: " + accessTokenForSpotify);
     } catch (error) {
-      console.error("Error fetching search hehe:", error);
+      console.error("Error fetching search album hehe:", error);
+    }
+  }; 
+  const moveToPlaySong = async () => {
+    try {        
+      if (accessTokenForSpotify) {
+        const songData = await getTrack(accessTokenForSpotify, input.id)
+        console.log(songData)
+        navigation.navigate("PlaySong", {
+          song: songData,
+        });
+      } else alert("accessToken: " + accessTokenForSpotify);
+    } catch (error) {
+      console.error("Error fetching search song hehe:", error);
     }
   };
   let name, image;

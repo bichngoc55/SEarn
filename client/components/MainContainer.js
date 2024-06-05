@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { createMaterialBottomTabNavigator, MaterialBottomTabView } from "@react-navigation/material-bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack"; // Import createNativeStackNavigator
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -27,7 +27,9 @@ import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
 import Lyricpage from "../pages/LyricPage/Lyricpage";
 import PlaylistDetailMongo from "../pages/PlaylistDetailMongo/PlaylistDetailMongo";
-import ExploreScreen from "../pages/ExploreScreen/ExploreScreen";
+import ExploreScreen from "../pages/Explore/ExploreScreen";
+import CategoryDetailScreen from "../pages/Explore/CategoryDetail";
+import PlaylistDetailScreen from "../pages/Explore/PlaylistDetailScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
 import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
@@ -68,10 +70,21 @@ function ExploreStack() {
       <Stack.Screen name="Explore" component={ExploreScreen} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen}/>
+      <Stack.Screen name="PlaylistExplore" component={PlaylistDetailScreen} />
       <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
         options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="Lyric"
+        component={Lyricpage}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
       />
     </Stack.Navigator>
   );
@@ -143,103 +156,102 @@ function FavoriteTabs() {
 
 function BottomBar() {
   return (
-  <>
-    <View style={styles.tabContainer}>
-      <Tab.Navigator
-        initialRouteName={homeName}
-        activeColor="#FED215"
-        inactiveColor="#979797"
-        barStyle={{
-          backgroundColor: "rgba(30, 30, 30, 0.75)",
-          borderTopLeftRadius: scale(15),
-          borderTopRightRadius: scale(15),
-          height: scale(60),
-          position: "absolute",
-          overflow:"hidden",
-          alignContent: "center",
-          justifyContent: "center",
-          shadowColor:"red",
-          shadowOpacity: 0.4,
-          shadowRadius: 12,
-          shadowOffset: {
-            width: 5,
-            height: 3,
-          },
-          elevation:20
-        }}
-        shifting={true}
-      >
-        <Tab.Screen
-          backgroundColor="white"
-          name={homeName}
-          component={HomeStack}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>Home</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={exploreName}
-          component={ExploreStack}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                name={focused ? "file-find" : "file-find-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Favourite"
-          component={FavouriteStack}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>Favorite</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialIcons
-                name={focused ? "favorite" : "favorite-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={userName}
-          component={UserStack}
-          options={{
-            tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons
-                name={focused ? "person" : "person-outline"}
-                color={color}
-                size={30}
-              />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </View>
-    <MiniPlayer
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          elevation: 10,
+  <View style={styles.tabContainer}>
+    <Tab.Navigator
+      initialRouteName={homeName}
+      activeColor="#FED215"
+      inactiveColor="#979797"
+      barStyle={{
+        backgroundColor: "rgba(30, 30, 30, 0.75)",
+        borderTopLeftRadius: scale(15),
+        borderTopRightRadius: scale(15),
+        height: scale(60),
+        position:"absolute",
+        overflow:"hidden",
+        alignContent: "center",
+        justifyContent: "center",
+        shadowColor:"red",
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
+        shadowOffset: {
+          width: 5,
+          height: 3,
+        },
+        elevation:20,
+      }}
+      shifting={true}
+    >
+      <Tab.Screen
+        backgroundColor="white"
+        name={homeName}
+        component={HomeStack}
+        options={{
+          tabBarLabel: <Text style={styles.tabBarLabel}>Home</Text>,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              color={color}
+              size={30}
+            />
+          ),
         }}
       />
-    </>
+      <Tab.Screen
+        name={exploreName}
+        component={ExploreStack}
+        options={{
+          tabBarLabel: <Text style={styles.tabBarLabel}>Explore</Text>,
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name={focused ? "file-find" : "file-find-outline"}
+              color={color}
+              size={30}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Favourite"
+        component={FavouriteStack}
+        options={{
+          tabBarLabel: <Text style={styles.tabBarLabel}>Favorite</Text>,
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialIcons
+              name={focused ? "favorite" : "favorite-outline"}
+              color={color}
+              size={30}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={userName}
+        component={UserStack}
+        options={{
+          tabBarLabel: <Text style={styles.tabBarLabel}>User</Text>,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "person" : "person-outline"}
+              color={color}
+              size={30}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+    <MiniPlayer
+      style={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        zIndex: 1,
+        bottom: scale(60),
+      }}
+    />
+  </View>
   );
 }
+
 
 export default function MainNavigation() {
   const dispatch = useDispatch();
@@ -274,9 +286,10 @@ export default function MainNavigation() {
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
+            <Stack.Screen name="Miniplayer" component={MiniPlayer} />
           </>
         ) : (
-          <Stack.Screen name="BottomBar" component={BottomBar} />
+          <Stack.Screen name="BottomBar" component={BottomBar}/>
         )}
       </Stack.Navigator>
     </NavigationContainer>
@@ -285,10 +298,12 @@ export default function MainNavigation() {
 const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
-    zIndex: 1,
-
     backgroundColor: "red",
     
+  },
+  tabBarContainer: {
+    flexDirection: "row",
+    height: scale(60),
   },
   tabBarLabel: {
     fontSize: 15,

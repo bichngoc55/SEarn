@@ -5,14 +5,23 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
   "accessToken/fetchAccessToken",
   async (_, { rejectWithValue }) => {
     try {
+      //   console.log("hêhhe");
       const response = await axios.get(
         "http://10.0.2.2:3005/auth/getAccessToken"
       );
-      // const data = response.json();
-      // console.log("data reponse: " + JSON.stringify(data));
-      // dispatch(updateSpotifyAccessToken(data.accessToken));
-      // await AsyncStorage.setItem("spotifyAccessToken", data.accessToken);
-      return response.data.accessToken;
+
+      //   console.log("response: " + JSON.stringify(response));
+      const { data } = await response;
+      //   console.log("chay di ba noi: " + JSON.stringify(data));
+      //   console.log("hêhhe");
+      const { accessToken, expires_in } = data;
+      //   console.log("data cua spotify access token2: ");
+      //   dispatch(updateSpotifyAccessToken(accessToken));
+      //   await AsyncStorage.setItem("spotifyAccessToken", accessToken);
+      //   console.log("data cua spotify access token: " + accessToken);
+      return { accessToken, expires_in };
+//       return response.data.accessToken;
+
     } catch (error) {
       return rejectWithValue("error.response.data");
     }
@@ -39,9 +48,10 @@ const accessTokenSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    // updateSpotifyAccessToken: (state, action) => {
-    //   state.accessTokenForSpotify = action.payload;
-    // },
+    updateSpotifyAccessToken: (state, action) => {
+      console.log("trong update spotify access token " + action.payload);
+      state.accessTokenForSpotify = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -51,7 +61,12 @@ const accessTokenSlice = createSlice({
       })
       .addCase(fetchSpotifyAccessToken.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessTokenForSpotify = action.payload;
+        state.accessTokenForSpotify = action.payload.accessToken;
+        // console.log("action payload " + JSON.stringify(action.payload));
+        // console.log(
+        //   "trong fetch spotify access token fullfil : " +
+        //     state.accessTokenForSpotify
+        // );
       })
       .addCase(fetchSpotifyAccessToken.rejected, (state, action) => {
         state.loading = false;

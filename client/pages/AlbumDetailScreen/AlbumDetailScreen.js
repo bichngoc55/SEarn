@@ -30,15 +30,39 @@ const AlbumDetailScreen = ({ route }) => {
   );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
+  const [tokenExpiration, setTokenExpiration] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
+    const fetchAccessToken = async () => {
+      try {
+        const { accessToken, expires_in: expiresIn } = await dispatch(
+          fetchSpotifyAccessToken()
+        ).unwrap();
+        const expirationTime = new Date().getTime() + expiresIn * 1000;
+        setTokenExpiration(expirationTime);
+        console.log("expire time  Access Token:", expiresIn);
+      } catch (error) {
+        console.error("Error fetching access token:", error);
+      }
+    };
+
+    const checkTokenExpiration = () => {
+      if (tokenExpiration && new Date().getTime() >= tokenExpiration) {
+        fetchAccessToken();
+      } else {
+        const interval = setInterval(checkTokenExpiration, 55 * 60 * 1000);
+        return () => clearInterval(interval);
+      }
+    };
+    checkTokenExpiration();
   }, [dispatch]);
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-
-      console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+      console.log(
+        "Access Token in album detail screen :",
+        accessTokenForSpotify
+      );
     }
   }, [user, accessTokenForSpotify]);
   const [albumTracks, setAlbumTracks] = useState([]);

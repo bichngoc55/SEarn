@@ -35,13 +35,18 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const loginError = useSelector((state) => state.user.error);
-
+  const { accessToken } = useSelector((state) => state.user);
   const handleSubmit = async (values) => {
     try {
-      console.log(values);
+      // console.log(values);
       await dispatch(loginUser(values));
-      navigation.navigate("BottomBar");
       await dispatch(fetchSpotifyAccessToken());
+
+      if (accessToken) {
+        navigation.navigate("BottomBar");
+      } else {
+        // console.error("Login error:", error);
+      }
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -109,7 +114,13 @@ export default function LoginScreen({ navigation }) {
                   )}
                 </View>
                 {loginError && (
-                  <Text style={styles.errorMessage}>{loginError}</Text>
+                  <Text style={styles.errorMessage}>
+                    {loginError === "User does not exist."
+                      ? "User does not exist"
+                      : loginError === "Invalid credentials."
+                      ? "Invalid email or password"
+                      : loginError}
+                  </Text>
                 )}
                 <View style={styles.btnContainer}>
                   <ReuseBtn

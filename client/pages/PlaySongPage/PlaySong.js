@@ -1,5 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
+
+import BottomSheetModal, {
+  useBottomSheetController,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Slider from "@react-native-community/slider";
 import {
   View,
@@ -36,22 +48,26 @@ const PlaySongPage = ({ route }) => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+  const isFocused = useIsFocused();
+  const snapPoints = ["50%", "100%"];
+  let bottomSheetRef = useRef(null);
 
   useEffect(() => {
-    const handlePlaybackStatus = ({ progress, total }) => {
-      setProgress(progress);
-      setTotal(total);
-    };
-    console.log("progress" + progress);
-
-    service.registerPlaybackStatusCallback(handlePlaybackStatus);
+    if (isFocused) {
+      const handlePlaybackStatus = ({ progress, total }) => {
+        setProgress(progress);
+        setTotal(total);
+      };
+      //console.log("progress" + progress)
+      service.registerPlaybackStatusCallback(handlePlaybackStatus);
+    }
 
     // const intervalId = setInterval(
     //   handlePlaybackStatus({ progress, total }),
     //   1000
     // );
     return () => {};
-  }, [service.currentAudio]);
+  }, [isFocused, service.currentAudio]);
 
   const {
     currentSong,
@@ -113,12 +129,13 @@ const PlaySongPage = ({ route }) => {
           color="#737373"
           onPress={toggleModal}
         />
-        <MenuOfPlaysong
-          visible={modalVisible}
-          onClose={toggleModal}
-          song={service.currentSong}
-        />
       </View>
+
+      <MenuOfPlaysong
+        visible={modalVisible}
+        onClose={toggleModal}
+        song={service.currentSong}
+      />
       <View style={styles.imageContain}>
         <Image
           source={{ uri: service.currentSong.album.image }}
@@ -190,6 +207,7 @@ const PlaySongPage = ({ route }) => {
             style={styles.circle}
             onPress={() => {
               service.currentAudio.sound.pauseAsync();
+              console.log(service.isPlay);
               service.isPlay = false;
             }}
           >
@@ -199,6 +217,7 @@ const PlaySongPage = ({ route }) => {
               color="black"
               onPress={() => {
                 service.currentAudio.sound.pauseAsync();
+                console.log(service.isPlay);
                 service.isPlay = false;
               }}
             />
@@ -210,6 +229,7 @@ const PlaySongPage = ({ route }) => {
             color="#FED215"
             onPress={() => {
               service.currentAudio.sound.playAsync();
+              console.log(service.isPlay);
               service.isPlay = true;
             }}
           />
@@ -244,6 +264,7 @@ const PlaySongPage = ({ route }) => {
           />
         )}
       </View>
+
       <TouchableOpacity
         style={styles.bottomContain}
         onPress={() => {
@@ -275,17 +296,15 @@ const styles = StyleSheet.create({
   headerL: {
     marginLeft: "8.48%",
     marginRight: "8.48%",
-    height: scale(35),
     alignItems: "center",
     marginTop: "2.68%",
-
     flexDirection: "row",
   },
   headerText: {
     color: "#FFFFFF",
     fontSize: scale(16),
-    justifyContent: "center",
     flex: 1,
+
     textAlign: "center",
   },
   imageContain: {

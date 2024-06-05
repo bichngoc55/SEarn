@@ -71,12 +71,14 @@ const SongItem = ({ input, songList }) => {
 
   const MoveToPlaySong = async () => {
     let service = new AudioService();
+
     await service.loadPlaylist(songList);
     service.currentSong = input;
     service.currentPlaylist = songList;
     service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
-    await service.playCurrentAudio();
+    service.playCurrentAudio();
+
     navigation.navigate("PlaySong", {
       song: service.currentSong,
     });
@@ -95,7 +97,7 @@ const SongItem = ({ input, songList }) => {
         <Text style={styles.textName} numberOfLines={1} ellipsizeMode="tail">
           {input.name}
         </Text>
-        <Text style={styles.textArtist}>
+        <Text style={styles.textArtist} numberOfLines={1} ellipsizeMode="tail">
           {input.artists.map((artist) => artist.name).join(", ")}{" "}
         </Text>
       </View>

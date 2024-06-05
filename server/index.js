@@ -40,7 +40,8 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3005",
+    origin:
+      "https://c432-2405-4802-a632-dc60-bdf2-dcb0-6216-5931.ngrok-free.app",
   })
 );
 // app.use(cors());
@@ -74,7 +75,7 @@ const init = async () => {
   // Create a contract instance
   contract = new web3.eth.Contract(
     abi,
-    "0x2C5052e72c572C0df3D1Ab3dEa7e6cf951470Cc2"
+    "0x92Af1043234Cb2F06d9577254F595c8ca3611c8e"
   );
   // 0x74c6936779343d349A492F8c9070dC63c59A66df
   // 0xe1fe593C8C338D024Db62DDDaC666C94B42f8C12
@@ -132,7 +133,7 @@ app.post("/auth/register", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     // init();
-    const newAccountAddress = web3.eth.accounts.create().address;
+    const newAccountAddress = web3.eth.accounts.create().address; //tạo 1 tk với 0 coin
     console.log("new account address: " + newAccountAddress);
     const newUser = new User({
       name,

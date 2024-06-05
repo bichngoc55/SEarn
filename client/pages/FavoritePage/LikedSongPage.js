@@ -43,7 +43,7 @@ const LikedSongPage = () => {
   const getLikedSong = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+        `https://c432-2405-4802-a632-dc60-bdf2-dcb0-6216-5931.ngrok-free.app/auth/${user._id}/getLikedSongs`,
         {
           method: "GET",
           headers: {

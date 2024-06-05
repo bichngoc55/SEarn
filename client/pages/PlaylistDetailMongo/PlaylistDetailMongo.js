@@ -59,7 +59,7 @@ const PlaylistDetailMongo = ({ route }) => {
     try {
       if (accessToken) {
         const response = await fetch(
-          `http://localhost:3005/playlists/${playlist._id}`,
+          `https://c432-2405-4802-a632-dc60-bdf2-dcb0-6216-5931.ngrok-free.app/playlists/${playlist._id}`,
           {
             method: "GET",
             headers: {

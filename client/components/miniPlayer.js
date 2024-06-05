@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import {
   View,
@@ -26,16 +26,20 @@ import AudioService from "../service/audioService";
 const MiniPlayer = () => {
   let service = new AudioService();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
   useEffect(() => {
-    const handlePlaybackStatus = ({ progress, total }) => {
-      setProgress(progress);
-      setTotal(total);
-    };
-    service.registerPlaybackStatusCallback(handlePlaybackStatus);
+    if (isFocused) {
+      const handlePlaybackStatus = ({ progress, total }) => {
+        setProgress(progress);
+        setTotal(total);
+      };
+      service.registerPlaybackStatusCallback(handlePlaybackStatus);
+    }
+
     return () => {};
-  }, [service.currentAudio]);
+  }, [isFocused, service.currentAudio]);
 
   const [track, setTrack] = useState({
     title: "No playing track",

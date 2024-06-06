@@ -248,10 +248,11 @@ class AudioService {
     }
 
     try {
-      await this.currentAudio.stopAsync();
+      await this.currentAudio.sound.stopAsync();
+      this.currentAudio = null; // Reset the currentAudio after stopping
+      this.isPlay = false; // Reset the isPlay state
     } catch (error) {
-      console.error("Lỗi khi dừng âm thanh:", error);
-      throw error;
+      console.error("Error stopping sound:", error);
     }
   }
 }

@@ -29,6 +29,7 @@ const MiniPlayer = () => {
   let service = new AudioService();
   const navigation = useNavigation();
   const [progress, setProgress] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
   const [total, setTotal] = useState(0);
   const pan = React.useRef(new Animated.ValueXY()).current;
   const translateX = useRef(new Animated.Value(0)).current;
@@ -67,7 +68,10 @@ const MiniPlayer = () => {
             toValue: width,
             duration: 300,
             useNativeDriver: true,
-          }).start(() => {});
+          }).start(() => {
+            service.stopSound();
+            setIsVisible(false);
+          });
         } else {
           Animated.spring(translateX, {
             toValue: 0,
@@ -77,8 +81,14 @@ const MiniPlayer = () => {
       },
     })
   ).current;
-
-  return (
+  useEffect(() => {
+    Animated.spring(translateX, {
+      toValue: 0, // Reset position
+      useNativeDriver: true,
+    }).start();
+    setIsVisible(true);
+  }, [service.currentSong, translateX]);
+  return isVisible ? (
     <Animated.View
       style={{ transform: [{ translateX }] }}
       {...panResponder.panHandlers}
@@ -217,7 +227,7 @@ const MiniPlayer = () => {
         </View>
       </View>
     </Animated.View>
-  );
+  ) : null;
 };
 
 const styles = StyleSheet.create({

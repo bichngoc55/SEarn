@@ -18,6 +18,7 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
       // // console.log("data cua spotify access token2: ");
       // console.log("data cua spotify access token: " + accessToken);
       return { accessToken, expires_in };
+      //       return response.data.accessToken;
     } catch (error) {
       return rejectWithValue("error.response.data");
     }

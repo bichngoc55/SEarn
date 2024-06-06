@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import {
+  createMaterialBottomTabNavigator,
+  MaterialBottomTabView,
+} from "@react-navigation/material-bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack"; // Import createNativeStackNavigator
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -25,12 +28,14 @@ import TermsAndConditionsPage from "../pages/TermsAndConditionsPage/termsAndCond
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage/privacyPolicyPage";
 import SignUpOrLoginPage from "../pages/SignUpOrLogin/signUpOrLogin";
 import PasswordChangePage from "../pages/PasswordChangePage/passwordChangePage";
-import Lyricpage from "../pages/LyricPage/Lyricpage";
 import { Dimensions } from "react-native";
-
+import LyricPage from "../pages/LyricPage/Lyricpage";
 import PlaylistDetailMongo from "../pages/PlaylistDetailMongo/PlaylistDetailMongo";
 import ExploreScreen from "../pages/Explore/ExploreScreen";
+import CategoryDetailScreen from "../pages/Explore/CategoryDetail";
+import PlaylistDetailScreen from "../pages/Explore/PlaylistDetailScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
+import AddtoPlaylist from "./MenuOfPlaysong/AddToPlaylist";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
 import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
 import MiniPlayer from "./miniPlayer";
@@ -61,6 +66,11 @@ function HomeStack() {
         component={PlaySongPage}
         options={{ presentation: "modal" }}
       />
+      <Stack.Screen
+        name="AddTo"
+        component={AddtoPlaylist}
+        options={{ presentation: "modal" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -71,10 +81,21 @@ function ExploreStack() {
       <Stack.Screen name="Explore" component={ExploreScreen} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen} />
+      <Stack.Screen name="PlaylistExplore" component={PlaylistDetailScreen} />
       <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
         options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="Lyric"
+        component={LyricPage}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
       />
     </Stack.Navigator>
   );
@@ -93,8 +114,13 @@ function FavouriteStack() {
         options={{ presentation: "modal" }}
       />
       <Stack.Screen
+        name="AddTo"
+        component={AddtoPlaylist}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
         name="Lyric"
-        component={Lyricpage}
+        component={LyricPage}
         options={{ presentation: "modal" }}
       />
       <Stack.Screen
@@ -270,6 +296,7 @@ export default function MainNavigation() {
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
+            <Stack.Screen name="Miniplayer" component={MiniPlayer} />
           </>
         ) : (
           <Stack.Screen name="BottomBar" component={BottomBar} />
@@ -296,3 +323,4 @@ const styles = StyleSheet.create({
     right: 0,
   },
 });
+

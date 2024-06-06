@@ -1,5 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
+
+import BottomSheetModal, {
+  useBottomSheetController,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Slider from "@react-native-community/slider";
 import {
   View,
@@ -22,13 +34,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { Audio } from "expo-av";
-import {
-  setCurrentSong,
-  setCurrentTime,
-  playPause,
-  playNextSong,
-} from "../../redux/mediaPlayerSlice";
+import MenuOfPlaysong from "../../components/MenuOfPlaysong/MenuOfPlaysong";
 import AudioService from "../../service/audioService";
 
 const PlaySongPage = ({ route }) => {
@@ -38,25 +44,37 @@ const PlaySongPage = ({ route }) => {
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
   let service = new AudioService();
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+  const isFocused = useIsFocused();
+  const snapPoints = ["50%", "100%"];
+  let bottomSheetRef = useRef(null);
+
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
 
   useEffect(() => {
-    // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
-    const handlePlaybackStatus = ({ progress, total }) => {
-      setProgress(progress);
-      setTotal(total);
-    };
-    console.log(progress);
-
-    service.registerPlaybackStatusCallback(handlePlaybackStatus);
+    if (isFocused) {
+      const handlePlaybackStatus = ({ progress, total }) => {
+        setProgress(progress);
+        setTotal(total);
+      };
+      //console.log("progress" + progress)
+      service.registerPlaybackStatusCallback(handlePlaybackStatus);
+    }
 
     // const intervalId = setInterval(
     //   handlePlaybackStatus({ progress, total }),
     //   1000
     // );
-    return () => {
-      //service.unregisterPlaybackStatusCallback(handlePlaybackStatus);
-    };
-  }, [service.currentAudio]);
+    return () => {};
+  }, [isFocused, service.currentAudio]);
 
   const {
     currentSong,
@@ -102,6 +120,27 @@ const PlaySongPage = ({ route }) => {
     });
   };
 
+  const [img, setImage] = useState(null);
+
+  useEffect(() => {
+    const getSongImg = async () => {
+      try {
+        if (accessTokenForSpotify) {
+          const songData = await getTrack(
+            accessTokenForSpotify,
+            service.currentSong.id
+          );
+          setImage(songData.album.img);
+        } else {
+          alert("accessToken: " + accessTokenForSpotify);
+        }
+      } catch (error) {
+        console.error("Error fetching get song image:", error);
+      }
+    };
+    getSongImg();
+  }, [accessTokenForSpotify]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerL}>
@@ -112,13 +151,31 @@ const PlaySongPage = ({ route }) => {
           onPress={navigation.goBack}
         />
         <Text style={styles.headerText}>Now playing</Text>
-        <Entypo name="dots-three-vertical" size={24} color="#737373" />
-      </View>
-      <View style={styles.imageContain}>
-        <Image
-          source={{ uri: service.currentSong.album.image }}
-          style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
+        <Entypo
+          name="dots-three-vertical"
+          size={24}
+          color="#737373"
+          onPress={toggleModal}
         />
+      </View>
+
+      <MenuOfPlaysong
+        visible={modalVisible}
+        onClose={toggleModal}
+        song={service.currentSong}
+      />
+      <View style={styles.imageContain}>
+        {service.currentSong && service.currentSong.album ? (
+          <Image
+            source={{ uri: service.currentSong.album.image }}
+            style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
+          />
+        ) : (
+          <Image
+            source={{ uri: img }}
+            style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
+          />
+        )}
       </View>
       <View style={styles.textIcon}>
         <View>
@@ -141,6 +198,7 @@ const PlaySongPage = ({ route }) => {
           maximumValue={service.currentTotalTime}
           onValueChange={(value) => {
             service.currentTime = value;
+            service.isGetCoin = false;
             service.currentAudio.sound.setPositionAsync(value);
           }}
         />
@@ -185,6 +243,7 @@ const PlaySongPage = ({ route }) => {
             style={styles.circle}
             onPress={() => {
               service.currentAudio.sound.pauseAsync();
+              console.log(service.isPlay);
               service.isPlay = false;
             }}
           >
@@ -194,6 +253,7 @@ const PlaySongPage = ({ route }) => {
               color="black"
               onPress={() => {
                 service.currentAudio.sound.pauseAsync();
+                console.log(service.isPlay);
                 service.isPlay = false;
               }}
             />
@@ -205,6 +265,7 @@ const PlaySongPage = ({ route }) => {
             color="#FED215"
             onPress={() => {
               service.currentAudio.sound.playAsync();
+              console.log(service.isPlay);
               service.isPlay = true;
             }}
           />
@@ -239,6 +300,7 @@ const PlaySongPage = ({ route }) => {
           />
         )}
       </View>
+
       <TouchableOpacity
         style={styles.bottomContain}
         onPress={() => {
@@ -270,17 +332,15 @@ const styles = StyleSheet.create({
   headerL: {
     marginLeft: "8.48%",
     marginRight: "8.48%",
-    height: scale(35),
     alignItems: "center",
     marginTop: "2.68%",
-
     flexDirection: "row",
   },
   headerText: {
     color: "#FFFFFF",
     fontSize: scale(16),
-    justifyContent: "center",
     flex: 1,
+
     textAlign: "center",
   },
   imageContain: {

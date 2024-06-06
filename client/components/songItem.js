@@ -20,11 +20,21 @@ import {
   setCurrentPlaylist,
   setIsPlaying,
 } from "../redux/mediaPlayerSlice";
+import { fetchSpotifyAccessToken } from "../redux/spotifyAccessTokenSlice";
+
 import { Audio } from "expo-av";
 import AudioService from "../service/audioService";
+import { getTrack } from "../service/songService";
 
 const SongItem = ({ input, songList }) => {
   const navigation = useNavigation();
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
+  useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
+
   const { mediaPlayer } = useSelector((state) => state.mediaPlayer);
   const {
     currentSong,
@@ -71,22 +81,45 @@ const SongItem = ({ input, songList }) => {
 
   const MoveToPlaySong = async () => {
     let service = new AudioService();
+
     await service.loadPlaylist(songList);
     service.currentSong = input;
     service.currentPlaylist = songList;
+    service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
     service.playCurrentAudio();
+    service.isGetCoin = true;
     navigation.navigate("PlaySong", {
       song: service.currentSong,
     });
   };
+
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const getSongImg = async () => {
+      try {
+        if (accessTokenForSpotify) {
+          const songData = await getTrack(accessTokenForSpotify, input.id);
+          setImage(songData.album.image);
+        } else {
+          alert("accessToken: " + accessTokenForSpotify);
+        }
+      } catch (error) {
+        console.error("Error fetching get song image:", error);
+      }
+    };
+    getSongImg();
+  }, [accessTokenForSpotify]);
+
   return (
     <TouchableOpacity style={styles.trackContainer} onPress={MoveToPlaySong}>
       {input.album && input.album.image ? (
         <Image source={{ uri: input.album.image }} style={styles.circle} />
       ) : (
         <Image
-          source={require("../assets/images/logoSEarn.png")}
+          source={{ uri: image }}
+          // source={require("../assets/images/logoSEarn.png")}
           style={styles.circle}
         />
       )}
@@ -94,7 +127,7 @@ const SongItem = ({ input, songList }) => {
         <Text style={styles.textName} numberOfLines={1} ellipsizeMode="tail">
           {input.name}
         </Text>
-        <Text style={styles.textArtist}>
+        <Text style={styles.textArtist} numberOfLines={1} ellipsizeMode="tail">
           {input.artists.map((artist) => artist.name).join(", ")}{" "}
         </Text>
       </View>

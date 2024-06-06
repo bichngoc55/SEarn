@@ -3,9 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import scale from "../constant/responsive";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const PublicPlaylistItem = ({ playlist, onLikeUnlike, isLiked }) => {
   const [liked, setLiked] = useState(isLiked);
+  const navigation = useNavigation();
 
   useEffect(() => {
     setLiked(isLiked);
@@ -17,7 +19,14 @@ const PublicPlaylistItem = ({ playlist, onLikeUnlike, isLiked }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.playlistContainer}>
+    <TouchableOpacity
+      style={styles.playlistContainer}
+      onPress={() => {
+        navigation.navigate("PlaylistDetailMongo", {
+          playlist: playlist,
+        });
+      }}
+    >
       <Image source={{ uri: playlist.imageURL }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">

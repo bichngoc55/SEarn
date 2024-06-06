@@ -14,7 +14,7 @@ const getAlbumTrack = async (accessToken, albumId) => {
     const albumTracks = response.data;
     return {
       total:albumTracks.total,
-      items: albumTracks.items.map((item) => ({
+      items: albumTracks.items.map((item) => ({ 
         id: item.id,
         name: item.name,
         artists: item.artists.map((artist) => ({

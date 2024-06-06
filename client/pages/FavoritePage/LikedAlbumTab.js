@@ -43,6 +43,7 @@ export default function LikedAlbumTab() {
 
   const [albumList, setAlbumList] = useState([]);
   const [albums, setAlbums] = useState([]);
+
   //get liked album list on db
   useEffect(() => {
     const fetchAlbumList = async () => {
@@ -151,23 +152,11 @@ export default function LikedAlbumTab() {
                 onLikeUnlike={handleLikeUnlike}
                 isLiked={albumList.includes(item.id)}
               />
-              <Text style={[styles.text, {marginLeft:5}]}>Recently Added</Text>
-            </TouchableOpacity>
-        </View>
-        <View style={styles.flatlistContainer}>
-            <FlatList
-              data={albums}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => { 
-                return <AlbumItem
-                input={item}
-                onLikeUnlike={handleLikeUnlike}
-                isLiked={albumList.includes(item.id)}
-                />;
-              }}
-              ListFooterComponent={<View style={{ height: scale(60) }} />}
-            />
-        </View>
+            );
+          }}
+          ListFooterComponent={<View style={{ height: scale(120) }} />}
+        />
+      </View>
     </SafeAreaView>
   );
 }

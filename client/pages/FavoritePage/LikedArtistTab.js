@@ -35,7 +35,6 @@ export default function LikedArtistTab() {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
-
   useEffect(() => {
     if (accessTokenForSpotify) {
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
@@ -69,7 +68,7 @@ export default function LikedArtistTab() {
 
     if (!artistList.length && accessToken && user?._id) {
       fetchArtistList();
-    } 
+    }
   }, [user?._id, accessToken]);
 
   //get in4 of artist from Spotify
@@ -153,26 +152,36 @@ export default function LikedArtistTab() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
+              <TouchableOpacity>
+                <ArtistItem
+                  input={item}
+                  onLikeUnlike={handleLikeUnlike}
+                  isLiked={artistList.includes(item.id)}
+                />
+                <Text style={[styles.text, { marginLeft: 5 }]}>
+                  Recently Added
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={artists}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
               <ArtistItem
                 input={item}
                 onLikeUnlike={handleLikeUnlike}
                 isLiked={artistList.includes(item.id)}
               />
-              <Text style={[styles.text, {marginLeft:5}]}>Recently Added</Text>
-            </TouchableOpacity>
-        </View>
-        <View style={styles.flatlistContainer}>
-            <FlatList
-              data={artists}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => {
-                return <ArtistItem input={item} 
-                onLikeUnlike={handleLikeUnlike}
-                isLiked={artistList.includes(item.id)}/>;
-              }}
-              ListFooterComponent={<View style={{ height: scale(60) }} />}
-            />
-        </View>
+            );
+          }}
+          ListFooterComponent={<View style={{ height: scale(60) }} />}
+        />
+      </View>
     </SafeAreaView>
   );
 }

@@ -18,11 +18,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbumsNewReleases } from "../../service/albumsNewReleases";
 import { getTracksRecommendations } from "../../service/songsRecommendations";
+import { getLikedAlbumList } from "../../service/getLikedAlbumList";
 import ArtistAlbumItem from "../../components/artistAlbumItem";
 import SongItem from "../../components/songItem";
 export default function NewsTab() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
@@ -36,18 +38,34 @@ export default function NewsTab() {
     );
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (accessTokenForSpotify) {
-  //   console.log("Access Token in useEffect artist:", accessTokenForSpotify);
-  //   }
-  // }, [user, accessTokenForSpotify]);
+
   const [albumsNewReleases, setAlbumsNewReleases] = useState([]);
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
+  const [likedAlbumList, setLikedAlbumList] = useState([]);
+
+  //get liked album list on db
+  useEffect(() => {
+    const fetchAlbumList = async () => {
+      try {
+        if (accessToken) {
+          const { listLikedAlbums } = await getLikedAlbumList(
+            accessToken,
+            user._id
+          );
+          const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
+          setLikedAlbumList(albumIds);
+        } else alert("Chưa có accessToken");
+      } catch (error) {
+        console.error("Error fetching liked albums in NewsTab:", error);
+      }
+    };
+
+    fetchAlbumList();
+  }, [user?._id, accessToken]);
 
   useEffect(() => {
     const fetchAlbumsNewReleases = async () => {
       try {
-        // console.log("Gọi in4 Home từ spotify");
         console.log(accessTokenForSpotify);
         if (accessTokenForSpotify) {
           const { items } = await getAlbumsNewReleases(accessTokenForSpotify);
@@ -71,6 +89,45 @@ export default function NewsTab() {
     fetchAlbumsNewReleases();
   }, [accessTokenForSpotify]);
 
+  //add like album to db
+  const addToLikedAlbums = async (albumId) => {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike album on db
+  const unlikeAlbum = async (albumId) => {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeAlbum`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlike = async (albumId) => {
+    if (likedAlbumList.includes(albumId)) {
+      await unlikeAlbum(albumId);
+      setLikedAlbumList(likedAlbumList.filter((id) => id !== albumId));
+    } else {
+      await addToLikedAlbums(albumId);
+      setLikedAlbumList([...likedAlbumList, albumId]);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <GestureHandlerRootView style={styles.content}>
@@ -87,7 +144,13 @@ export default function NewsTab() {
                   data={albumsNewReleases}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => {
-                    return <ArtistAlbumItem input={item} />;
+                    return (
+                      <ArtistAlbumItem
+                        input={item}
+                        onLikeUnlike={handleLikeUnlike}
+                        isLiked={likedAlbumList.includes(item.id)}
+                      />
+                    );
                   }}
                   nestedScrollEnabled={true}
                 />

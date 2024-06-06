@@ -9,7 +9,7 @@ import React from "react";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, StatusBar } from "react-native";
 
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -39,18 +39,19 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={styles.co}>
+    <View style={styles.co}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <MainNavigation />
         </PersistGate>
       </Provider>
-    </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
   co: {
     flex: 1,
-    backgroundColor: "transparent",
+    backgroundColor: "#1b1b1b",
+    paddingBottom: "10%",
   },
 });

@@ -76,8 +76,8 @@ const init = async () => {
 
   // Create a contract instance
   contract = new web3.eth.Contract(
-    abi,
-    "0x92Af1043234Cb2F06d9577254F595c8ca3611c8e"
+    abi, 
+    "0x04B3adfebA637f4A46D8A1Cb5FE08eAcEeE0f982"
   );
   // 0x74c6936779343d349A492F8c9070dC63c59A66df
   // 0xe1fe593C8C338D024Db62DDDaC666C94B42f8C12
@@ -104,8 +104,16 @@ const init = async () => {
     .call();
   const balance3 = await web3.eth.getBalance(userAccount.userAddressEthereum);
   console.log("Balance3 of account random:", balance3);
-  const result = balance3 + BigInt(100);
-  console.log("reward user " + result);
+  const  result =  balance3+ BigInt(100);
+  console.log("reward user "+ result);
+  const coin = await contract.methods.getUserCoins("0x15DE328D2bF669bD9800ad3a2eD633e6BA27DD85").call();
+  console.log("coin : "+coin);
+  // const weiAmount = await web3.utils.toWei('0.01', 'ether');
+  // console.log("weiAmount : "+ weiAmount);
+  // console.log("hhehehhehe");
+  //     const receipt = await contract.methods.transfer(userAccount.userAddressEthereum, weiAmount).send({ from: sender });
+  //     console.log("Transfer receipt:", receipt);
+
 
   console.log("coin : " + coin);
 };
@@ -179,22 +187,21 @@ app.put("/playlists/liked/:playlistId", async (req, res) => {
     }
     const userAccount = await User.findById(userId);
     const updatedPlaylist = await playlist.save();
-
-    if (playlist.numberOfLikes >= 5) {
-      await contract.methods
-        .transfer(userAccount.userAddressEthereum, 10)
-        .send({ from: sender });
-    }
-    console.log("hehehe");
-    userAccount.userCoin = Number(
-      await contract.methods
-        .getUserCoins(userAccount.userAddressEthereum)
-        .call()
-    );
+     console.log("hehehe");
+    if(playlist.numberOfLikes>=5)
+    {
+      const weiAmount = await web3.utils.toWei('0.01', 'ether');
+      const receipt = await contract.methods.transfer(userAccount.userAddressEthereum, weiAmount).send({ from: sender });
+      // console.log("Transfer receipt:", receipt);
+        
+    } 
+    // console.log("hehehe"); 
+  userAccount.userCoin = Number(await contract.methods.getUserCoins(userAccount.userAddressEthereum).call());  
     const userCoin = userAccount.userCoin;
-    userAccount.save();
+    userAccount.save();  
 
-    res.status(200).json({ updatedPlaylist, userCoin });
+    res.status(200).json({ updatedPlaylist ,userCoin});
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

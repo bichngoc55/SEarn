@@ -9,20 +9,12 @@ contract PlaylistLikes {
     event CoinRewarded(address indexed user, uint coins);
     event Transfer(address indexed from, address indexed to, uint value);
     constructor (){
-        balances[msg.sender] = 100000000;
+        balances[msg.sender] = 10000000000000000000000;
     }
 
     function getUserCoins(address user) public view returns (uint) {
         return balances[user];
-    }
-
-    // function rewardUser(address user ) public {
-    //     require(balances[msg.sender] >= COIN_REWARD, "Insufficient contract balance.");
-    //     uint256 reward = COIN_REWARD ;
-    //     userCoins[user] += reward;
-    //     transfer(user, reward);
-    //     emit CoinRewarded(user, reward);
-    // }
+    } 
 
     function transfer(address to ,uint value ) public returns (bool) {
         

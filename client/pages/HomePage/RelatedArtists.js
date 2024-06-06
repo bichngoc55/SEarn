@@ -31,7 +31,11 @@ export default function RelatedArtist() {
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
+    const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
+    console.log(
+      "new access token for spotify in new related artist screen: " +
+        accessToken
+    );
   }, [dispatch]);
 
   const [artistList, setArtistList] = useState([]);
@@ -45,7 +49,8 @@ export default function RelatedArtist() {
       if (accessToken) {
         const { listLikedArtists } = await getLikedArtistList(
           accessToken,
-          user._id
+          user?._id
+
         );
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
         setLikedArtistList(artistIds); //Lấy liked artists từ db

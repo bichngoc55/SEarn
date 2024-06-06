@@ -361,10 +361,7 @@ export default function UserPage() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView
-          style={styles.scrollViewContent}
-          contentContainerStyle={styles.scrollContentContainer}
-        >
+        <ScrollView style={styles.scrollViewContent}>
           <Text style={styles.sectionTitle}>Settings</Text>
 
           <TouchableOpacity
@@ -566,7 +563,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     marginTop: scale(20),
     marginBottom: scale(20),
-    alignItems: "center",
+    marginLeft: "8%",
   },
   btnContainer2: {
     flexDirection: "row",
@@ -602,5 +599,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
+  },
+  scrollViewContent: {
+    marginBottom: scale(50),
+    width: "100%",
+    marginLeft: "30%",
+    alignContent: "center",
   },
 });

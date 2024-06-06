@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigation } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import {
   View,
@@ -14,9 +14,11 @@ import {
 } from "react-native";
 import scale from "../constant/responsive";
 import { Ionicons } from "@expo/vector-icons";
+import { useWindowDimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { Animated, PanResponder } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -26,20 +28,20 @@ import AudioService from "../service/audioService";
 const MiniPlayer = () => {
   let service = new AudioService();
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
-  useEffect(() => {
-    if (isFocused) {
-      const handlePlaybackStatus = ({ progress, total }) => {
-        setProgress(progress);
-        setTotal(total);
-      };
-      service.registerPlaybackStatusCallback(handlePlaybackStatus);
-    }
+  const pan = React.useRef(new Animated.ValueXY()).current;
+  const translateX = useRef(new Animated.Value(0)).current;
+  const { width, height } = useWindowDimensions();
 
+  useEffect(() => {
+    const handlePlaybackStatus = ({ progress, total }) => {
+      setProgress(progress);
+      setTotal(total);
+    };
+    service.registerPlaybackStatusCallback(handlePlaybackStatus);
     return () => {};
-  }, [isFocused, service.currentAudio]);
+  }, [service.currentAudio]);
 
   const [track, setTrack] = useState({
     title: "No playing track",
@@ -53,133 +55,168 @@ const MiniPlayer = () => {
       });
     } else alert("No audio available");
   };
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event([null, { dx: translateX }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: (e, gestureState) => {
+        if (gestureState.dx > 50) {
+          Animated.timing(translateX, {
+            toValue: width,
+            duration: 300,
+            useNativeDriver: true,
+          }).start(() => {});
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   return (
-    <View style={styles.container} activeOpacity={0.9}>
-      <TouchableOpacity
-        style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
-        onPress={() => {
-          OpenPlaySong();
-        }}
-      >
-        <View style={styles.imageContainer}>
-          {service.currentSong && service.currentSong.album? (
-            <Image
-              style={{ width: "100%", height: "100%", borderRadius: scale(50) }}
-              source={{
-                uri: service.currentSong.album.image,
-              }}
-            />
-          ) : (
-            <Image
-              style={{ width: "100%", height: "100%", borderRadius: scale(50) }}
-              source={{
-                uri: track.image,
-              }}
-            />
-          )}
-        </View>
-
-        {service.currentSong ? (
-          <View style={{ flex: 1 }}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.songname}
-            >
-              {service.currentSong.name}
-            </Text>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.songartist}
-            >
-              {service.currentSong.artists
-                .map((artist) => artist.name)
-                .join(", ")}
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.textContainer}>
-            <Text style={styles.songname}>{track.title}</Text>
-            <Text style={styles.songartist}>Not found artists</Text>
-          </View>
-        )}
-      </TouchableOpacity>
-      <View
-        style={{
-          flexDirection: "row",
-          marginLeft: "5%",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "25%",
-        }}
-      >
-        <FontAwesome6
-          name="backward-step"
-          size={scale(20)}
-          color="#737373"
+    <Animated.View
+      style={{ transform: [{ translateX }] }}
+      {...panResponder.panHandlers}
+    >
+      <View style={styles.container} activeOpacity={0.9}>
+        <TouchableOpacity
+          style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
           onPress={() => {
-            if (service.currentAudio) {
-              service.playPreviousAudio();
-            }
+            OpenPlaySong();
           }}
-        />
-        {service.currentAudio ? (
-          service.isPlay ? (
-            <View
-              style={styles.circle}
-              onPress={() => {
-                service.currentAudio.sound.pauseAsync();
-                console.log("Dừng âm thanh");
-                service.isPlay = false;
-              }}
-            >
-              <FontAwesome5
-                name="pause"
-                size={scale(15)}
-                color="black"
+        >
+          <View style={styles.imageContainer}>
+            {service.currentSong ? (
+              <Image
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: scale(50),
+                }}
+                source={{
+                  uri: service.currentSong.album.image,
+                }}
+              />
+            ) : (
+              <Image
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: scale(50),
+                }}
+                source={{
+                  uri: track.image,
+                }}
+              />
+            )}
+          </View>
+
+          {service.currentSong ? (
+            <View style={{ flex: 1 }}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.songname}
+              >
+                {service.currentSong.name}
+              </Text>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.songartist}
+              >
+                {service.currentSong.artists
+                  .map((artist) => artist.name)
+                  .join(", ")}
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.textContainer}>
+              <Text style={styles.songname}>{track.title}</Text>
+              <Text style={styles.songartist}>Not found artists</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            marginLeft: "5%",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "25%",
+          }}
+        >
+          <FontAwesome6
+            name="backward-step"
+            size={scale(20)}
+            color="#737373"
+            onPress={() => {
+              if (service.currentAudio) {
+                service.playPreviousAudio();
+              }
+            }}
+          />
+          {service.currentAudio ? (
+            service.isPlay ? (
+              <View
+                style={styles.circle}
                 onPress={() => {
                   service.currentAudio.sound.pauseAsync();
                   console.log("Dừng âm thanh");
                   service.isPlay = false;
                 }}
+              >
+                <FontAwesome5
+                  name="pause"
+                  size={scale(15)}
+                  color="black"
+                  onPress={() => {
+                    service.currentAudio.sound.pauseAsync();
+                    console.log("Dừng âm thanh");
+                    service.isPlay = false;
+                  }}
+                />
+              </View>
+            ) : (
+              <FontAwesome
+                name="play-circle"
+                size={scale(40)}
+                color="#FED215"
+                onPress={() => {
+                  service.currentAudio.sound.playAsync();
+                  console.log("Phát âm thanh");
+                  service.isPlay = true;
+                }}
               />
-            </View>
+            )
           ) : (
             <FontAwesome
               name="play-circle"
               size={scale(40)}
               color="#FED215"
               onPress={() => {
-                service.currentAudio.sound.playAsync();
-                console.log("Phát âm thanh");
-                service.isPlay = true;
+                alert("No audio available");
               }}
             />
-          )
-        ) : (
-          <FontAwesome
-            name="play-circle"
-            size={scale(40)}
-            color="#FED215"
+          )}
+          <FontAwesome6
+            name="forward-step"
+            size={scale(20)}
+            color="#737373"
             onPress={() => {
-              alert("No audio available");
+              if (service.currentAudio) {
+                service.playNextAudio();
+              }
             }}
           />
-        )}
-        <FontAwesome6
-          name="forward-step"
-          size={scale(20)}
-          color="#737373"
-          onPress={() => {
-            if (service.currentAudio) {
-              service.playNextAudio();
-            }
-          }}
-        />
+        </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

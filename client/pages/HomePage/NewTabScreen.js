@@ -32,8 +32,12 @@ export default function NewsTab() {
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
+    const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
+    console.log(
+      "new access token for spotify in new tab screen: " + accessToken
+    );
   }, [dispatch]);
+
 
   const [albumsNewReleases, setAlbumsNewReleases] = useState([]);
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
@@ -62,7 +66,6 @@ export default function NewsTab() {
   useEffect(() => {
     const fetchAlbumsNewReleases = async () => {
       try {
-        console.log("Gọi in4 Home từ spotify");
         console.log(accessTokenForSpotify);
         if (accessTokenForSpotify) {
           const { items } = await getAlbumsNewReleases(accessTokenForSpotify);

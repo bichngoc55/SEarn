@@ -110,6 +110,7 @@ const LyricPage = ({ route }) => {
               maximumValue={service.currentTotalTime}
               onValueChange={(value) => {
                 service.currentTime = value;
+                service.isGetCoin = false;
                 service.currentAudio.sound.setPositionAsync(value);
               }}
             />

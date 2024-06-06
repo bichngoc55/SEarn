@@ -88,7 +88,7 @@ const SongItem = ({ input, songList }) => {
     service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
     service.playCurrentAudio();
-
+    service.isGetCoin = true;
     navigation.navigate("PlaySong", {
       song: service.currentSong,
     });
@@ -96,7 +96,7 @@ const SongItem = ({ input, songList }) => {
 
   const [image, setImage] = useState(null);
 
-  useEffect(() => { 
+  useEffect(() => {
     const getSongImg = async () => {
       try {
         if (accessTokenForSpotify) {
@@ -111,7 +111,7 @@ const SongItem = ({ input, songList }) => {
     };
     getSongImg();
   }, [accessTokenForSpotify]);
-  
+
   return (
     <TouchableOpacity style={styles.trackContainer} onPress={MoveToPlaySong}>
       {input.album && input.album.image ? (

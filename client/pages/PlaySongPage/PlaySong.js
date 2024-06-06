@@ -37,7 +37,6 @@ import { Feather } from "@expo/vector-icons";
 import MenuOfPlaysong from "../../components/MenuOfPlaysong/MenuOfPlaysong";
 import AudioService from "../../service/audioService";
 
-
 const PlaySongPage = ({ route }) => {
   const { song } = route.params;
   const navigation = useNavigation();
@@ -127,7 +126,10 @@ const PlaySongPage = ({ route }) => {
     const getSongImg = async () => {
       try {
         if (accessTokenForSpotify) {
-          const songData = await getTrack(accessTokenForSpotify, service.currentSong.id);
+          const songData = await getTrack(
+            accessTokenForSpotify,
+            service.currentSong.id
+          );
           setImage(songData.album.img);
         } else {
           alert("accessToken: " + accessTokenForSpotify);
@@ -196,6 +198,7 @@ const PlaySongPage = ({ route }) => {
           maximumValue={service.currentTotalTime}
           onValueChange={(value) => {
             service.currentTime = value;
+            service.isGetCoin = false;
             service.currentAudio.sound.setPositionAsync(value);
           }}
         />

@@ -16,6 +16,7 @@ class AudioService {
     this.currentPlaylist = [];
     this.currentSong = null;
     this.currentAudio = null;
+    this.isGetCoin = true;
     AudioService.instance = this;
   }
 
@@ -142,6 +143,10 @@ class AudioService {
     }
 
     if (status.didJustFinish) {
+      if (this.isGetCoin) {
+        //Tăng coin
+      }
+      this.isGetCoin = true;
       if (this.isRepeat) {
         await this.playCurrentAudio();
       } else if (this.isShuffle) {

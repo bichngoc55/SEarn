@@ -218,7 +218,7 @@ const PublicPlaylist = () => {
         <SelectList
           onSelect={() => handleSelected(selected)}
           setSelected={(value) => setSelected(value)}
-          fontFamily="Montserrat"
+          fontFamily="regular"
           save="value"
           style={styles.input}
           placeholder="Select a playlist"
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   title: {
     color: COLOR.textPrimaryColor,
     fontSize: scale(20),
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     marginTop: scale(15),
   },
   header: {

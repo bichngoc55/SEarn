@@ -367,31 +367,30 @@ export default function UserPage() {
           contentContainerStyle={styles.scrollContentContainer}
         >
           <Text style={styles.sectionTitle}>Settings</Text>
-
           <TouchableOpacity
-            style={styles.settingItem}
+            style={styles.itemContainer}
             onPress={handlePasswordChange}
           >
             <MaterialIcons name="password" size={24} color="white" />
-            <Text style={styles.settingText}>Password settings</Text>
+            <Text style={styles.itemText}>Password settings</Text>
           </TouchableOpacity>
           {/* publicPlaylist */}
           <TouchableOpacity
-            style={styles.settingItem}
+            style={styles.itemContainer}
             onPress={handlePublicPlaylist}
           >
             <MaterialIcons name="password" size={24} color="white" />
-            <Text style={styles.settingText}>Public Playlist</Text>
+            <Text style={styles.itemText}>Public Playlist</Text>
           </TouchableOpacity>
           <Text style={styles.sectionTitle}>Options</Text>
 
-          <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity style={styles.itemContainer}>
             <MaterialIcons name="update" size={24} color="white" />
-            <Text style={styles.settingText}>Check for updates</Text>
+            <Text style={styles.itemText}>Check for updates</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingItem} onPress={openModal}>
+          <TouchableOpacity style={styles.itemContainer} onPress={openModal}>
             <MaterialIcons name="feedback" size={24} color="white" />
-            <Text style={styles.settingText}>
+            <Text style={styles.itemText}>
               Give feedbacks & Report errors
             </Text>
             <Modal isOpen={isModalOpen} onClose={closeModal}>
@@ -409,8 +408,9 @@ export default function UserPage() {
                 />
                 <View style={styles.btnContainer2}>
                   <ReuseBtn
-                    width={scale(150)}
-                    height={scale(60)}
+                    width={scale(120)}
+                    height={scale(40)}
+                    textSize= {scale(15)}
                     btnText="Send Report"
                     onPress={() => handleSendReport(feedback)}
                   />
@@ -421,7 +421,7 @@ export default function UserPage() {
                     <Text
                       style={{
                         color: "white",
-                        fontSize: scale(18),
+                        fontSize: scale(15),
                         fontFamily: "regular",
                       }}
                     >
@@ -438,26 +438,27 @@ export default function UserPage() {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.settingItem}
+            style={styles.itemContainer}
             onPress={handleTermsPress}
           >
             <Ionicons name="document-text-outline" size={24} color="white" />
-            <Text style={styles.settingText}>Terms and conditions</Text>
+            <Text style={styles.itemText}>Terms and conditions</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.settingItem}
+            style={styles.itemContainer}
             onPress={handlePrivacyPress}
           >
             <MaterialIcons name="security" size={24} color="white" />
-            <Text style={styles.settingText}>Privacy Policy</Text>
+            <Text style={styles.itemText}>Privacy Policy</Text>
           </TouchableOpacity>
           <View style={styles.btnContainer}>
             <ReuseBtn
               onPress={handleSubmit}
               btnText="Log out"
               textColor="#ffffff"
-              width={scale(210)}
-              height={scale(65)}
+              textSize= {scale(18)}
+              width={scale(300)}
+              height={scale(50)}
             />
           </View>
         </ScrollView>
@@ -469,16 +470,14 @@ export default function UserPage() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#1C1B1B",
-    alignItems: "center",
     width: "100%",
     height: "100%",
   },
   text1: {
     fontSize: scale(26),
-    fontFamily: "regular",
+    fontFamily: "blod",
     position: "absolute",
     top: scale(300),
-    fontWeight: "bold",
   },
   text2: {
     fontSize: scale(16),
@@ -487,7 +486,6 @@ const styles = StyleSheet.create({
     top: scale(350),
     textAlign: "center",
   },
-
   headerContainer: {
     width: "100%",
     aspectRatio: 1.9,
@@ -495,17 +493,19 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: "row",
     alignItems: "center",
+    alignSelf:"center",
     width: "50%",
     marginTop: scale(60),
     justifyContent: "center",
   },
   nameInput: {
     color: COLOR.textPrimaryColor,
-    fontFamily: "regular",
+    fontFamily: "semiBold",
     width: "100%",
     fontSize: scale(15),
     borderBottomWidth: 1,
     textAlign: "center",
+    alignSelf:"center"
   },
   stack: {
     position: "absolute",
@@ -515,14 +515,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
   },
-  settingItem: {
+  scrollViewContent:{
+    marginHorizontal:scale(10)
+  },
+  itemContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginTop: scale(10),
+    marginHorizontal:scale(10)
   },
-  settingText: {
+  itemText: {
     color: COLOR.textPrimaryColor,
-    paddingLeft: scale(10),
+    paddingHorizontal: scale(10),
     fontFamily: "regular",
     fontSize: scale(15),
   },
@@ -559,47 +563,42 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: COLOR.textPrimaryColor,
-    fontFamily: "regular",
-    fontSize: scale(20),
-    fontWeight: "bold",
+    fontFamily: "semiBold",
+    fontSize: scale(18),
     marginTop: scale(20),
   },
   btnContainer: {
-    marginTop: scale(20),
-    marginBottom: scale(20),
+    marginVertical: scale(20),
     alignItems: "center",
   },
   btnContainer2: {
     flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-    marginTop: scale(20),
-    marginBottom: scale(20),
+    justifyContent: "space-between",
+    marginVertical: scale(20),
     alignItems: "center",
+    width: scale(280)
   },
   FeedbackContainer: {
     backgroundColor: "black",
     alignItems: "center",
     borderRadius: scale(20),
+    width: scale(350)
   },
   feedbackText: {
     color: "white",
-    fontSize: scale(20),
-    fontWeight: "bold",
+    fontSize: scale(18),
     marginTop: scale(20),
     marginBottom: scale(20),
-    fontFamily: "regular",
+    fontFamily: "bold",
     textAlign: "center",
   },
   btnClose: {
-    width: scale(150),
-    height: scale(60),
-    marginLeft: scale(20),
+    width: scale(120),
+    height: scale(40),
     fontFamily: "regular",
-
-    marginRight: scale(10),
+    padding:scale(10),
     backgroundColor: "red",
-    borderRadius: scale(15),
+    borderRadius: scale(10),
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",

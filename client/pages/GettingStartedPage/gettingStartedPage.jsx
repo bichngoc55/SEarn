@@ -56,6 +56,7 @@ const GettingStartedScreen = () => {
           <ReuseBtn
             onPress={handleClick}
             btnText="Getting Started"
+            textSize={scale(18)}
             textColor="#ffffff"
             width={scale(210)}
             height={scale(65)}

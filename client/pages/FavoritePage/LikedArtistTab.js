@@ -43,24 +43,19 @@ export default function LikedArtistTab() {
   }, [user, accessTokenForSpotify]);
   const [artistList, setArtistList] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [sortOrder, setSortOrder] = useState(0);
 
   //get liked artist list on db
   useEffect(() => {
     const fetchArtistList = async () => {
       try {
         if (accessToken) {
-          const { listLikedArtists } = await getLikedArtistList(
-            accessToken,
-            user._id
-          );
-          const artistIds = listLikedArtists.map(
-            (likedArtist) => likedArtist.id
-          );
-          // const likedArtistsPromises = [...listLikedArtists];
-          // const likedArtistData = await Promise.all(likedArtistsPromises);
-          // likedArtistData.forEach((likedArtist) => {});
-          // setArtistList(likedArtistData);
-          setArtistList(artistIds);
+          const { listLikedArtists } = await getLikedArtistList(accessToken, user._id);
+          // const artistIds = listLikedArtists.map(
+          //   (likedArtist) => likedArtist.id
+          // );
+          setArtistList(listLikedArtists);
+          // setArtistList(artistIds);
         } else alert("Chưa có accessToken");
       } catch (error) {
         console.error("Error fetching artists:", error);
@@ -78,8 +73,11 @@ export default function LikedArtistTab() {
       try {
         console.log("calling accesstoken: " + accessTokenForSpotify);
         if (accessTokenForSpotify) {
-          const artistPromises = artistList.map((artistId) =>
-            getArtist(accessTokenForSpotify, artistId)
+          const artistPromises = artistList.map((likedArtist) =>
+            getArtist(accessTokenForSpotify, likedArtist.id).then(artist=>({
+              ...artist,
+              timeAdded: likedArtist.timeAdded
+            }))
           );
           const artistData = await Promise.all(artistPromises);
           artistData.forEach((artist) => {});
@@ -92,6 +90,32 @@ export default function LikedArtistTab() {
 
     fetchArtists();
   }, [accessTokenForSpotify, artistList]);
+
+  // Sort artists based on sortOrder
+  useEffect(() => {
+    const sortArtists = () => {
+      let sortedArtists = [...artists];
+      switch (sortOrder) {
+        case 0:
+          sortedArtists = sortedArtists.sort(() => Math.random() - 0.5);
+          break;
+        case 1:
+          sortedArtists.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case 2:
+          sortedArtists.sort((a, b) => new Date(b.timeAdded) - new Date(a.timeAdded));
+          break;
+        default:
+          break;
+      }
+      setArtists(sortedArtists);
+    };
+
+    sortArtists();
+  }, [sortOrder]);
+  const handleSort = () => {
+    setSortOrder((prevSortOrder) => (prevSortOrder + 1) % 3);
+  };
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
@@ -128,7 +152,8 @@ export default function LikedArtistTab() {
       setArtistList(artistList.filter((id) => id !== artistId));
     } else {
       await addToLikedArtists(artistId);
-      setArtistList([...artistList, artistId]);
+      const timeAdded = new Date().toISOString();
+      setArtistList([...artistList, { id: artistId, timeAdded }]);
     }
   };
 
@@ -137,13 +162,16 @@ export default function LikedArtistTab() {
       <View style={styles.sort}>
         <Text style={styles.text}>Sort By</Text>
         <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}>
+          style={{ flexDirection: "row", alignItems: "center" }}
+          onPress={handleSort}>
           <MaterialCommunityIcons
             name="sort-clock-ascending-outline"
             color={COLOR.btnBackgroundColor}
             size={30}
           />
-          <Text style={[styles.text, { marginLeft: 5 }]}>Recently Added</Text>
+          <Text style={[styles.text, { marginLeft: 5 }]}>
+          {sortOrder === 0 ? 'Random' : sortOrder === 1 ?  'Sort by Name' : 'Recently Added'}
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.flatlistContainer}>
@@ -153,7 +181,7 @@ export default function LikedArtistTab() {
           renderItem={({ item }) => {
             return <ArtistItem input={item} 
             onLikeUnlike={handleLikeUnlike}
-            isLiked={artistList.includes(item.id)}/>;
+            isLiked={artistList.some((a) => a.id === item.id)}/>;
           }}
           ListFooterComponent={<View style={{ height: scale(60) }} />}
         />
@@ -166,6 +194,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
     height: "100%",
+    marginHorizontal: scale(10)
   },
   sort: {
     marginVertical: 15,
@@ -176,6 +205,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: "white",
+    fontFamily:"semiBold"
   },
   flatlistContainer: {
     marginHorizontal: scale(10),

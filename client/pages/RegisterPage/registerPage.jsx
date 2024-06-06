@@ -131,6 +131,7 @@ export default function RegisterScreen({ navigation }) {
                   <ReuseBtn
                     onPress={handleSubmit}
                     btnText="Register"
+                    textSize={scale(18)}
                     textColor="#ffffff"
                     width={scale(210)}
                     height={scale(65)}

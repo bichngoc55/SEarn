@@ -209,11 +209,10 @@ const styles = StyleSheet.create({
   },
   cardText: {
     flex: 1,
-    fontFamily: "Montserrat",
+    fontFamily: "bold",
     fontSize: scale(13),
     lineHeight: scale(20),
     color: COLOR.textPrimaryColor,
-    fontWeight: "bold",
   },
   icon: {
     width: 24,
@@ -233,15 +232,14 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
     marginBottom: 8,
-    fontFamily: "Montserrat",
+    fontFamily: "bold",
     color: COLOR.btnBackgroundColor,
   },
   contentText: {
     fontSize: 16,
     lineHeight: 24,
-    fontFamily: "Montserrat",
+    fontFamily: "regular",
     color: COLOR.textPrimaryColor,
   },
 });

@@ -7,7 +7,8 @@ import {
   updateBackgroundImage,
   updateAvatar,
   upload,
-  updateLikedSongs,
+  addLikedSongs,
+  unlikedSongs,
   refresh,
   getLikedSongs,
   addLikedAlbums,
@@ -38,7 +39,8 @@ router.patch(
 );
 
 router.patch("/ava", authMiddleware, updateAvatar);
-router.patch("/:id/updateLikedSongs", authMiddleware, updateLikedSongs);
+router.patch("/:id/addLikedSongs", authMiddleware, addLikedSongs);
+router.patch("/:id/unlikeSongs", authMiddleware, unlikedSongs);
 router.patch("/:id/addLikedAlbums", authMiddleware, addLikedAlbums);
 router.patch("/:id/unlikeAlbum", authMiddleware, unlikeAlbum);
 router.patch("/:id/addLikedArtists", authMiddleware, addLikedArtists);

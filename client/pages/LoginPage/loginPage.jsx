@@ -126,6 +126,7 @@ export default function LoginScreen({ navigation }) {
                   <ReuseBtn
                     onPress={handleSubmit}
                     btnText="Login"
+                    textSize={scale(18)}
                     textColor="#ffffff"
                     width={scale(210)}
                     height={scale(65)}

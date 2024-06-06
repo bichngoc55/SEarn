@@ -15,6 +15,7 @@ const ReuseBtn = ({
   textColor,
   width,
   height,
+  textSize,
   isSelected = false,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -29,7 +30,7 @@ const ReuseBtn = ({
       onPressIn={() => setIsPressed(true)} // When pressed
       onPressOut={() => setIsPressed(false)} // When released
     >
-      <Text style={styles.Text(textColor)}>{btnText}</Text>
+      <Text style={styles.Text(textColor, textSize)}>{btnText}</Text>
     </Pressable>
   );
 };
@@ -40,14 +41,15 @@ const styles = StyleSheet.create({
     height: height,
     backgroundColor: COLOR.btnBackgroundColor,
     padding: scale(10),
-    borderRadius: scale(15),
+    borderRadius: scale(10),
     alignItems: "center",
     justifyContent: "center",
   }),
-  Text: (textColor) => ({
+  Text: (textColor, textSize) => ({
     color: COLOR.textPrimaryColor,
+    fontSize: textSize,
     fontFamily: "regular",
-    fontSize: scale(18),
+    textAlign:"center"
   }),
 });
 

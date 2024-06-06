@@ -42,7 +42,7 @@ const MiniPlayer = () => {
     };
     service.registerPlaybackStatusCallback(handlePlaybackStatus);
     return () => {};
-  }, [service.currentSong]);
+  }, [service.currentTime]);
 
   const [track, setTrack] = useState({
     title: "No playing track",
@@ -50,7 +50,7 @@ const MiniPlayer = () => {
     artists: "Not found artists",
   });
   const OpenPlaySong = async () => {
-    if (service.currentSound.song) {
+    if (service.currentSong) {
       navigation.navigate("PlaySong", {
         song: service.currentSong,
       });

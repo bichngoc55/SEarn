@@ -90,34 +90,28 @@ export default function NewsTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(
-      `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(
-      `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeAlbum`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));

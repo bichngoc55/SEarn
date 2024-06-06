@@ -25,33 +25,45 @@ const LikedSongPage = () => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
+  const accessToken = useSelector((state) => state.user.accessToken);
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
-
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
 
   useEffect(() => {
     if (accessTokenForSpotify) {
       console.log("Access Token in useEffect:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
-  const [songList, setSongList] = useState([
-    "255vSRpVq5YYKBJiem1BVx",
-    "6jcLKVmEKAQIXIVHJZ8vzS",
-    "5iZHnufFUgATzrpGgH1K0W",
-    "5cml547MByVlaVrKU2lJTg",
-    "0dBKcPEAsdxWJsqNDNHcPz",
-  ]);
+  const [songList, setSongList] = useState([]);
   const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+    getLikedSong();
+  }, []);
+  const getLikedSong = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const likedSong = await response.json();
+      setSongList(likedSong);
+      console.log(likedSong);
+      console.log(songList);
+    } catch (error) {
+      alert("Error in likedsong: " + error);
+    }
+  };
 
   useEffect(() => {
     const fetchTracks = async () => {
+      dispatch(fetchSpotifyAccessToken());
       try {
         const trackPromises = songList.map((songId) =>
           getTrack(accessTokenForSpotify, songId)
@@ -63,7 +75,7 @@ const LikedSongPage = () => {
     };
 
     fetchTracks();
-  }, [accessTokenForSpotify, songList]);
+  }, [songList, accessTokenForSpotify]);
 
   const navigation = useNavigation();
   return (

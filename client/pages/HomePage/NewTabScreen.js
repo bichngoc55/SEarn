@@ -14,7 +14,7 @@ import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
 
-import {  GestureHandlerRootView  } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbumsNewReleases } from "../../service/albumsNewReleases";
 import { getTracksRecommendations } from "../../service/songsRecommendations";
@@ -32,9 +32,13 @@ export default function NewsTab() {
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
+    const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
+    console.log(
+      "new access token for spotify in new tab screen: " + accessToken
+    );
   }, [dispatch]);
-  
+
+
   const [albumsNewReleases, setAlbumsNewReleases] = useState([]);
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
   const [likedAlbumList, setLikedAlbumList] = useState([]);
@@ -44,7 +48,10 @@ export default function NewsTab() {
     const fetchAlbumList = async () => {
       try {
         if (accessToken) {
-          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
+          const { listLikedAlbums } = await getLikedAlbumList(
+            accessToken,
+            user._id
+          );
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
         } else alert("Chưa có accessToken");
@@ -59,8 +66,7 @@ export default function NewsTab() {
   useEffect(() => {
     const fetchAlbumsNewReleases = async () => {
       try {
-        console.log("Gọi in4 Home từ spotify");
-        console.log(accessTokenForSpotify)
+        console.log(accessTokenForSpotify);
         if (accessTokenForSpotify) {
           const { items } = await getAlbumsNewReleases(accessTokenForSpotify);
           const albumsPromises = [...items];
@@ -68,8 +74,9 @@ export default function NewsTab() {
           newAlbumsData.forEach((newAlbum) => {});
           setAlbumsNewReleases(newAlbumsData);
 
-
-          const { items: trackItems } = await getTracksRecommendations(accessTokenForSpotify);
+          const { items: trackItems } = await getTracksRecommendations(
+            accessTokenForSpotify
+          );
           const tracksPromises = trackItems.map((item) => item.track);
           const tracksData = await Promise.all(tracksPromises);
           tracksData.forEach((trackRecommendation) => {});
@@ -84,7 +91,7 @@ export default function NewsTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +105,7 @@ export default function NewsTab() {
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeAlbum`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -137,8 +144,13 @@ export default function NewsTab() {
                   data={albumsNewReleases}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => {
-                    return <ArtistAlbumItem input={item} onLikeUnlike={handleLikeUnlike}
-                    isLiked={likedAlbumList.includes(item.id)}/>;
+                    return (
+                      <ArtistAlbumItem
+                        input={item}
+                        onLikeUnlike={handleLikeUnlike}
+                        isLiked={likedAlbumList.includes(item.id)}
+                      />
+                    );
                   }}
                   nestedScrollEnabled={true}
                 />
@@ -147,7 +159,7 @@ export default function NewsTab() {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={tracksRecommendations}/>;
+            return <SongItem input={item} songList={tracksRecommendations} />;
           }}
           nestedScrollEnabled={true}
           ListFooterComponent={<View style={{ height: scale(60) }} />}

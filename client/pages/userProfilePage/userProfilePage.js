@@ -54,7 +54,6 @@ export default function UserPage() {
       await AsyncStorage.removeItem("accessToken");
       await AsyncStorage.removeItem("spotifyAccessToken");
       navigation.navigate("GettingStarted");
-
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -141,7 +140,7 @@ export default function UserPage() {
       // console.log("avatar : " + JSON.stringifydata.avatar);
       const response = await axios({
         method: method, // 'PATCH' for updates
-        url: `http://10.0.2.2:3005/auth/${user._id}/${endpoint}`,
+        url: `http://localhost:3005/auth/${user._id}/${endpoint}`,
         data: data,
         headers: {
           authorization: `Bearer ${accessToken}`,
@@ -268,7 +267,7 @@ export default function UserPage() {
       console.log("name : " + name);
       await axios({
         method: "PATCH",
-        url: `http://10.0.2.2:3005/auth/${user._id}/name`,
+        url: `http://localhost:3005/auth/${user._id}/name`,
         data: { name },
         headers: {
           "Content-Type": "application/json",
@@ -295,7 +294,7 @@ export default function UserPage() {
     try {
       // console.log("content + email : ", feedback + user.email);
       const response = await axios.patch(
-        `http://10.0.2.2:3005/report/${user._id}/addReport`,
+        `http://localhost:3005/report/${user._id}/addReport`,
         {
           content: feedback,
           email: user.email,
@@ -362,10 +361,7 @@ export default function UserPage() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView
-          style={styles.scrollViewContent}
-          contentContainerStyle={styles.scrollContentContainer}
-        >
+        <ScrollView style={styles.scrollViewContent}>
           <Text style={styles.sectionTitle}>Settings</Text>
           <TouchableOpacity
             style={styles.itemContainer}
@@ -602,5 +598,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
+  },
+  scrollViewContent: {
+    marginBottom: scale(50),
+    width: "100%",
+    marginLeft: "30%",
+    alignContent: "center",
   },
 });

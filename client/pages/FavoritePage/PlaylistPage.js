@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
     width: scale(45),
     height: scale(45),
     borderRadius: scale(60),
-    marginTop: 15,
     backgroundColor: "#FED215",
     alignItems: "center",
     justifyContent: "center",

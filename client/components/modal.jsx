@@ -40,7 +40,7 @@ const Modal = (props) => {
     <RNModal
       visible={isOpen}
       transparent
-      animationType="fade"
+      animationType="slide"
       statusBarTranslucent
       {...rest}
     >

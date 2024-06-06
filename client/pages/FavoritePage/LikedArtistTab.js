@@ -35,7 +35,6 @@ export default function LikedArtistTab() {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
-
   useEffect(() => {
     if (accessTokenForSpotify) {
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
@@ -64,7 +63,7 @@ export default function LikedArtistTab() {
 
     if (!artistList.length && accessToken && user?._id) {
       fetchArtistList();
-    } 
+    }
   }, [user?._id, accessToken]);
 
   //get in4 of artist from Spotify
@@ -119,7 +118,7 @@ export default function LikedArtistTab() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -133,7 +132,7 @@ export default function LikedArtistTab() {
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

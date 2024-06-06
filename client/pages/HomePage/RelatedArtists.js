@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,11 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
-import {  GestureHandlerRootView  } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getRelatedArtists } from "../../service/getRelatedArtists";
 import ArtistItem from "../../components/artistItem";
@@ -23,15 +23,19 @@ import { getLikedArtistList } from "../../service/getLikedArtistList";
 export default function RelatedArtist() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const accessToken = useSelector (state=> state.user.accessToken);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
-  ); 
+  );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
-      
+
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
+    const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
+    console.log(
+      "new access token for spotify in new related artist screen: " +
+        accessToken
+    );
   }, [dispatch]);
 
   const [artistList, setArtistList] = useState([]);
@@ -43,13 +47,19 @@ export default function RelatedArtist() {
   const fetchArtistList = useCallback(async () => {
     try {
       if (accessToken) {
-        const { listLikedArtists } = await getLikedArtistList(accessToken, user._id);
+        const { listLikedArtists } = await getLikedArtistList(
+          accessToken,
+          user?._id
+
+        );
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
-        setLikedArtistList(artistIds) //Lấy liked artists từ db
+        setLikedArtistList(artistIds); //Lấy liked artists từ db
 
         let finalArtistList = artistIds;
         if (artistIds.length > 5) {
-          finalArtistList = artistIds.sort(() => 0.5 - Math.random()).slice(0, 5);
+          finalArtistList = artistIds
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 5);
         }
 
         setArtistList(finalArtistList);
@@ -69,7 +79,9 @@ export default function RelatedArtist() {
         );
         const relatedArtistsData = await Promise.all(artistPromises);
 
-        const allRelatedArtists = relatedArtistsData.flatMap((data) => data.artists);
+        const allRelatedArtists = relatedArtistsData.flatMap(
+          (data) => data.artists
+        );
         setRelatedArtists(allRelatedArtists);
       } else {
         alert("accessToken:" + accessTokenForSpotify);
@@ -81,7 +93,7 @@ export default function RelatedArtist() {
   useEffect(() => {
     if (!isDataFetched) {
       fetchArtistList().then(() => {
-        fetchRelatedArtists(); 
+        fetchRelatedArtists();
         setIsDataFetched(true);
       });
     }
@@ -100,7 +112,7 @@ export default function RelatedArtist() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +126,7 @@ export default function RelatedArtist() {
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -136,8 +148,8 @@ export default function RelatedArtist() {
       setLikedArtistList([...likedArtistList, artistId]);
     }
   };
-    
-  return(
+
+  return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.flatlistContainer}>
@@ -145,8 +157,13 @@ export default function RelatedArtist() {
             data={relatedArtists}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              return <ArtistItem input={item} onLikeUnlike={handleLikeUnlike}
-              isLiked={likedArtistList.includes(item.id)}/>;
+              return (
+                <ArtistItem
+                  input={item}
+                  onLikeUnlike={handleLikeUnlike}
+                  isLiked={likedArtistList.includes(item.id)}
+                />
+              );
             }}
             nestedScrollEnabled={true}
             ListFooterComponent={<View style={{ height: scale(60) }} />}
@@ -154,7 +171,7 @@ export default function RelatedArtist() {
         </View>
       </View>
     </SafeAreaView>
-    )
+  );
 }
 const styles = StyleSheet.create({
   container: {
@@ -163,10 +180,10 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1C1B1B",
   },
-  content:{
+  content: {
     marginHorizontal: scale(10),
-    flex:1, 
-    marginTop: scale(10)
+    flex: 1,
+    marginTop: scale(10),
   },
   title: {
     marginVertical: scale(10),
@@ -177,5 +194,4 @@ const styles = StyleSheet.create({
   flatlistContainer: {
     marginHorizontal: scale(10),
   },
-})
-  
+});

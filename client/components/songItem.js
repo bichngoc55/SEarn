@@ -81,11 +81,14 @@ const SongItem = ({ input, songList }) => {
 
   const MoveToPlaySong = async () => {
     let service = new AudioService();
+
     await service.loadPlaylist(songList);
     service.currentSong = input;
     service.currentPlaylist = songList;
+    service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
     service.playCurrentAudio();
+    service.isGetCoin = true;
     navigation.navigate("PlaySong", {
       song: service.currentSong,
     });
@@ -93,7 +96,7 @@ const SongItem = ({ input, songList }) => {
 
   const [image, setImage] = useState(null);
 
-  useEffect(() => { 
+  useEffect(() => {
     const getSongImg = async () => {
       try {
         if (accessTokenForSpotify) {
@@ -108,7 +111,7 @@ const SongItem = ({ input, songList }) => {
     };
     getSongImg();
   }, [accessTokenForSpotify]);
-  
+
   return (
     <TouchableOpacity style={styles.trackContainer} onPress={MoveToPlaySong}>
       {input.album && input.album.image ? (
@@ -124,7 +127,7 @@ const SongItem = ({ input, songList }) => {
         <Text style={styles.textName} numberOfLines={1} ellipsizeMode="tail">
           {input.name}
         </Text>
-        <Text style={styles.textArtist}>
+        <Text style={styles.textArtist} numberOfLines={1} ellipsizeMode="tail">
           {input.artists.map((artist) => artist.name).join(", ")}{" "}
         </Text>
       </View>

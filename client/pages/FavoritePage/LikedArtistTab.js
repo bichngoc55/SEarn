@@ -35,7 +35,6 @@ export default function LikedArtistTab() {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
-
   useEffect(() => {
     if (accessTokenForSpotify) {
       console.log("Access Token in useEffect artist:", accessTokenForSpotify);
@@ -69,7 +68,7 @@ export default function LikedArtistTab() {
 
     if (!artistList.length && accessToken && user?._id) {
       fetchArtistList();
-    } 
+    }
   }, [user?._id, accessToken]);
 
   //get in4 of artist from Spotify
@@ -95,7 +94,7 @@ export default function LikedArtistTab() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +108,7 @@ export default function LikedArtistTab() {
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -137,7 +136,8 @@ export default function LikedArtistTab() {
       <View style={styles.sort}>
         <Text style={styles.text}>Sort By</Text>
         <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}>
+          style={{ flexDirection: "row", alignItems: "center" }}
+        >
           <MaterialCommunityIcons
             name="sort-clock-ascending-outline"
             color={COLOR.btnBackgroundColor}
@@ -151,9 +151,33 @@ export default function LikedArtistTab() {
           data={artists}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            return <ArtistItem input={item} 
-            onLikeUnlike={handleLikeUnlike}
-            isLiked={artistList.includes(item.id)}/>;
+            return (
+              <TouchableOpacity>
+                <ArtistItem
+                  input={item}
+                  onLikeUnlike={handleLikeUnlike}
+                  isLiked={artistList.includes(item.id)}
+                />
+                <Text style={[styles.text, { marginLeft: 5 }]}>
+                  Recently Added
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={artists}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
+              <ArtistItem
+                input={item}
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={artistList.includes(item.id)}
+              />
+            );
           }}
           ListFooterComponent={<View style={{ height: scale(60) }} />}
         />

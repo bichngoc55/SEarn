@@ -1,4 +1,5 @@
 import { Audio } from "expo-av";
+import { useSelector } from "react-redux";
 
 class AudioService {
   static instance = null;
@@ -141,10 +142,27 @@ class AudioService {
         total: status.durationMillis,
       });
     }
-
+    const { user } = useSelector((state) => state.user);
     if (status.didJustFinish) {
       if (this.isGetCoin) {
-        //Tăng coin
+        try {
+          const response = await fetch(
+            `http://localhost:3005/auth/${user?._id}/increaseCoin`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await response.json();
+          if (response.ok) {
+            console.log("Data being sent:", JSON.stringify(data, null, 2));
+            //lam j nua thi k bt
+          } else {
+            console.error("Error liking/unliking playlist:", data.message);
+          }
+        } catch (e) {}
       }
       this.isGetCoin = true;
       if (this.isRepeat) {

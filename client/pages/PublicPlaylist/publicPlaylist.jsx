@@ -141,7 +141,7 @@ const PublicPlaylist = () => {
         const data = await response.json();
         // console.log("Data being sent:", JSON.stringify(data, null, 2));
         if (response.ok) {
-          setCoin(data);
+          setCoin(data.userCoin);
         } else {
           console.error("Error getting coin:", data.message);
         }

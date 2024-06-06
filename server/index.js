@@ -194,15 +194,16 @@ app.put("/playlists/liked/:playlistId", async (req, res) => {
       // console.log("Transfer receipt:", receipt);
     }
     // console.log("hehehe");
-    userAccount.userCoin = Number(
-      await contract.methods
-        .getUserCoins(userAccount.userAddressEthereum)
-        .call()
-    );
-    const userCoin = userAccount.userCoin;
-    userAccount.save();
+    const userCoinWei = await contract.methods
+      .getUserCoins(userAccount.userAddressEthereum)
+      .call();
+    const userCoinEther = web3.utils.fromWei(userCoinWei, "ether");
 
-    res.status(200).json({ updatedPlaylist, userCoin });
+    userAccount.userCoin = parseFloat(userCoinEther);
+
+    await userAccount.save();
+
+    res.status(200).json({ updatedPlaylist, userCoin: userAccount.userCoin });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -218,10 +219,45 @@ app.get("/auth/:userId/coins", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const coin = userAccount.userCoin;
-    // const userCoins = await contract.methods.getUserCoins(userAccount.userAddressEthereum).call();
-    console.log(coin);
-    res.status(200).json(coin);
+    const userCoinWei = await contract.methods
+      .getUserCoins(userAccount.userAddressEthereum)
+      .call();
+    const userCoinEther = web3.utils.fromWei(userCoinWei, "ether");
+
+    userAccount.userCoin = parseFloat(userCoinEther);
+
+    await userAccount.save();
+
+    res.status(200).json({ userCoin: userAccount.userCoin });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+app.put("/auth/:userId/increaseCoin", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log("userId: ", userId);
+    const userAccount = await User.findById(userId);
+
+    if (!userAccount) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // const coin = userAccount.userCoin;
+    const weiAmount = await web3.utils.toWei("0.01", "ether");
+    const receipt = await contract.methods
+      .transfer(userAccount.userAddressEthereum, weiAmount)
+      .send({ from: sender });
+
+    const userCoinWei = await contract.methods
+      .getUserCoins(userAccount.userAddressEthereum)
+      .call();
+    const userCoinEther = web3.utils.fromWei(userCoinWei, "ether");
+
+    userAccount.userCoin = parseFloat(userCoinEther);
+
+    await userAccount.save();
+
+    res.status(200).json({ userCoin: userAccount.userCoin });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

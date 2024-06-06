@@ -1,5 +1,7 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
-
+import TextField from "../textField";
+import ReuseBtn from "../buttonComponent";
+import SuccessfulModal from "../successfulModal";
 import BottomSheetModal, {
   useBottomSheetController,
   BottomSheetView,
@@ -28,11 +30,15 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import AddtoPlaylist from "./AddToPlaylist";
+import Modal2 from "../modal";
 
 const MenuOfPlaysong = ({ visible, onClose, song }) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [report, setReport] = useState("");
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -46,7 +52,28 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
     setIsOpen(false);
     console.log(isOpen);
   };
+  const handleReport = () => {
+    openReportModal();
+  };
+  const openReportModal = () => {
+    setIsReportModalOpen(true);
+  };
 
+  const closeReportModal = () => {
+    setIsReportModalOpen(false);
+  };
+  const handleChange = (text) => {
+    setReport(text);
+  };
+  const handleSendReport = async (report) => {
+    closeReportModal();
+    setReport("");
+    setIsSuccessModalVisible(true);
+
+    setTimeout(() => {
+      setIsSuccessModalVisible(false);
+    }, 4000);
+  };
   return (
     <Modal
       visible={visible}
@@ -86,9 +113,51 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
                 <Text style={styles.textSmall}>Share</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconandtext}>
+              <TouchableOpacity
+                style={styles.iconandtext}
+                onPress={handleReport}
+              >
                 <Octicons name="report" size={24} color="white" />
                 <Text style={styles.textSmall}>Report</Text>
+                <Modal2 isOpen={isReportModalOpen} onClose={closeReportModal}>
+                  <View style={styles.FeedbackContainer}>
+                    <Text style={styles.feedbackText}>Report form</Text>
+                    <TextField
+                      placeholder="Enter your report"
+                      width={scale(310)}
+                      height={scale(65)}
+                      onChangeText={handleChange}
+                      value={report}
+                    />
+                    <View style={styles.btnContainer2}>
+                      <ReuseBtn
+                        width={scale(150)}
+                        height={scale(60)}
+                        btnText="Send Report"
+                        onPress={() => handleSendReport(report)}
+                      />
+                      <TouchableOpacity
+                        style={styles.btnClose}
+                        onPress={closeReportModal}
+                      >
+                        <Text
+                          style={{
+                            color: "white",
+                            fontSize: scale(18),
+                            fontFamily: "regular",
+                          }}
+                        >
+                          Close
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal2>
+                <SuccessfulModal
+                  text={"You have sent report successfully"}
+                  isVisible={isSuccessModalVisible}
+                  onClose={() => setIsSuccessModalVisible(false)}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -165,6 +234,41 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.75)",
+  },
+  btnContainer2: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: scale(20),
+    marginBottom: scale(20),
+    alignItems: "center",
+  },
+  FeedbackContainer: {
+    backgroundColor: "black",
+    alignItems: "center",
+    borderRadius: scale(20),
+  },
+  feedbackText: {
+    color: "white",
+    fontSize: scale(20),
+    fontWeight: "bold",
+    marginTop: scale(20),
+    marginBottom: scale(20),
+    fontFamily: "regular",
+    textAlign: "center",
+  },
+  btnClose: {
+    width: scale(150),
+    height: scale(60),
+    marginLeft: scale(20),
+    fontFamily: "regular",
+
+    marginRight: scale(10),
+    backgroundColor: "red",
+    borderRadius: scale(15),
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
   },
 });
 

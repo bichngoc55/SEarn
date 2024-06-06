@@ -47,32 +47,6 @@ const SongItem = ({ input, songList }) => {
   } = useSelector((state) => state.mediaPlayer);
   const dispatch = useDispatch();
 
-  const handleSongChange = async (song) => {};
-
-  const preloadPlaylist = async () => {
-    try {
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: true,
-        playsInSilentModeAndroid: true,
-        shouldDuckAndroid: false,
-      });
-      const playlistAudio = [];
-      for (const song of playlist) {
-        const audioInstance = await Audio.Sound.createAsync({
-          uri: song.preview_url,
-        });
-        playlistAudio.push(audioInstance);
-      }
-      dispatch(setAudioPlayer(playlistAudio));
-      dispatch(setIsPlaying(true));
-      console.log(isPlaying);
-    } catch (error) {
-      console.error("Error loading sound:", error);
-      alert("Error loading sound: " + error);
-    }
-  };
-
   const getCurrentSongIndex = () => {
     return songList.findIndex((item) => item.id === input.id);
   };
@@ -81,18 +55,15 @@ const SongItem = ({ input, songList }) => {
 
   const MoveToPlaySong = async () => {
     let service = new AudioService();
-
-    await service.loadPlaylist(songList);
-
+    service.loadSong();
     service.currentSong = input;
+    console.log(service.currentSong);
     service.currentPlaylist = songList;
     service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
     service.playCurrentAudio();
     service.isGetCoin = true;
-    navigation.navigate("PlaySong", {
-      song: service.currentSong,
-    });
+    navigation.navigate("PlaySong", {});
   };
 
   const [image, setImage] = useState(null);

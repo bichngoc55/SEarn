@@ -49,7 +49,7 @@ const LyricPage = ({ route }) => {
     return () => {
       //service.unregisterPlaybackStatusCallback(handlePlaybackStatus);
     };
-  }, [service.currentAudio]);
+  }, [service.currentSound]);
   const formatTime = (timeInMillis) => {
     const totalSeconds = Math.floor(timeInMillis / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -111,7 +111,7 @@ const LyricPage = ({ route }) => {
               onValueChange={(value) => {
                 service.currentTime = value;
                 service.isGetCoin = false;
-                service.currentAudio.sound.setPositionAsync(value);
+                service.currentSound.sound.setPositionAsync(value);
               }}
             />
           </View>
@@ -156,7 +156,7 @@ const LyricPage = ({ route }) => {
               <View
                 style={styles.circle}
                 onPress={() => {
-                  service.currentAudio.sound.pauseAsync();
+                  service.currentSound.sound.pauseAsync();
                   service.isPlay = false;
                 }}
               >
@@ -165,7 +165,7 @@ const LyricPage = ({ route }) => {
                   size={scale(22)}
                   color="black"
                   onPress={() => {
-                    service.currentAudio.sound.pauseAsync();
+                    service.currentSound.sound.pauseAsync();
                     service.isPlay = false;
                   }}
                 />
@@ -176,7 +176,7 @@ const LyricPage = ({ route }) => {
                 size={scale(50)}
                 color="#FED215"
                 onPress={() => {
-                  service.currentAudio.sound.playAsync();
+                  service.currentSound.sound.playAsync();
                   service.isPlay = true;
                 }}
               />

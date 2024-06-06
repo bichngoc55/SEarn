@@ -23,7 +23,7 @@ const AddPlaylistModal = ({ visible, onClose }) => {
   const CreateNewPlaylist = async () => {
     try {
       await axios.post(
-        "https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/playlists/add",
+        "https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/playlists/add",
         {
           name,
           description,

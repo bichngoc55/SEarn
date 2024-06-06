@@ -2,91 +2,26 @@ import { Audio } from "expo-av";
 
 class AudioService {
   static instance = null;
+
   constructor() {
-    if (AudioService.instance) {
-      return AudioService.instance;
-    }
-    this.audioMap = new Map();
-    this.currentAudioIndex = 0;
-    this.currentTime = 0;
-    this.isPlay = false;
-    this.currentTotalTime = 0;
-    this.isRepeat = false;
-    this.isShuffle = false;
-    this.currentPlaylist = [];
-    this.currentSong = null;
-    this.currentAudio = null;
-    this.isGetCoin = true;
-    AudioService.instance = this;
+    if (AudioService.instance == null) {
+      this.audioMap = new Map();
+      this.currentAudioIndex = 0;
+      this.currentTime = 0;
+      this.currentSound = null;
+      this.isPlay = false;
+      this.currentTotalTime = 0;
+      this.isRepeat = false;
+      this.isShuffle = false;
+      this.currentPlaylist = [];
+      this.currentSong = null;
+      this.currentAudio = null;
+      this.isGetCoin = true;
+      AudioService.instance = this;
+    } else return AudioService.instance;
   }
 
-  // async loadPlaylist(audioList) {
-  //   try {
-  //     // Tải tất cả các audio trong playlist
-  //     await Audio.setAudioModeAsync({
-  //       playsInSilentModeIOS: true,
-  //       staysActiveInBackground: true,
-  //       playsInSilentModeAndroid: true,
-  //       shouldDuckAndroid: false,
-  //     });
-  //     // for (let i = 0; i < audioList.length; i++) {
-  //     //   const audioUrl = audioList[i];
-  //     //   if (audioUrl.preview_url == "") {
-  //     //     i++;
-  //     //   } else {
-  //     //     const { sound, status } = await Audio.Sound.createAsync(
-  //     //       {
-  //     //         uri: audioUrl.preview_url,
-  //     //       },
-  //     //       { shouldPlay: false },
-  //     //       this.onPlaybackStatusUpdated.bind(this)
-  //     //     );
-
-  //     //     await status.isLoaded;
-
-  //     //     if (status.isLoaded) {
-  //     //       this.audioMap.set(i, { sound, status });
-  //     //     } else {
-  //     //       console.error(`Không thể tải âm thanh ${audioUrl.preview_url}`);
-  //     //     }
-  //     //   }
-  //     // }
-
-  //     const validTracks = audioList.filter((track) => track.preview_url !== "");
-
-  //     const loadedTracks = await Promise.all(
-  //       validTracks.map(async (track, index) => {
-  //         const { sound, status } = await Audio.Sound.createAsync(
-  //           { uri: track.preview_url },
-  //           { shouldPlay: false },
-  //           this.onPlaybackStatusUpdated.bind(this)
-  //         );
-
-  //         if (status.isLoaded && !status.error) {
-  //           this.audioMap.set(index, { sound, status });
-  //           return { index, sound, status };
-  //         } else {
-  //           console.error(`Không thể tải âm thanh ${track.preview_url}`);
-  //         }
-  //       })
-  //     );
-  //     if (loadedTracks.length > 0) {
-  //       this.isPlay = true;
-  //     } else {
-  //       console.log("Không có âm thanh nào được tải");
-  //     }
-
-  //     // // Phát âm thanh đầu tiên trong playlist
-  //     // if (this.audioMap.size > 0) {
-  //     //   console.log(this.audioMap.size);
-  //     // } else console.log("map rỗng");
-  //     // this.isPlay = true;
-  //   } catch (error) {
-  //     alert("Sound is not available");
-  //     console.error("Lỗi khi tải playlist:", error);
-  //   }
-  // }
-  async loadPlaylist(audioList) {
+  async loadSong() {
     try {
       await Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
@@ -94,42 +29,18 @@ class AudioService {
         playsInSilentModeAndroid: true,
         shouldDuckAndroid: false,
       });
-
-      const loadedTracks = await Promise.all(
-        audioList.map(async (track, index) => {
-          if (track.preview_url === undefined || track.preview_url === null) {
-            // Không tải âm thanh nếu preview_url rỗng
-            this.audioMap.set(index, null);
-            return { index, sound: null, status: null };
-          } else {
-            const { sound, status } = await Audio.Sound.createAsync(
-              { uri: track.preview_url },
-              { shouldPlay: false },
-              this.onPlaybackStatusUpdated.bind(this)
-            );
-
-            if (status.isLoaded && !status.error) {
-              this.audioMap.set(index, { sound, status });
-              return { index, sound, status };
-            } else {
-              console.error(`Không thể tải âm thanh ${track.preview_url}`);
-              this.audioMap.set(index, null);
-              return { index, sound: null, status: null };
-            }
-          }
-        })
-      );
-
-      if (loadedTracks.some((track) => track.sound !== null)) {
-        this.isPlay = true;
-      } else {
-        console.log("Không có âm thanh nào được tải");
-      }
-    } catch (error) {
-      alert("Sound is not available");
-      console.error("Lỗi khi tải playlist:", error);
-      throw error;
-    }
+      if (
+        this.currentSong.preview_url != undefined ||
+        this.currentSong.preview_url != null
+      ) {
+        const { sound, status } = await Audio.Sound.createAsync(
+          { uri: this.currentSong.preview_url },
+          { shouldPlay: false },
+          this.onPlaybackStatusUpdated.bind(this)
+        );
+        this.currentSound = { sound, status };
+      } else this.playNextAudio;
+    } catch (error) {}
   }
 
   async onPlaybackStatusUpdated(status) {
@@ -175,44 +86,55 @@ class AudioService {
   // }
 
   async playCurrentAudio() {
-    if (this.currentAudio != null) {
-      await this.currentAudio.sound.stopAsync();
+    if (this.currentSound != null && this.currentSound.sound != null) {
+      try {
+        await this.currentSound.sound.stopAsync();
+      } catch (error) {
+        console.error("Lỗi khi dừng âm thanh:", error);
+      }
     }
-    this.currentAudio = this.audioMap.get(this.currentAudioIndex);
-    if (this.currentAudio != null) {
-      await this.currentAudio.sound.setStatusAsync({
+
+    await this.loadSong();
+    if (this.currentSound != null) {
+      await this.currentSound.sound.setStatusAsync({
         shouldPlay: true,
         positionMillis: this.currentTime,
       });
 
       // Phát audio từ vị trí hiện tại
       if (this.currentTime) {
-        await this.currentAudio.sound.playAsync();
+        await this.currentSound.sound.playAsync();
       }
       // Cập nhật trạng thái phát
       this.isPlay = true;
     } else {
-      await this.playNextAudio();
+      await this.currentSound.sound.stopAsync();
     }
   }
 
   async playNextAudio() {
-    if (this.currentAudio) {
-      await this.currentAudio.sound.stopAsync();
+    if (this.currentSound && this.currentSound.sound) {
+      try {
+        await this.currentSound.sound.stopAsync();
+      } catch (error) {
+        console.error("Lỗi khi dừng âm thanh:", error);
+      }
     }
-
     this.currentAudioIndex++;
-    if (this.currentAudioIndex >= this.audioMap.size) {
+    if (this.currentAudioIndex >= this.currentPlaylist.size) {
       this.currentAudioIndex = 0;
     }
-    this.currentAudio = this.audioMap.get(this.currentAudioIndex);
     this.currentSong = this.currentPlaylist[this.currentAudioIndex];
     await this.playCurrentAudio();
   }
 
   async playPreviousAudio() {
-    if (this.currentAudio) {
-      await this.currentAudio.sound.stopAsync();
+    if (this.currentSound && this.currentSound.sound) {
+      try {
+        await this.currentSound.sound.stopAsync();
+      } catch (error) {
+        console.error("Lỗi khi dừng âm thanh:", error);
+      }
     }
 
     this.currentAudioIndex--;
@@ -226,8 +148,12 @@ class AudioService {
   }
 
   async playRandomSong() {
-    if (this.currentAudio) {
-      await this.currentAudio.sound.stopAsync();
+    if (this.currentSound && this.currentSound.sound) {
+      try {
+        await this.currentSound.sound.stopAsync();
+      } catch (error) {
+        console.error("Lỗi khi dừng âm thanh:", error);
+      }
     }
 
     // Get a random index within the range of the audioMap size
@@ -244,14 +170,14 @@ class AudioService {
   }
 
   async stopSound() {
-    if (!this.currentAudio) {
+    if (!this.currentSound) {
       throw new Error("Chưa có âm thanh được tải");
     }
 
     try {
-      await this.currentAudio.sound.stopAsync();
-      this.currentAudio = null; // Reset the currentAudio after stopping
-      this.isPlay = false; // Reset the isPlay state
+      await this.currentSound.stopAsync();
+      // this.currentAudio = null; // Reset the currentAudio after stopping
+      // this.isPlay = false; // Reset the isPlay state
     } catch (error) {
       console.error("Error stopping sound:", error);
     }

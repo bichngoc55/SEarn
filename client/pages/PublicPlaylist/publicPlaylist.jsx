@@ -55,7 +55,7 @@ const PublicPlaylist = () => {
     const fetchPublicPlaylists = async () => {
       try {
         const response = await fetch(
-          "https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/playlists/public",
+          "https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/playlists/public",
           {
             method: "GET",
             headers: {
@@ -75,7 +75,7 @@ const PublicPlaylist = () => {
     const fetchLikedPlaylists = async () => {
       try {
         const response = await fetch(
-          `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/playlists/liked/${user._id}`,
+          `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/playlists/liked/${user._id}`,
           {
             method: "GET",
             headers: {
@@ -97,7 +97,7 @@ const PublicPlaylist = () => {
   const handleLikeUnlike = async (playlistId) => {
     try {
       const response = await fetch(
-        `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/playlists/liked/${playlistId}`,
+        `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/playlists/liked/${playlistId}`,
         {
           method: "PUT",
           headers: {
@@ -133,7 +133,7 @@ const PublicPlaylist = () => {
       try {
         console.log("userId: " + userId);
         const response = await fetch(
-          `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${userId}/coins`,
+          `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/${userId}/coins`,
           {
             method: "GET",
             headers: {
@@ -159,7 +159,7 @@ const PublicPlaylist = () => {
   //   const handleShowToken = async () => {
   //     try {
   //       const response = await fetch(
-  //         `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${userId}/coins`,
+  //         `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/${userId}/coins`,
   //         {
   //           method: "GET",
   //           headers: {

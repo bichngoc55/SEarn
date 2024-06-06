@@ -74,7 +74,7 @@ const PlaySongPage = ({ route }) => {
     //   1000
     // );
     return () => {};
-  }, [isFocused, service.currentAudio]);
+  }, [service.currentTime]);
 
   const {
     currentSong,
@@ -85,25 +85,6 @@ const PlaySongPage = ({ route }) => {
     isPlaying,
     playlist,
   } = useSelector((state) => state.mediaPlayer);
-
-  const setUpProgress = async () => {
-    if (service.isPlay && service.currentAudio) {
-      try {
-        // const status = await service.currentAudio.status;
-        // console.log(status);
-        // setProgress(status.positionMillis);
-        // setTotal(status.durationMillis);
-        // service.currentTime = status.positionMillis;
-        // console.log("service time " + status.positionMillis);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      if (service.currentAudio) {
-        await service.currentAudio.pauseAsync();
-      }
-    }
-  };
 
   const formatTime = (timeInMillis) => {
     const totalSeconds = Math.floor(timeInMillis / 1000);
@@ -199,7 +180,7 @@ const PlaySongPage = ({ route }) => {
           onValueChange={(value) => {
             service.currentTime = value;
             service.isGetCoin = false;
-            service.currentAudio.sound.setPositionAsync(value);
+            service.currentSound.sound.setPositionAsync(value);
           }}
         />
       </View>
@@ -242,7 +223,7 @@ const PlaySongPage = ({ route }) => {
           <View
             style={styles.circle}
             onPress={() => {
-              service.currentAudio.sound.pauseAsync();
+              service.currentSound.sound.pauseAsync();
               console.log(service.isPlay);
               service.isPlay = false;
             }}
@@ -252,7 +233,7 @@ const PlaySongPage = ({ route }) => {
               size={scale(27)}
               color="black"
               onPress={() => {
-                service.currentAudio.sound.pauseAsync();
+                service.currentSound.sound.pauseAsync();
                 console.log(service.isPlay);
                 service.isPlay = false;
               }}
@@ -264,7 +245,7 @@ const PlaySongPage = ({ route }) => {
             size={scale(70)}
             color="#FED215"
             onPress={() => {
-              service.currentAudio.sound.playAsync();
+              service.currentSound.sound.playAsync();
               console.log(service.isPlay);
               service.isPlay = true;
             }}

@@ -95,7 +95,7 @@ export default function LikedArtistTab() {
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
     fetch(
-      `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/addLikedArtists`,
+      `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/${user._id}/addLikedArtists`,
       {
         method: "PATCH",
         headers: {
@@ -112,7 +112,7 @@ export default function LikedArtistTab() {
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
     fetch(
-      `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/unlikeArtists`,
+      `https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/${user._id}/unlikeArtists`,
       {
         method: "PATCH",
         headers: {

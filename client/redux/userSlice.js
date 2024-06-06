@@ -31,7 +31,7 @@ export const refreshAccessToken = createAsyncThunk(
       }
 
       const response = await fetch(
-        "https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/refresh",
+        "https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/refresh",
         {
           method: "POST",
           headers: {
@@ -63,7 +63,7 @@ export const loginUser = createAsyncThunk(
     try {
       //   console.log("Inside login user in user slice");
       const response = await fetch(
-        "https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/login",
+        "https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/login",
         {
           method: "POST",
           headers: {

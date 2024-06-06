@@ -35,7 +35,7 @@ export default function RegisterScreen({ navigation }) {
   const handleSubmit = async (values) => {
     try {
       const response = await fetch(
-        "https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/register",
+        "https://c17d-2405-4802-a632-dc60-9df3-e7d9-e18e-caf7.ngrok-free.app/auth/register",
         {
           method: "POST",
           headers: {

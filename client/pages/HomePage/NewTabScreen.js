@@ -14,7 +14,7 @@ import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
 
-import {  GestureHandlerRootView  } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getAlbumsNewReleases } from "../../service/albumsNewReleases";
 import { getTracksRecommendations } from "../../service/songsRecommendations";
@@ -30,12 +30,14 @@ export default function NewsTab() {
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
   useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
+    const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
+    console.log(
+      "new access token for spotify in new tab screen: " + accessToken
+    );
   }, [dispatch]);
 
-
   // useEffect(() => {
-  //   if (accessTokenForSpotify) { 
+  //   if (accessTokenForSpotify) {
   //   console.log("Access Token in useEffect artist:", accessTokenForSpotify);
   //   }
   // }, [user, accessTokenForSpotify]);
@@ -45,8 +47,8 @@ export default function NewsTab() {
   useEffect(() => {
     const fetchAlbumsNewReleases = async () => {
       try {
-        console.log("Gọi in4 Home từ spotify");
-        console.log(accessTokenForSpotify)
+        // console.log("Gọi in4 Home từ spotify");
+        console.log(accessTokenForSpotify);
         if (accessTokenForSpotify) {
           const { items } = await getAlbumsNewReleases(accessTokenForSpotify);
           const albumsPromises = [...items];
@@ -54,8 +56,9 @@ export default function NewsTab() {
           newAlbumsData.forEach((newAlbum) => {});
           setAlbumsNewReleases(newAlbumsData);
 
-
-          const { items: trackItems } = await getTracksRecommendations(accessTokenForSpotify);
+          const { items: trackItems } = await getTracksRecommendations(
+            accessTokenForSpotify
+          );
           const tracksPromises = trackItems.map((item) => item.track);
           const tracksData = await Promise.all(tracksPromises);
           tracksData.forEach((trackRecommendation) => {});
@@ -93,7 +96,7 @@ export default function NewsTab() {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={tracksRecommendations}/>;
+            return <SongItem input={item} songList={tracksRecommendations} />;
           }}
           nestedScrollEnabled={true}
           ListFooterComponent={<View style={{ height: scale(60) }} />}

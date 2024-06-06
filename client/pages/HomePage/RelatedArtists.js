@@ -107,7 +107,7 @@ export default function RelatedArtist() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -121,7 +121,7 @@ export default function RelatedArtist() {
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

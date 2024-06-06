@@ -88,7 +88,7 @@ function ExploreStack() {
       />
       <Stack.Screen
         name="Lyric"
-        component={Lyricpage}
+        component={LyricPage}
         options={{ presentation: "modal" }}
       />
       <Stack.Screen

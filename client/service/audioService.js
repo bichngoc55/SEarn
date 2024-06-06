@@ -170,11 +170,11 @@ class AudioService {
   // }
 
   async playCurrentAudio() {
-    try {
-      if (this.currentAudio != null) {
-        await this.currentAudio.sound.stopAsync();
-      }
-      this.currentAudio = this.audioMap.get(this.currentAudioIndex);
+    if (this.currentAudio != null) {
+      await this.currentAudio.sound.stopAsync();
+    }
+    this.currentAudio = this.audioMap.get(this.currentAudioIndex);
+    if (this.currentAudio != null) {
       await this.currentAudio.sound.setStatusAsync({
         shouldPlay: true,
         positionMillis: this.currentTime,
@@ -186,9 +186,8 @@ class AudioService {
       }
       // Cập nhật trạng thái phát
       this.isPlay = true;
-    } catch (error) {
-      console.error("Lỗi khi phát âm thanh:", error);
-      throw error;
+    } else {
+      this.playNextAudio();
     }
   }
 

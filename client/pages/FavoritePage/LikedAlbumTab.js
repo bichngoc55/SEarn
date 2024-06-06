@@ -89,7 +89,7 @@ export default function LikedAlbumTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export default function LikedAlbumTab() {
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeAlbum`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

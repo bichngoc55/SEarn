@@ -30,11 +30,13 @@ import Checkbox from "expo-checkbox";
 
 const AddtoPlaylist = ({ song }) => {
   const [playlists, setPlaylists] = useState([]);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const isFocused = useIsFocused();
   const { user } = useSelector((state) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
   const [items, setItem] = useState([]);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [songList, setSongList] = useState([]);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
     fetchPlaylist();
@@ -46,15 +48,12 @@ const AddtoPlaylist = ({ song }) => {
   }, [isFocused]);
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch(
-        "https://c432-2405-4802-a632-dc60-bdf2-dcb0-6216-5931.ngrok-free.app/playlists/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("http://localhost:3005/playlists/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       // Lọc các playlist có userIdOwner khớp với userId được truyền vào
       const playlists = await response.json();
@@ -75,6 +74,45 @@ const AddtoPlaylist = ({ song }) => {
       );
       setItem(newItem);
     } catch (error) {}
+  };
+
+  const getLikedSong = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const likedSong = await response.json();
+      setSongList(likedSong);
+    } catch (error) {
+      alert("Error in likedsong: " + error);
+    }
+  };
+
+  const updatePlaylist = async (playlist) => {
+    try {
+      if (accessToken) {
+        await axios.patch(
+          `http://localhost:3005/playlists/${playlist._id}`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        onClose();
+      } else alert("Chưa có accessToken");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const handleCheckboxChange = (item) => {};

@@ -27,6 +27,7 @@
     "expo": "^51.0.8",
     "expo-av": "~14.0.5",
     "expo-blur": "^13.0.2",
+    "expo-checkbox": "~3.0.0",
     "expo-font": "^12.0.6",
     "expo-image-picker": "~15.0.5",
     "expo-status-bar": "~1.12.1",
@@ -45,12 +46,12 @@
     "react-native-screens": "3.31.1",
     "react-native-simple-radio-button": "^2.7.4",
     "react-native-tab-view": "^3.5.2",
+    "react-native-toast-message": "^2.2.0",
     "react-native-track-player": "^4.1.1",
     "react-redux": "^9.1.2",
     "redux-persist": "^6.0.0",
     "typescript": "^5.3.0",
-    "yup": "^1.4.0",
-    "expo-checkbox": "~3.0.0"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

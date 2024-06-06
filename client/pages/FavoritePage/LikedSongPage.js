@@ -40,10 +40,11 @@ const LikedSongPage = () => {
   useEffect(() => {
     getLikedSong();
   }, []);
+
   const getLikedSong = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+        `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/getLikedSongs`,
         {
           method: "GET",
           headers: {
@@ -52,10 +53,8 @@ const LikedSongPage = () => {
           },
         }
       );
-      const likedSong = await response.json();
+      const likedSong = response.json();
       setSongList(likedSong);
-      console.log(likedSong);
-      console.log(songList);
     } catch (error) {
       alert("Error in likedsong: " + error);
     }

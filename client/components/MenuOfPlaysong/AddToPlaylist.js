@@ -27,6 +27,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
+import Toast from "react-native-toast-message";
 
 const AddtoPlaylist = ({ song }) => {
   const [playlists, setPlaylists] = useState([]);
@@ -36,7 +37,8 @@ const AddtoPlaylist = ({ song }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [items, setItem] = useState([]);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [songList, setSongList] = useState([]);
+  const [songs, setSongList] = useState([]);
+  const [checkedItem, setCheckedItem] = useState([]);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
     fetchPlaylist();
@@ -46,14 +48,44 @@ const AddtoPlaylist = ({ song }) => {
       fetchPlaylist();
     }
   }, [isFocused]);
+
+  const savePlaylist = async () => {
+    getLikedSong();
+    const newSongValues = items
+      .filter((item) => item.isCheck)
+      .map((item) => item.value);
+    setSongList((prevSongList) => prevSongList.concat(newSongValues));
+    items.map((item) => {
+      if (item.isCheck) {
+        updatePlaylist(item.value);
+      }
+    });
+  };
+
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      position: "top",
+      text1: "Thêm thành công",
+      text2: "Bài hát vào danh sách",
+      visibilityTime: 2000,
+      autoHide: true,
+      topOffset: 60,
+      bottomOffset: 40,
+    });
+  };
+
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch("http://localhost:3005/playlists/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/playlists/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       // Lọc các playlist có userIdOwner khớp với userId được truyền vào
       const playlists = await response.json();
@@ -79,7 +111,7 @@ const AddtoPlaylist = ({ song }) => {
   const getLikedSong = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+        `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/getLikedSongs`,
         {
           method: "GET",
           headers: {
@@ -99,8 +131,10 @@ const AddtoPlaylist = ({ song }) => {
     try {
       if (accessToken) {
         await axios.patch(
-          `http://localhost:3005/playlists/${playlist._id}`,
-          {},
+          `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/playlists/${playlist}`,
+          {
+            songs,
+          },
           {
             headers: {
               "Content-Type": "application/json",
@@ -133,13 +167,15 @@ const AddtoPlaylist = ({ song }) => {
           <Text style={styles.text}>New playlist</Text>
         </TouchableOpacity>
 
-        <Text style={styles.textSave}>Save</Text>
+        <Text style={styles.textSave} onPress={() => savePlaylist()}>
+          Save
+        </Text>
       </View>
       <AddPlaylistModal visible={modalVisible} onClose={toggleModal} />
       <FlatList
         data={items}
         style={{ flex: 1, marginBottom: "15%" }}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.value}
         renderItem={({ item }) => {
           return (
             <View style={styles.playlistContainer}>
@@ -178,6 +214,7 @@ const AddtoPlaylist = ({ song }) => {
           );
         }}
       />
+      <Toast />
     </View>
   );
 };

@@ -66,7 +66,7 @@ export default function UserPage() {
   //     console.log("Data being sent:", JSON.stringify(data, null, 2));
   //     console.log("Data being sent: " + data);
   //     const newaccessToken = await AsyncStorage.getItem("userToken");
-  //     // const url2 = `http://localhost:3005/auth/${endpoint}`;
+  //     // const url2 = `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${endpoint}`;
   //     // console.log("url2: " + url2);
   //     // console.log(
   //     //   "access token vs new access token : ",
@@ -74,7 +74,7 @@ export default function UserPage() {
   //     // );
   //     const response = await axios({
   //       method: method,
-  //       url: `http://localhost:3005/auth/${endpoint}`,
+  //       url: `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${endpoint}`,
   //       data: data,
   //       headers: {
   //         authorization: `Bearer ${newaccessToken}`,
@@ -140,7 +140,7 @@ export default function UserPage() {
       // console.log("avatar : " + JSON.stringifydata.avatar);
       const response = await axios({
         method: method, // 'PATCH' for updates
-        url: `http://localhost:3005/auth/${user._id}/${endpoint}`,
+        url: `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/${endpoint}`,
         data: data,
         headers: {
           authorization: `Bearer ${accessToken}`,
@@ -267,7 +267,7 @@ export default function UserPage() {
       console.log("name : " + name);
       await axios({
         method: "PATCH",
-        url: `http://localhost:3005/auth/${user._id}/name`,
+        url: `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/name`,
         data: { name },
         headers: {
           "Content-Type": "application/json",
@@ -294,7 +294,7 @@ export default function UserPage() {
     try {
       // console.log("content + email : ", feedback + user.email);
       const response = await axios.patch(
-        `http://localhost:3005/report/${user._id}/addReport`,
+        `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/report/${user._id}/addReport`,
         {
           content: feedback,
           email: user.email,

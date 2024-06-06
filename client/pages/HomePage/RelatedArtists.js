@@ -50,7 +50,6 @@ export default function RelatedArtist() {
         const { listLikedArtists } = await getLikedArtistList(
           accessToken,
           user?._id
-
         );
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
         setLikedArtistList(artistIds); //Lấy liked artists từ db
@@ -97,7 +96,10 @@ export default function RelatedArtist() {
         setIsDataFetched(true);
       });
     }
-  }, [isDataFetched, fetchArtistList, fetchRelatedArtists]);
+  }, [
+    isDataFetched,
+    // fetchArtistList, fetchRelatedArtists
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -107,33 +109,42 @@ export default function RelatedArtist() {
           setIsDataFetched(true);
         });
       }
-    }, [isDataFetched, fetchArtistList, fetchRelatedArtists])
+    }, [
+      isDataFetched,
+      // fetchArtistList, fetchRelatedArtists
+    ])
   );
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ artistId }),
-    })
+    fetch(
+      `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/addLikedArtists`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ artistId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ artistId }),
-    })
+    fetch(
+      `https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app/auth/${user._id}/unlikeArtists`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ artistId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));

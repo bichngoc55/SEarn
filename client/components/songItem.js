@@ -25,7 +25,7 @@ import { fetchSpotifyAccessToken } from "../redux/spotifyAccessTokenSlice";
 import { Audio } from "expo-av";
 import AudioService from "../service/audioService";
 import { getTrack } from "../service/songService";
-
+import LottieView from "lottie-react-native";
 const SongItem = ({ input, songList }) => {
   const navigation = useNavigation();
   const { accessTokenForSpotify } = useSelector(
@@ -83,6 +83,7 @@ const SongItem = ({ input, songList }) => {
     let service = new AudioService();
 
     await service.loadPlaylist(songList);
+
     service.currentSong = input;
     service.currentPlaylist = songList;
     service.currentTime = 0;

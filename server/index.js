@@ -43,7 +43,8 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3005",
+    origin:
+      "https://0452-2405-4802-a632-dc60-6480-d96f-a630-5850.ngrok-free.app",
   })
 );
 // app.use(cors());
@@ -77,7 +78,7 @@ const init = async () => {
   // Create a contract instance
   contract = new web3.eth.Contract(
     abi,
-    "0x04B3adfebA637f4A46D8A1Cb5FE08eAcEeE0f982"
+    "0x2eC322642805Aa84B476F04BB72b166890fD81eE"
   );
   // 0x74c6936779343d349A492F8c9070dC63c59A66df
   // 0xe1fe593C8C338D024Db62DDDaC666C94B42f8C12

@@ -192,7 +192,7 @@ class AudioService {
       // Cập nhật trạng thái phát
       this.isPlay = true;
     } else {
-      this.playNextAudio();
+      await this.playNextAudio();
     }
   }
 
@@ -221,6 +221,7 @@ class AudioService {
     }
     this.currentAudio = this.audioMap.get(this.currentAudioIndex);
     this.currentSong = this.currentPlaylist[this.currentAudioIndex];
+
     await this.playCurrentAudio();
   }
 

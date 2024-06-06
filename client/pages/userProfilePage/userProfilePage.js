@@ -563,6 +563,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     marginTop: scale(20),
     marginBottom: scale(20),
+    zIndex: 9,
     marginLeft: "8%",
   },
   btnContainer2: {

@@ -24,13 +24,13 @@ import reportRoutes from "./routes/report.js";
 // import type { PlaylistLikesJson } from "./contracts/PlaylistLikes.json"; // 1. Type import
 // import configuration from "./contracts/PlaylistLikes.json" with { type: "json" }; // 2. Data import
 // import contractData from "./contracts/PlaylistLikes.json" assert { type: "json" };
-//import configuration from "./contracts/PlaylistLikes.json" with { type: "json" }; // 2. Data import
+
 import contractData from "./contracts/PlaylistLikes.json" assert { type: "json" };
 
-// const { abi, bytecode } = contractData;
+const { abi, bytecode } = contractData;
 // const contract_abi = configuration.abi;
 // const contract_address = configuration.networks["5777"].address;
-// let sender,web3,contract ;
+
 let sender, web3, contract;
 //config
 dotenv.config();
@@ -76,7 +76,7 @@ const init = async () => {
 
   // Create a contract instance
   contract = new web3.eth.Contract(
-    abi, 
+    abi,
     "0x04B3adfebA637f4A46D8A1Cb5FE08eAcEeE0f982"
   );
   // 0x74c6936779343d349A492F8c9070dC63c59A66df
@@ -84,40 +84,38 @@ const init = async () => {
   // Get the first Ganache account
   const accounts = await web3.eth.getAccounts();
   sender = accounts[0];
-  console.log(accounts);
-  console.log("contract: " + contract.methods);
-  console.log("abi : " + abi);
-  console.log("sender :" + sender);
-  const balance = await web3.eth.getBalance(accounts[0]);
-  console.log("Balance of account 0:", balance);
-  // onsole.log("sender :"+sender);
-  const balance2 = await web3.eth.getBalance(
-    "0x15DE328D2bF669bD9800ad3a2eD633e6BA27DD85"
-  );
-  console.log("Balance2 of account random:", balance2);
-  // Get the first Ganache account
-  const userId = "665ddd10a29ae0460fc0e947";
-  const userAccount = await User.findById(userId);
-  console.log("user heh: " + userAccount.userAddressEthereum);
-  const coin = await contract.methods
-    .getUserCoins(userAccount.userAddressEthereum)
-    .call();
-  const balance3 = await web3.eth.getBalance(userAccount.userAddressEthereum);
-  console.log("Balance3 of account random:", balance3);
-  const  result =  balance3+ BigInt(100);
-  console.log("reward user "+ result);
-  const coin = await contract.methods.getUserCoins("0x15DE328D2bF669bD9800ad3a2eD633e6BA27DD85").call();
-  console.log("coin : "+coin);
+  // console.log(accounts);
+  // console.log("contract: " + contract.methods);
+  // console.log("abi : " + abi);
+  // console.log("sender :" + sender);
+  // const balance = await web3.eth.getBalance(accounts[0]);
+  // console.log("Balance of account 0:", balance);
+  // // onsole.log("sender :"+sender);
+  // const balance2 = await web3.eth.getBalance(
+  //   "0x15DE328D2bF669bD9800ad3a2eD633e6BA27DD85"
+  // );
+  // console.log("Balance2 of account random:", balance2);
+  // // Get the first Ganache account
+  // const userId = "665ddd10a29ae0460fc0e947";
+  // const userAccount = await User.findById(userId);
+  // console.log("user heh: " + userAccount.userAddressEthereum);
+  // const coin = await contract.methods
+  //   .getUserCoins(userAccount.userAddressEthereum)
+  //   .call();
+  // const balance3 = await web3.eth.getBalance(userAccount.userAddressEthereum);
+  // console.log("Balance3 of account random:", balance3);
+  // const  result =  balance3+ BigInt(100);
+  // console.log("reward user "+ result);
+  // const coin = await contract.methods.getUserCoins("0x15DE328D2bF669bD9800ad3a2eD633e6BA27DD85").call();
+  // console.log("coin : "+coin);
   // const weiAmount = await web3.utils.toWei('0.01', 'ether');
   // console.log("weiAmount : "+ weiAmount);
   // console.log("hhehehhehe");
   //     const receipt = await contract.methods.transfer(userAccount.userAddressEthereum, weiAmount).send({ from: sender });
   //     console.log("Transfer receipt:", receipt);
 
-
-  console.log("coin : " + coin);
+  // console.log("coin : " + coin);
 };
-// init();
 
 init();
 
@@ -187,21 +185,24 @@ app.put("/playlists/liked/:playlistId", async (req, res) => {
     }
     const userAccount = await User.findById(userId);
     const updatedPlaylist = await playlist.save();
-     console.log("hehehe");
-    if(playlist.numberOfLikes>=5)
-    {
-      const weiAmount = await web3.utils.toWei('0.01', 'ether');
-      const receipt = await contract.methods.transfer(userAccount.userAddressEthereum, weiAmount).send({ from: sender });
+    console.log("hehehe");
+    if (playlist.numberOfLikes >= 5) {
+      const weiAmount = await web3.utils.toWei("0.01", "ether");
+      const receipt = await contract.methods
+        .transfer(userAccount.userAddressEthereum, weiAmount)
+        .send({ from: sender });
       // console.log("Transfer receipt:", receipt);
-        
-    } 
-    // console.log("hehehe"); 
-  userAccount.userCoin = Number(await contract.methods.getUserCoins(userAccount.userAddressEthereum).call());  
+    }
+    // console.log("hehehe");
+    userAccount.userCoin = Number(
+      await contract.methods
+        .getUserCoins(userAccount.userAddressEthereum)
+        .call()
+    );
     const userCoin = userAccount.userCoin;
-    userAccount.save();  
+    userAccount.save();
 
-    res.status(200).json({ updatedPlaylist ,userCoin});
-
+    res.status(200).json({ updatedPlaylist, userCoin });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

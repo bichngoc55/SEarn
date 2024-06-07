@@ -44,6 +44,7 @@ const SignUpOrLoginPage = () => {
               onPress={handleRegisterPress}
               btnText="Register"
               textColor="#ffffff"
+              textSize={scale(18)}
               width={scale(150)}
               height={scale(65)}
             />
@@ -52,6 +53,7 @@ const SignUpOrLoginPage = () => {
             <ReuseBtn
               onPress={handleLoginPress}
               btnText="Sign in"
+              textSize={scale(18)}
               textColor="#ffffff"
               width={scale(150)}
               height={scale(65)}

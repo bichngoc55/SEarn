@@ -360,20 +360,39 @@ export const unlikeAlbum = async (req, res) => {
   }
 };
 
-export const updateLikedSongs = async (req, res) => {
+export const addLikedSongs = async (req, res) => {
   const { id } = req.params;
   const { songId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
       id,
       {
-        $addToSet: { likedSongs: songId },
+        $addToSet: { likedSongs: songId},
       },
       { new: true }
     );
     await user.save();
 
-    res.json({ message: "Liked songs updated", user });
+    res.json({ message: "Liked songs added", user });
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const unlikedSongs = async (req, res) => {
+  const { id } = req.params;
+  const { songId } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        $pull: { likedSongs: songId},
+      },
+      { new: true }
+    );
+    await user.save();
+
+    res.json({ message: "Liked songs deleted", user });
   } catch (error) {
     handleError(error, res);
   }

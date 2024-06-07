@@ -148,6 +148,7 @@ export default function PasswordChangePage() {
                 <ReuseBtn
                   onPress={handleSubmit}
                   btnText="Change Password"
+                  textSize={scale(18)}
                   textColor="#ffffff"
                   width={scale(210)}
                   height={scale(65)}

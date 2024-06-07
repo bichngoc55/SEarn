@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius: 17.5,
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",
@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
   backButtonIcon: {
     width: scale(25),
     height: scale(25),
-    marginLeft: scale(10),
   },
   albumName: {
     marginTop: scale(15),

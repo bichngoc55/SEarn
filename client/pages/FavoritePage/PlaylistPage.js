@@ -47,12 +47,15 @@ const PlaylistPage = () => {
 
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch("http://localhost:3005/playlists/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://b3bd-183-80-111-110.ngrok-free.app/playlists/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       // Lọc các playlist có userIdOwner khớp với userId được truyền vào
       const playlists = await response.json();

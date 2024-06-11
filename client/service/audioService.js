@@ -58,7 +58,7 @@ class AudioService {
       if (this.isGetCoin) {
         try {
           const response = await fetch(
-            `http://localhost:3005/auth/${user?._id}/increaseCoin`,
+            `https://b3bd-183-80-111-110.ngrok-free.app/auth/${user?._id}/increaseCoin`,
             {
               method: "PUT",
               headers: {

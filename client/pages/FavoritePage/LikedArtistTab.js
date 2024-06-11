@@ -49,7 +49,10 @@ export default function LikedArtistTab() {
     const fetchArtistList = async () => {
       try {
         if (accessToken) {
-          const { listLikedArtists } = await getLikedArtistList(accessToken, user._id);
+          const { listLikedArtists } = await getLikedArtistList(
+            accessToken,
+            user._id
+          );
           // const artistIds = listLikedArtists.map(
           //   (likedArtist) => likedArtist.id
           // );
@@ -73,9 +76,9 @@ export default function LikedArtistTab() {
         console.log("calling accesstoken: " + accessTokenForSpotify);
         if (accessTokenForSpotify) {
           const artistPromises = artistList.map((likedArtist) =>
-            getArtist(accessTokenForSpotify, likedArtist.id).then(artist=>({
+            getArtist(accessTokenForSpotify, likedArtist.id).then((artist) => ({
               ...artist,
-              timeAdded: likedArtist.timeAdded
+              timeAdded: likedArtist.timeAdded,
             }))
           );
           const artistData = await Promise.all(artistPromises);
@@ -102,7 +105,9 @@ export default function LikedArtistTab() {
           sortedArtists.sort((a, b) => a.name.localeCompare(b.name));
           break;
         case 2:
-          sortedArtists.sort((a, b) => new Date(b.timeAdded) - new Date(a.timeAdded));
+          sortedArtists.sort(
+            (a, b) => new Date(b.timeAdded) - new Date(a.timeAdded)
+          );
           break;
         default:
           break;
@@ -118,28 +123,34 @@ export default function LikedArtistTab() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ artistId }),
-    })
+    fetch(
+      `https://b3bd-183-80-111-110.ngrok-free.app/auth/${user._id}/addLikedArtists`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ artistId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ artistId }),
-    })
+    fetch(
+      `https://b3bd-183-80-111-110.ngrok-free.app/auth/${user._id}/unlikeArtists`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ artistId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -162,14 +173,19 @@ export default function LikedArtistTab() {
         <Text style={styles.text}>Sort By</Text>
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
-          onPress={handleSort}>
+          onPress={handleSort}
+        >
           <MaterialCommunityIcons
             name="sort-clock-ascending-outline"
             color={COLOR.btnBackgroundColor}
             size={30}
           />
           <Text style={[styles.text, { marginLeft: 5 }]}>
-          {sortOrder === 0 ? 'Random' : sortOrder === 1 ?  'Sort by Name' : 'Recently Added'}
+            {sortOrder === 0
+              ? "Random"
+              : sortOrder === 1
+              ? "Sort by Name"
+              : "Recently Added"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -178,9 +194,13 @@ export default function LikedArtistTab() {
           data={artists}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            return <ArtistItem input={item} 
-            onLikeUnlike={handleLikeUnlike}
-            isLiked={artistList.some((a) => a.id === item.id)}/>;
+            return (
+              <ArtistItem
+                input={item}
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={artistList.some((a) => a.id === item.id)}
+              />
+            );
           }}
           ListFooterComponent={<View style={{ height: scale(60) }} />}
         />
@@ -193,7 +213,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
     height: "100%",
-    marginHorizontal: scale(10)
+    marginHorizontal: scale(10),
   },
   sort: {
     marginVertical: 15,
@@ -204,7 +224,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: "white",
-    fontFamily:"semiBold"
+    fontFamily: "semiBold",
   },
   flatlistContainer: {
     marginHorizontal: scale(10),

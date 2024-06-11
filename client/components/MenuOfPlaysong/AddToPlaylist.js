@@ -77,12 +77,15 @@ const AddtoPlaylist = ({ song }) => {
 
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch("http://localhost:3005/playlists/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://b3bd-183-80-111-110.ngrok-free.app/playlists/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       // Lọc các playlist có userIdOwner khớp với userId được truyền vào
       const playlists = await response.json();
@@ -108,7 +111,7 @@ const AddtoPlaylist = ({ song }) => {
   const getLikedSong = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+        `https://b3bd-183-80-111-110.ngrok-free.app/auth/${user._id}/getLikedSongs`,
         {
           method: "GET",
           headers: {
@@ -128,7 +131,7 @@ const AddtoPlaylist = ({ song }) => {
     try {
       if (accessToken) {
         await axios.patch(
-          `http://localhost:3005/playlists/${playlist}`,
+          `https://b3bd-183-80-111-110.ngrok-free.app/playlists/${playlist}`,
           {
             songs,
           },

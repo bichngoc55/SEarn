@@ -22,13 +22,16 @@ const AddPlaylistModal = ({ visible, onClose }) => {
   const toggleSwitch = () => setIsPublic((previousState) => !previousState);
   const CreateNewPlaylist = async () => {
     try {
-      await axios.post("http://localhost:3005/playlists/add", {
-        name,
-        description,
-        songCount: 0,
-        privacyOrPublic: isPublic,
-        userIdOwner: user._id,
-      });
+      await axios.post(
+        "https://b3bd-183-80-111-110.ngrok-free.app/playlists/add",
+        {
+          name,
+          description,
+          songCount: 0,
+          privacyOrPublic: isPublic,
+          userIdOwner: user._id,
+        }
+      );
       onClose();
       setName("");
       setDescription("");

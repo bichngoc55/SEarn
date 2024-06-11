@@ -22,12 +22,15 @@ const DeletePlaylistModal = ({ visible, onClose, playlist }) => {
   const DeletePlaylist = async () => {
     try {
       if (accessToken) {
-        await axios.delete(`http://localhost:3005/playlists/${playlist._id}`, {
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${accessToken}`,
-          },
-        });
+        await axios.delete(
+          `https://b3bd-183-80-111-110.ngrok-free.app/playlists/${playlist._id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         alert("Xóa thành công");
         onClose();
       } else alert("Chưa có accessToken");

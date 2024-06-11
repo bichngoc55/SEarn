@@ -23,7 +23,7 @@ const DeletePlaylistModal = ({ visible, onClose, playlist }) => {
     try {
       if (accessToken) {
         await axios.delete(
-          `https://b3bd-183-80-111-110.ngrok-free.app/playlists/${playlist._id}`,
+          `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/playlists/${playlist._id}`,
           {
             headers: {
               "Content-Type": "application/json",

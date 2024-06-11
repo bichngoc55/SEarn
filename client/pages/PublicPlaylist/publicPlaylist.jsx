@@ -55,7 +55,7 @@ const PublicPlaylist = () => {
     const fetchPublicPlaylists = async () => {
       try {
         const response = await fetch(
-          "https://b3bd-183-80-111-110.ngrok-free.app/playlists/public",
+          "https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/playlists/public",
           {
             method: "GET",
             headers: {
@@ -75,7 +75,7 @@ const PublicPlaylist = () => {
     const fetchLikedPlaylists = async () => {
       try {
         const response = await fetch(
-          `https://b3bd-183-80-111-110.ngrok-free.app/playlists/liked/${user._id}`,
+          `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/playlists/liked/${user._id}`,
           {
             method: "GET",
             headers: {
@@ -97,7 +97,7 @@ const PublicPlaylist = () => {
   const handleLikeUnlike = async (playlistId) => {
     try {
       const response = await fetch(
-        `https://b3bd-183-80-111-110.ngrok-free.app/playlists/liked/${playlistId}`,
+        `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/playlists/liked/${playlistId}`,
         {
           method: "PUT",
           headers: {
@@ -133,7 +133,7 @@ const PublicPlaylist = () => {
       try {
         console.log("userId: " + userId);
         const response = await fetch(
-          `https://b3bd-183-80-111-110.ngrok-free.app/auth/${userId}/coins`,
+          `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${userId}/coins`,
           {
             method: "GET",
             headers: {
@@ -159,7 +159,7 @@ const PublicPlaylist = () => {
   //   const handleShowToken = async () => {
   //     try {
   //       const response = await fetch(
-  //         `https://b3bd-183-80-111-110.ngrok-free.app/auth/${userId}/coins`,
+  //         `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${userId}/coins`,
   //         {
   //           method: "GET",
   //           headers: {

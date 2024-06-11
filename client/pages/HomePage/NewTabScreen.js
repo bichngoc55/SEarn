@@ -91,7 +91,7 @@ export default function NewsTab() {
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
     fetch(
-      `https://b3bd-183-80-111-110.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
+      `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
       {
         method: "PATCH",
         headers: {
@@ -108,7 +108,7 @@ export default function NewsTab() {
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
     fetch(
-      `https://b3bd-183-80-111-110.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
+      `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
       {
         method: "PATCH",
         headers: {

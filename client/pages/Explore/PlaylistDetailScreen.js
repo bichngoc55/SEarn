@@ -19,7 +19,8 @@ import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getPlaylistTracks } from "../../service/getPlaylistTracks";
 import { useSelector, useDispatch } from "react-redux";
 import SongItem from "../../components/songItem";
-
+import AppLoader from "../../components/AppLoader";
+import LoaderService from "../../service/loaderService";
 const PlaylistDetailScreen = ({ route }) => {
   const { playlist } = route.params;
   const navigation = useNavigation();
@@ -37,7 +38,6 @@ const PlaylistDetailScreen = ({ route }) => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-
       console.log("Access Token in useEffect playlist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
@@ -48,7 +48,10 @@ const PlaylistDetailScreen = ({ route }) => {
       try {
         console.log("calling accesstoken: " + accessTokenForSpotify);
         if (accessTokenForSpotify) {
-          const { items } = await getPlaylistTracks(accessTokenForSpotify, playlist.id);
+          const { items } = await getPlaylistTracks(
+            accessTokenForSpotify,
+            playlist.id
+          );
           const playlistTracksPromises = [...items];
           const playlistTracksData = await Promise.all(playlistTracksPromises);
           playlistTracksData.forEach((playlistTrack) => {});
@@ -64,41 +67,44 @@ const PlaylistDetailScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.Container}>
       <View style={styles.img_and_backBtn}>
-        <Image source={{ uri: playlist.images[0].url }}
-        style={styles.playlistImg}
-        resizeMode="cover"/>
+        <Image
+          source={{ uri: playlist.images[0].url }}
+          style={styles.playlistImg}
+          resizeMode="cover"
+        />
         <View style={styles.backButtonContainer}>
           <Pressable
             style={styles.backButton}
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.goBack()}
+          >
             <Ionicons name="chevron-back-sharp" size={24} color="black" />
           </Pressable>
         </View>
       </View>
-    <Text style={styles.playlistName}>{playlist.name}</Text>  
-    
-    <View style={styles.content}>
-      <View style={styles.flatlistContainer}>
-        <FlatList
-          data={playlistTracks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            return <SongItem input={item} songList={playlistTracks}/>;
-          }}
-          nestedScrollEnabled={true}
-        />
+      <Text style={styles.playlistName}>{playlist.name}</Text>
+
+      <View style={styles.content}>
+        <View style={styles.flatlistContainer}>
+          <FlatList
+            data={playlistTracks}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              return <SongItem input={item} songList={playlistTracks} />;
+            }}
+            nestedScrollEnabled={true}
+          />
+        </View>
       </View>
-    </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
 
-    paddingBottom: scale(60)
+    paddingBottom: scale(60),
   },
   img_and_backBtn: {
     width: "100%",

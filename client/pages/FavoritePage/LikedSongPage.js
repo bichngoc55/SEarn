@@ -41,7 +41,7 @@ const LikedSongPage = () => {
     getLikedSong();
   }, []);
 
-  //get liked song from db
+
   const getLikedSong = async () => {
     try {
       const response = await fetch(
@@ -54,10 +54,8 @@ const LikedSongPage = () => {
           },
         }
       );
-      const likedSong = await response.json();
+      const likedSong = response.json();
       setSongList(likedSong);
-      console.log(likedSong);
-      console.log(songList);
     } catch (error) {
       alert("Error in likedsong: " + error);
     }

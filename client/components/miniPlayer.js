@@ -42,7 +42,7 @@ const MiniPlayer = () => {
     };
     service.registerPlaybackStatusCallback(handlePlaybackStatus);
     return () => {};
-  }, [service.currentAudio]);
+  }, [service.currentTime]);
 
   const [track, setTrack] = useState({
     title: "No playing track",
@@ -50,7 +50,7 @@ const MiniPlayer = () => {
     artists: "Not found artists",
   });
   const OpenPlaySong = async () => {
-    if (service.currentAudio) {
+    if (service.currentSong) {
       navigation.navigate("PlaySong", {
         song: service.currentSong,
       });
@@ -69,7 +69,9 @@ const MiniPlayer = () => {
             duration: 300,
             useNativeDriver: true,
           }).start(() => {
-            service.stopSound();
+            if (service.currentSound.sound != null) {
+              service.currentSound.sound.stopAsync();
+            }
             setIsVisible(false);
           });
         } else {
@@ -166,17 +168,17 @@ const MiniPlayer = () => {
             size={scale(20)}
             color="#737373"
             onPress={() => {
-              if (service.currentAudio) {
+              if (service.currentSound.sound) {
                 service.playPreviousAudio();
               }
             }}
           />
-          {service.currentAudio ? (
+          {service.currentSong ? (
             service.isPlay ? (
               <View
                 style={styles.circle}
                 onPress={() => {
-                  service.currentAudio.sound.pauseAsync();
+                  service.currentSound.sound.pauseAsync();
                   console.log("Dừng âm thanh");
                   service.isPlay = false;
                 }}
@@ -186,7 +188,7 @@ const MiniPlayer = () => {
                   size={scale(15)}
                   color="black"
                   onPress={() => {
-                    service.currentAudio.sound.pauseAsync();
+                    service.currentSound.sound.pauseAsync();
                     console.log("Dừng âm thanh");
                     service.isPlay = false;
                   }}
@@ -198,7 +200,7 @@ const MiniPlayer = () => {
                 size={scale(40)}
                 color="#FED215"
                 onPress={() => {
-                  service.currentAudio.sound.playAsync();
+                  service.currentSound.sound.playAsync();
                   console.log("Phát âm thanh");
                   service.isPlay = true;
                 }}
@@ -214,12 +216,13 @@ const MiniPlayer = () => {
               }}
             />
           )}
+
           <FontAwesome6
             name="forward-step"
             size={scale(20)}
             color="#737373"
             onPress={() => {
-              if (service.currentAudio) {
+              if (service.currentSound.sound) {
                 service.playNextAudio();
               }
             }}

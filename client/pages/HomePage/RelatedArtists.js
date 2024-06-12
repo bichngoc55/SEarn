@@ -99,7 +99,10 @@ export default function RelatedArtist() {
         setIsDataFetched(true);
       });
     }
-  }, [isDataFetched, fetchArtistList, fetchRelatedArtists]);
+  }, [
+    isDataFetched,
+    // fetchArtistList, fetchRelatedArtists
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -109,7 +112,10 @@ export default function RelatedArtist() {
           setIsDataFetched(true);
         });
       }
-    }, [isDataFetched, fetchArtistList, fetchRelatedArtists])
+    }, [
+      isDataFetched,
+      // fetchArtistList, fetchRelatedArtists
+    ])
   );
 
   //add like artist to db

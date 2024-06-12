@@ -58,7 +58,7 @@ const theme = {
 function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={HomePage} />
+      <Stack.Screen name="HomePage" component={HomePage} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen
@@ -78,7 +78,7 @@ function HomeStack() {
 function ExploreStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Explore" component={ExploreScreen} />
+      <Stack.Screen name="ExplorePage" component={ExploreScreen} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen} />
@@ -104,7 +104,7 @@ function ExploreStack() {
 function FavouriteStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Favourite" component={FavoritePage} />
+      <Stack.Screen name="FavouritePage" component={FavoritePage} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen name="LikedSong" component={LikedSongPage} />
@@ -321,4 +321,3 @@ const styles = StyleSheet.create({
     right: 0,
   },
 });
-

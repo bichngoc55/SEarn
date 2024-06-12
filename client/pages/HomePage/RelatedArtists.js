@@ -47,10 +47,7 @@ export default function RelatedArtist() {
   const fetchArtistList = useCallback(async () => {
     try {
       if (accessToken) {
-        const { listLikedArtists } = await getLikedArtistList(
-          accessToken,
-          user?._id
-        );
+        const { listLikedArtists } = await getLikedArtistList(accessToken, user?._id);
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
         setLikedArtistList(artistIds); //Lấy liked artists từ db
 
@@ -70,6 +67,7 @@ export default function RelatedArtist() {
     }
   }, [accessToken, user?._id]);
 
+  //get Related artist
   const fetchRelatedArtists = useCallback(async () => {
     try {
       if (accessTokenForSpotify) {
@@ -81,7 +79,12 @@ export default function RelatedArtist() {
         const allRelatedArtists = relatedArtistsData.flatMap(
           (data) => data.artists
         );
-        setRelatedArtists(allRelatedArtists);
+        // đảm bảo rằng các related artist trùng nhau thì sẽ chỉ lấy 1
+        const uniqueRelatedArtists = Array.from(
+          new Set(allRelatedArtists.map((artist) => artist.id))
+        ).map((id) => allRelatedArtists.find((artist) => artist.id === id));
+        
+        setRelatedArtists(uniqueRelatedArtists);
       } else {
         alert("accessToken:" + accessTokenForSpotify);
       }
@@ -117,7 +120,7 @@ export default function RelatedArtist() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedArtists`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +134,7 @@ export default function RelatedArtist() {
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeArtists`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

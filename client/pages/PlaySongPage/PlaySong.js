@@ -29,6 +29,7 @@ import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getTrack } from "../../service/songService";
+import { getArtist } from "../../service/artistService";
 import { FontAwesome } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -41,6 +42,8 @@ const PlaySongPage = ({ route }) => {
   const { song } = route.params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
   let service = new AudioService();
@@ -122,6 +125,91 @@ const PlaySongPage = ({ route }) => {
     getSongImg();
   }, [accessTokenForSpotify]);
 
+  const [likedSongList, setLikedSongList] = useState([]);
+  const [liked, setLiked] = useState();
+  //get liked song list from db
+  useEffect(() => {
+    const getLikedSong = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setLikedSongList(likedSong);
+      } catch (error) {
+        alert("Error in likedsong: " + error);
+      }
+    };
+    getLikedSong();
+  }, [user?._id, accessToken]);
+
+  //add like song to db
+  const addToLikedSongs = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike song on db
+  const unlikeSong = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  
+  useEffect(() => {
+    setLiked(likedSongList?.includes(song.id));
+  }, [song.id, likedSongList]);
+  // Handle like/unlike action
+  const handleLikeUnlikeSong = async (songId) => {
+    if (likedSongList?.includes(songId)) {
+      await unlikeSong(songId);
+      setLikedSongList(likedSongList.filter((id) => id !== songId));
+    } else {
+      await addToLikedSongs(songId);
+      setLikedSongList([...likedSongList, songId]);
+    }
+  };
+  const handleLike = () => {
+    handleLikeUnlikeSong(song.id);
+    setLiked(!liked);
+  };
+
+  const moveToArtistDetail = async (artistId) => {
+    try {        
+      if (accessTokenForSpotify) {
+        const artistData = await getArtist(accessTokenForSpotify, artistId)
+        navigation.navigate("ArtistDetail", {
+          artist: artistData,
+        });
+      } else alert("accessToken: " + accessTokenForSpotify);
+    } catch (error) {
+      console.error("Error fetching move to artist hehe:", error);
+    }
+  }; 
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerL}>
@@ -162,12 +250,26 @@ const PlaySongPage = ({ route }) => {
         <View>
           <Text style={styles.songname}>{service.currentSong.name}</Text>
           <Text style={styles.songartist}>
-            {service.currentSong.artists
-              .map((artist) => artist.name)
-              .join(", ")}
+          {service.currentSong.artists.map((artist, index) => (
+            <TouchableOpacity
+              key={artist.id} 
+              onPress={() => moveToArtistDetail(artist.id)}
+            >
+              {(index < service.currentSong.artists.length - 1)? 
+              <Text style={styles.songartist}>{artist.name}, </Text> : 
+              <Text style={styles.songartist}>{artist.name} </Text>}
+            </TouchableOpacity>
+            ))}
           </Text>
         </View>
-        <Ionicons name="heart-outline" size={scale(30)} color="#FED215" />
+        <TouchableOpacity onPress={handleLike}>
+          <Ionicons
+            style={styles.heartBtn}
+            name={liked ? "heart" : "heart-outline"}
+            size={scale(30)}
+            color="#FED215"
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.headerL}>
         <Slider

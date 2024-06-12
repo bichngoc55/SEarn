@@ -13,7 +13,7 @@ import scale from "../constant/responsive";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const AlbumItem = ({ input, onLikeUnlike, isLiked   }) => { 
+const AlbumItem = ({ input, onLikeUnlike, isLiked }) => { 
   const navigation = useNavigation();
   const MoveToListAlbum = () => {
     navigation.navigate("AlbumDetail", {
@@ -42,8 +42,7 @@ const AlbumItem = ({ input, onLikeUnlike, isLiked   }) => {
           {input.artists.map((artist) => artist.name).join(", ")}{" "}
         </Text>
       </View>
-      <TouchableOpacity>
-        <TouchableOpacity onPress={handleLike}>
+      <TouchableOpacity onPress={handleLike}>
           <Ionicons
             style={styles.heartBtn}
             name={isLiked ? "heart" : "heart-outline"}
@@ -51,7 +50,6 @@ const AlbumItem = ({ input, onLikeUnlike, isLiked   }) => {
             color="#FED215"
           />
         </TouchableOpacity>
-      </TouchableOpacity>
     </TouchableOpacity>
   );
 };

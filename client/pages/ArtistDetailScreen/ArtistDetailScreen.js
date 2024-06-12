@@ -20,6 +20,8 @@ import SongItem from "../../components/songItem";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getArtistAlbum } from "../../service/artistAlbumsService";
 import { getArtistSong } from "../../service/artistSongService";
+import { getLikedAlbumList } from "../../service/getLikedAlbumList";
+
 import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -29,6 +31,7 @@ const ArtistDetailScreen = ({ route }) => {
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
@@ -47,23 +50,47 @@ const ArtistDetailScreen = ({ route }) => {
   const [artistAlbums, setArtistAlbums] = useState([]);
   const [artistSongs, setArtistSongs] = useState([]);
   const [likedAlbumList, setLikedAlbumList] = useState([]);
+  const [songList, setSongList] = useState([]);
 
   //get liked album list on db
-  // useEffect(() => {
-  //   const fetchLikedAlbumList = async () => {
-  //     try {
-  //       if (accessToken) {
-  //         const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
-  //         const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
-  //         setLikedAlbumList(albumIds);
-  //       }
-  //       else alert("Chưa có accessToken");
-  //     } catch (error) {
-  //       console.error("Error fetching liked albums:", error);
-  //     }
-  //   };
-  //   fetchLikedAlbumList();
-  // }, [user?._id, accessToken]);
+  useEffect(() => {
+    const fetchLikedAlbumList = async () => {
+      try {
+        if (accessToken) {
+          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
+          const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
+          setLikedAlbumList(albumIds);
+        }
+        else alert("Chưa có accessToken");
+      } catch (error) {
+        console.error("Error fetching liked albums:", error);
+      }
+    };
+    fetchLikedAlbumList();
+  }, [user?._id, accessToken]);
+
+  //get liked song from db
+  useEffect(() => {
+    const getLikedSong = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setSongList(likedSong);
+      } catch (error) {
+        alert("Error in likedsong: " + error);
+      }
+    };
+    getLikedSong();
+  }, [user?._id, accessToken]);
 
   useEffect(() => {
     const fetchArtistAlbums = async () => {
@@ -94,6 +121,84 @@ const ArtistDetailScreen = ({ route }) => {
     };
     fetchArtistAlbums();
   }, [accessTokenForSpotify, artist.id]);
+
+  //add like album to db
+  const addToLikedAlbums = async (albumId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike album on db
+  const unlikeAlbum = async (albumId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike album action
+  const handleLikeUnlikeAlbum = async (albumId) => {
+    if (likedAlbumList.includes(albumId)) {
+      await unlikeAlbum(albumId);
+      setLikedAlbumList(likedAlbumList.filter((id) => id !== albumId));
+    } else {
+      await addToLikedAlbums(albumId);
+      setLikedAlbumList([...likedAlbumList, albumId]);
+    }
+  };
+
+  //add like song to db
+  const addToLikedSongs = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike song on db
+  const unlikeSong = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlikeSong = async (songId) => {
+    if (songList.includes(songId)) {
+      await unlikeSong(songId);
+      setSongList(songList.filter((id) => id !== songId));
+    } else {
+      await addToLikedSongs(songId);
+      setSongList([...songList, songId]);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.Container}>
@@ -131,7 +236,8 @@ const ArtistDetailScreen = ({ route }) => {
                   data={artistAlbums}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => {
-                    return <ArtistAlbumItem input={item} />;
+                    return <ArtistAlbumItem input={item} onLikeUnlike={handleLikeUnlikeAlbum}
+                    isLiked={likedAlbumList.includes(item.id)}/>;
                   }}
                   nestedScrollEnabled={true}
                 />
@@ -140,7 +246,9 @@ const ArtistDetailScreen = ({ route }) => {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={artistSongs}/>;
+            return <SongItem input={item} songList={artistSongs}
+            onLikeUnlike={handleLikeUnlikeSong}
+            isLiked={songList.includes(item.id)}/>;
           }}
           nestedScrollEnabled={true}
         />
@@ -175,7 +283,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius: 17.5,
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",

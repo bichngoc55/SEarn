@@ -41,6 +41,7 @@ export default function NewsTab() {
   const [albumsNewReleases, setAlbumsNewReleases] = useState([]);
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
   const [likedAlbumList, setLikedAlbumList] = useState([]);
+  const [likedSongList, setLikedSongList] = useState([]);
 
   //get liked album list on db
   useEffect(() => {
@@ -62,6 +63,29 @@ export default function NewsTab() {
     fetchAlbumList();
   }, [user?._id, accessToken]);
 
+  //get liked song from db
+  useEffect(() => {
+    const getLikedSong = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setLikedSongList(likedSong);
+      } catch (error) {
+        alert("Error in likedsong: " + error);
+      }
+    };
+    getLikedSong();
+  }, [user?._id, accessToken]);
+
   useEffect(() => {
     const fetchAlbumsNewReleases = async () => {
       try {
@@ -70,7 +94,6 @@ export default function NewsTab() {
           const { items } = await getAlbumsNewReleases(accessTokenForSpotify);
           const albumsPromises = [...items];
           const newAlbumsData = await Promise.all(albumsPromises);
-          newAlbumsData.forEach((newAlbum) => {});
           setAlbumsNewReleases(newAlbumsData);
 
           const { items: trackItems } = await getTracksRecommendations(
@@ -78,9 +101,10 @@ export default function NewsTab() {
           );
           const tracksPromises = trackItems.map((item) => item.track);
           const tracksData = await Promise.all(tracksPromises);
-          tracksData.forEach((trackRecommendation) => {});
           setTracksRecommendations(tracksData);
-        } else alert("accessToken:" + accessTokenForSpotify);
+        } else {
+          alert("accessToken:" + accessTokenForSpotify);
+        }
       } catch (error) {
         console.error("Error fetching tracks recommendations hehe:", error);
       }
@@ -90,46 +114,79 @@ export default function NewsTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(
-      `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(
-      `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   // Handle like/unlike action
-  const handleLikeUnlike = async (albumId) => {
+  const handleLikeUnlikeAlbums = async (albumId) => {
     if (likedAlbumList.includes(albumId)) {
       await unlikeAlbum(albumId);
       setLikedAlbumList(likedAlbumList.filter((id) => id !== albumId));
     } else {
       await addToLikedAlbums(albumId);
       setLikedAlbumList([...likedAlbumList, albumId]);
+    }
+  };
+
+  //add like song to db
+  const addToLikedSongs = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike song on db
+  const unlikeSong = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlikeSong = async (songId) => {
+    if (likedSongList?.includes(songId)) {
+      await unlikeSong(songId);
+      setSongList(likedSongList.filter((id) => id !== songId));
+    } else {
+      await addToLikedSongs(songId);
+      setLikedSongList([...likedSongList, songId]);
     }
   };
 
@@ -152,7 +209,7 @@ export default function NewsTab() {
                     return (
                       <ArtistAlbumItem
                         input={item}
-                        onLikeUnlike={handleLikeUnlike}
+                        onLikeUnlike={handleLikeUnlikeAlbums}
                         isLiked={likedAlbumList.includes(item.id)}
                       />
                     );
@@ -164,7 +221,14 @@ export default function NewsTab() {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={tracksRecommendations} />;
+            return (
+              <SongItem
+                input={item}
+                songList={tracksRecommendations}
+                onLikeUnlike={handleLikeUnlikeSong}
+                isLiked={likedSongList.includes(item.id)}
+              />
+            );
           }}
           nestedScrollEnabled={true}
           ListFooterComponent={<View style={{ height: scale(60) }} />}

@@ -14,36 +14,24 @@ const getTracksRecommendations = async (accessToken) => {
     const tracksRecommendations = await response.data;
 
     return {
-    //   items: tracksRecommendations.items.map((item) => ({
-    //     id: item.track.id,
-    //     name: item.track.name,
-    //     artists: item.track.artists.map((artist) => ({
-    //       name: artist.name,
-    //       id: artist.id,
-    //     })),
-    //     album: {
-    //       id: item.track.album.id,
-    //       name: item.track.album.name,
-    //       image: item.track.album.images[0].url,
-    //       },
-    //   })),
-    // };
-      items: tracksRecommendations.items.map((item) => ({
-        track:{
-          id: item.track.id,
-          name: item.track.name,
-          artists: item.track.artists.map((artist) => ({
-            name: artist.name,
-            id: artist.id,
-          })),
-          album: {
-            id: item.track.album.id,
-            name: item.track.album.name,
-            image: item.track.album.images[0].url,
+      items: tracksRecommendations.items
+        .filter(item => item.track && item.track.id && item.track.preview_url)  // Lọc bỏ các track không hợp lệ
+        .map((item) => ({
+          track: {
+            id: item.track.id,
+            name: item.track.name,
+            artists: item.track.artists.map((artist) => ({
+              name: artist.name,
+              id: artist.id,
+            })),
+            album: {
+              id: item.track.album.id,
+              name: item.track.album.name,
+              image: item.track.album.images[0].url,
+            },
+            preview_url: item.track.preview_url,
           },
-          preview_url: item.track.preview_url,
-        }
-      })),
+        })),
     };
   } catch (error) {
     console.error("Error fetching song recommendation:", error);

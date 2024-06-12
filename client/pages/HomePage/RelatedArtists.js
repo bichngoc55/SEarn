@@ -70,6 +70,7 @@ export default function RelatedArtist() {
     }
   }, [accessToken, user?._id]);
 
+  //get Related artist
   const fetchRelatedArtists = useCallback(async () => {
     try {
       if (accessTokenForSpotify) {
@@ -81,7 +82,12 @@ export default function RelatedArtist() {
         const allRelatedArtists = relatedArtistsData.flatMap(
           (data) => data.artists
         );
-        setRelatedArtists(allRelatedArtists);
+        // đảm bảo rằng các related artist trùng nhau thì sẽ chỉ lấy 1
+        const uniqueRelatedArtists = Array.from(
+          new Set(allRelatedArtists.map((artist) => artist.id))
+        ).map((id) => allRelatedArtists.find((artist) => artist.id === id));
+
+        setRelatedArtists(uniqueRelatedArtists);
       } else {
         alert("accessToken:" + accessTokenForSpotify);
       }
@@ -117,34 +123,28 @@ export default function RelatedArtist() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(
-      `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/addLikedArtists`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ artistId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(
-      `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/unlikeArtists`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ artistId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));

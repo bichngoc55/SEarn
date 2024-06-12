@@ -44,7 +44,7 @@ const LikedSongPage = () => {
   const getLikedSong = async () => {
     try {
       const response = await fetch(
-        `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/getLikedSongs`,
+        `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
         {
           method: "GET",
           headers: {
@@ -59,7 +59,7 @@ const LikedSongPage = () => {
       alert("Error in likedsong: " + error);
     }
   };
-
+  //get song's in4 from Spotify
   useEffect(() => {
     const fetchTracks = async () => {
       dispatch(fetchSpotifyAccessToken());
@@ -77,6 +77,46 @@ const LikedSongPage = () => {
   }, [songList, accessTokenForSpotify]);
 
   const navigation = useNavigation();
+
+  //add like song to db
+  const addToLikedSongs = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike song on db
+  const unlikeSong = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlike = async (songId) => {
+    if (songList.includes(songId)) {
+      await unlikeSong(songId);
+      setSongList(songList.filter((id) => id !== songId));
+    } else {
+      await addToLikedSongs(songId);
+      setSongList([...songList, songId]);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerL}>
@@ -118,7 +158,14 @@ const LikedSongPage = () => {
           data={tracks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={tracks} />;
+            return (
+              <SongItem
+                input={item}
+                songList={tracks}
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={songList.includes(item.id)}
+              />
+            );
           }}
         />
       </View>

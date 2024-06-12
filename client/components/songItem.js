@@ -26,8 +26,8 @@ import { Audio } from "expo-av";
 import AudioService from "../service/audioService";
 import { getTrack } from "../service/songService";
 
-const SongItem = ({ input, songList }) => {
-  const navigation = useNavigation();
+const SongItem = ({ input, songList, onLikeUnlike, isLiked  }) => {
+  const navigation = useNavigation(); 
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
@@ -96,6 +96,17 @@ const SongItem = ({ input, songList }) => {
 
   const [image, setImage] = useState(null);
 
+  const [liked, setLiked] = useState(isLiked);
+
+  useEffect(() => {
+    setLiked(isLiked);
+  }, [isLiked]);
+
+  const handleLike = () => {
+    onLikeUnlike(input.id);
+    setLiked(!liked);
+  };
+
   useEffect(() => {
     const getSongImg = async () => {
       try {
@@ -131,7 +142,14 @@ const SongItem = ({ input, songList }) => {
           {input.artists.map((artist) => artist.name).join(", ")}{" "}
         </Text>
       </View>
-      <Ionicons name="heart-outline" size={scale(25)} color="#FED215" />
+      <TouchableOpacity onPress={handleLike}>
+        <Ionicons
+          style={styles.heartBtn}
+          name={isLiked ? "heart" : "heart-outline"}
+          size={scale(25)}
+          color="#FED215"
+        />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };

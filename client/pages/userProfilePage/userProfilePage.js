@@ -599,10 +599,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     shadowColor: "#000",
   },
-  scrollViewContent: {
-    marginBottom: scale(50),
-    width: "100%",
-    marginLeft: "30%",
-    alignContent: "center",
-  },
+
 });

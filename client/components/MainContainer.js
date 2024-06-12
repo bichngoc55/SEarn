@@ -193,7 +193,6 @@ function BottomBar() {
               width: 5,
               height: 3,
             },
-            elevation: 20,
           }}
           shifting={true}
         >
@@ -256,7 +255,7 @@ function BottomBar() {
           />
         </Tab.Navigator>
       </View>
-      <View style={styles.hehe}>
+      <View style={styles.miniPlayer}>
         <MiniPlayer />
       </View>
     </View>
@@ -314,11 +313,10 @@ const styles = StyleSheet.create({
   tabBarLabel: {
     fontSize: 15,
   },
-  hehe: {
+  miniPlayer: {
     zIndex: 2,
     position: "absolute",
     bottom: scale(60),
-    // marginTop: "159%",
     left: 0,
     right: 0,
   },

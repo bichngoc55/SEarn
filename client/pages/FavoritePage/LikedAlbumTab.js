@@ -123,17 +123,14 @@ export default function LikedAlbumTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(
-      `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    );
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    });
     fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
       method: "PATCH",
       headers: {

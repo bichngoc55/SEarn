@@ -72,7 +72,7 @@ class AudioService {
       // if (this.isGetCoin) {
       //   try {
       //     const response = await fetch(
-      //       `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${user?._id}/increaseCoin`,
+      //       `http://localhost:3005/auth/${user?._id}/increaseCoin`,
       //       {
       //         method: "PUT",
       //         headers: {

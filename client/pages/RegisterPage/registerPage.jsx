@@ -34,16 +34,13 @@ export default function RegisterScreen({ navigation }) {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await fetch(
-        "https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      );
+      const response = await fetch("http://localhost:3005/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
 
       if (!response.ok) {
         throw new Error("Something went wrong during registration.");
@@ -170,7 +167,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius:scale(100),
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",

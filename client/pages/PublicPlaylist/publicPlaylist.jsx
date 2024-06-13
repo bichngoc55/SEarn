@@ -54,15 +54,12 @@ const PublicPlaylist = () => {
   useEffect(() => {
     const fetchPublicPlaylists = async () => {
       try {
-        const response = await fetch(
-          "https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/playlists/public",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch("http://localhost:3005/playlists/public", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         // console.log("public playlist " + JSON.stringify(data, null, 2));
         setAllPlaylistList(data);
@@ -75,7 +72,7 @@ const PublicPlaylist = () => {
     const fetchLikedPlaylists = async () => {
       try {
         const response = await fetch(
-          `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/playlists/liked/${user._id}`,
+          `http://localhost:3005/playlists/liked/${user._id}`,
           {
             method: "GET",
             headers: {
@@ -97,7 +94,7 @@ const PublicPlaylist = () => {
   const handleLikeUnlike = async (playlistId) => {
     try {
       const response = await fetch(
-        `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/playlists/liked/${playlistId}`,
+        `http://localhost:3005/playlists/liked/${playlistId}`,
         {
           method: "PUT",
           headers: {
@@ -133,7 +130,7 @@ const PublicPlaylist = () => {
       try {
         console.log("userId: " + userId);
         const response = await fetch(
-          `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${userId}/coins`,
+          `http://localhost:3005/auth/${userId}/coins`,
           {
             method: "GET",
             headers: {
@@ -159,7 +156,7 @@ const PublicPlaylist = () => {
   //   const handleShowToken = async () => {
   //     try {
   //       const response = await fetch(
-  //         `https://9431-2405-4802-a636-4560-61cc-6ffe-14ed-301.ngrok-free.app/auth/${userId}/coins`,
+  //         `http://localhost:3005/auth/${userId}/coins`,
   //         {
   //           method: "GET",
   //           headers: {
@@ -299,7 +296,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius:scale(100),
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",

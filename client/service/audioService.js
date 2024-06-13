@@ -17,6 +17,7 @@ class AudioService {
       this.currentPlaylist = [];
       this.currentSong = null;
       this.currentAudio = null;
+      this.userId = null;
       this.isGetCoin = true;
       AudioService.instance = this;
     } else return AudioService.instance;

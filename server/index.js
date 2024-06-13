@@ -118,7 +118,7 @@ const init = async () => {
   // console.log("coin : " + coin);
 };
 
-init();
+// init();
 
 /* REGISTER USER */
 

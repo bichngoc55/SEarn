@@ -95,7 +95,7 @@ export default function NewsTab() {
           const albumsPromises = [...items];
           const newAlbumsData = await Promise.all(albumsPromises);
           setAlbumsNewReleases(newAlbumsData);
-  
+
           const { items: trackItems } = await getTracksRecommendations(
             accessTokenForSpotify
           );
@@ -221,9 +221,14 @@ export default function NewsTab() {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={tracksRecommendations} 
-            onLikeUnlike={handleLikeUnlikeSong}
-            isLiked={likedSongList.includes(item.id)}/>;
+            return (
+              <SongItem
+                input={item}
+                songList={tracksRecommendations}
+                onLikeUnlike={handleLikeUnlikeSong}
+                isLiked={likedSongList.includes(item.id)}
+              />
+            );
           }}
           nestedScrollEnabled={true}
           ListFooterComponent={<View style={{ height: scale(60) }} />}

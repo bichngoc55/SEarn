@@ -41,7 +41,6 @@ const LikedSongPage = () => {
     getLikedSong();
   }, []);
 
-
   const getLikedSong = async () => {
     try {
       const response = await fetch(
@@ -60,7 +59,7 @@ const LikedSongPage = () => {
       alert("Error in likedsong: " + error);
     }
   };
-  //get song's in4 from Spotify 
+  //get song's in4 from Spotify
   useEffect(() => {
     const fetchTracks = async () => {
       dispatch(fetchSpotifyAccessToken());
@@ -159,9 +158,14 @@ const LikedSongPage = () => {
           data={tracks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={tracks} 
-            onLikeUnlike={handleLikeUnlike}
-            isLiked={songList.includes(item.id)}/>;
+            return (
+              <SongItem
+                input={item}
+                songList={tracks}
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={songList.includes(item.id)}
+              />
+            );
           }}
         />
       </View>

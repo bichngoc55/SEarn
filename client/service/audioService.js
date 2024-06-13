@@ -10,13 +10,14 @@ class AudioService {
       this.currentAudioIndex = 0;
       this.currentTime = 0;
       this.currentSound = null;
-      this.isPlay = false;
+      this.isPlay = true;
       this.currentTotalTime = 0;
       this.isRepeat = false;
       this.isShuffle = false;
       this.currentPlaylist = [];
       this.currentSong = null;
       this.currentAudio = null;
+      this.userId = null;
       this.isGetCoin = true;
       AudioService.instance = this;
     } else return AudioService.instance;
@@ -36,7 +37,7 @@ class AudioService {
       ) {
         const { sound, status } = await Audio.Sound.createAsync(
           { uri: this.currentSong.preview_url },
-          { shouldPlay: false },
+          { shouldPlay: true },
           this.onPlaybackStatusUpdated.bind(this)
         );
         this.currentSound = { sound, status };
@@ -53,34 +54,42 @@ class AudioService {
         total: status.durationMillis,
       });
     }
-    const { user } = useSelector((state) => state.user);
+    //const { user } = useSelector((state) => state.user);
     if (status.didJustFinish) {
-      if (this.isGetCoin) {
-        try {
-          const response = await fetch(
-            `http://localhost:3005/auth/${user?._id}/increaseCoin`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          const data = await response.json();
-          if (response.ok) {
-            console.log("Data being sent:", JSON.stringify(data, null, 2));
-            //lam j nua thi k bt
-          } else {
-            console.error("Error liking/unliking playlist:", data.message);
-          }
-        } catch (e) {}
-      }
-      this.isGetCoin = true;
+      console.log("Next song");
+      status.positionMillis = 0;
+      await this.currentSound.sound.stopAsync();
       if (this.isRepeat) {
+        console.log("Repeat");
         await this.playCurrentAudio();
       } else if (this.isShuffle) {
+        console.log("Random");
         await this.playRandomSong();
-      } else await this.playNextAudio();
+      } else {
+        console.log("Next song");
+        await this.playNextAudio();
+      }
+      // if (this.isGetCoin) {
+      //   try {
+      //     const response = await fetch(
+      //       `http://localhost:3005/auth/${user?._id}/increaseCoin`,
+      //       {
+      //         method: "PUT",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //       }
+      //     );
+      //     const data = await response.json();
+      //     if (response.ok) {
+      //       console.log("Data being sent:", JSON.stringify(data, null, 2));
+      //       //lam j nua thi k bt
+      //     } else {
+      //       console.error("Error liking/unliking playlist:", data.message);
+      //     }
+      //   } catch (e) {}
+      // }
+      this.isGetCoin = true;
     }
     this.onPlaybackStatusChange(status);
   }
@@ -104,7 +113,7 @@ class AudioService {
   // }
 
   async playCurrentAudio() {
-    if (this.currentSound != null && this.currentSound.sound != null) {
+    if (this.currentSound.sound != null) {
       try {
         await this.currentSound.sound.stopAsync();
       } catch (error) {
@@ -113,21 +122,21 @@ class AudioService {
     }
 
     await this.loadSong();
-    if (this.currentSound != null) {
-      await this.currentSound.sound.setStatusAsync({
-        shouldPlay: true,
-        positionMillis: this.currentTime,
-      });
+    // if (this.currentSound != null) {
+    //   await this.currentSound.sound.setStatusAsync({
+    //     shouldPlay: true,
+    //     positionMillis: this.currentTime,
+    //   });
 
-      // Phát audio từ vị trí hiện tại
-      if (this.currentTime) {
-        await this.currentSound.sound.playAsync();
-      }
-      // Cập nhật trạng thái phát
-      this.isPlay = true;
-    } else {
-      await this.currentSound.sound.stopAsync();
-    }
+    //   // Phát audio từ vị trí hiện tại
+    //   if (this.currentTime) {
+    //     await this.currentSound.sound.playAsync();
+    //   }
+    //   // Cập nhật trạng thái phát
+    //   this.isPlay = true;
+    // } else {
+    //   await this.currentSound.sound.stopAsync();
+    // }
   }
 
   async playNextAudio() {

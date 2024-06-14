@@ -154,12 +154,15 @@ const AddtoPlaylist = ({ song, onClose }) => {
 
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch("http://localhost:3005/playlists/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://97a3-113-22-232-171.ngrok-free.app/playlists/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       // Lọc các playlist có userIdOwner khớp với userId được truyền vào
       const playlists = await response.json();
@@ -188,9 +191,10 @@ const AddtoPlaylist = ({ song, onClose }) => {
       if (accessToken) {
         console.log("co access token trong add to playlist");
         await axios.patch(
-          `http://localhost:3005/playlists/${playlist.value}`,
+          `https://97a3-113-22-232-171.ngrok-free.app/playlists/${playlist.value}`,
           {
             songs: [...playlist.songs, song.id],
+            songCount: songs.length,
           },
           {
             headers: {
@@ -213,7 +217,7 @@ const AddtoPlaylist = ({ song, onClose }) => {
           (songId) => songId !== song.id
         );
         await axios.patch(
-          `http://localhost:3005/playlists/${playlist.value}`,
+          `https://97a3-113-22-232-171.ngrok-free.app/playlists/${playlist.value}`,
           {
             songs: updatedSongs,
           },

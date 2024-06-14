@@ -43,7 +43,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3005",
+    origin: "https://97a3-113-22-232-171.ngrok-free.app",
   })
 );
 // app.use(cors());

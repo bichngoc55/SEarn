@@ -123,36 +123,45 @@ export default function LikedAlbumTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ albumId }),
-    });
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ albumId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ albumId }),
+      }
+    );
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ albumId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ albumId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ albumId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));

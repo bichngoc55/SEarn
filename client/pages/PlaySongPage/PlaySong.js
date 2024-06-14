@@ -132,7 +132,7 @@ const PlaySongPage = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3005/auth/${user?._id}/getLikedSongs`,
+          `https://97a3-113-22-232-171.ngrok-free.app/auth/${user?._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -152,37 +152,43 @@ const PlaySongPage = ({ route }) => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ songId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedSongs`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ songId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ songId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/unlikeSongs`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ songId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
-  
+
   useEffect(() => {
-    setLiked(likedSongList?.includes(song.id));
-  }, [song.id, likedSongList]);
-  // Handle like/unlike action
+    setLiked(likedSongList?.includes(service.currentSong.id));
+  }, [service.currentSong.id, likedSongList]);
+  //Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {
       await unlikeSong(songId);
@@ -193,14 +199,14 @@ const PlaySongPage = ({ route }) => {
     }
   };
   const handleLike = () => {
-    handleLikeUnlikeSong(song.id);
+    handleLikeUnlikeSong(service.currentSong.id);
     setLiked(!liked);
   };
 
   const moveToArtistDetail = async (artistId) => {
-    try {        
+    try {
       if (accessTokenForSpotify) {
-        const artistData = await getArtist(accessTokenForSpotify, artistId)
+        const artistData = await getArtist(accessTokenForSpotify, artistId);
         navigation.navigate("ArtistDetail", {
           artist: artistData,
         });
@@ -208,7 +214,7 @@ const PlaySongPage = ({ route }) => {
     } catch (error) {
       console.error("Error fetching move to artist hehe:", error);
     }
-  }; 
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -250,15 +256,17 @@ const PlaySongPage = ({ route }) => {
         <View>
           <Text style={styles.songname}>{service.currentSong.name}</Text>
           <Text style={styles.songartist}>
-          {service.currentSong.artists.map((artist, index) => (
-            <TouchableOpacity
-              key={artist.id} 
-              onPress={() => moveToArtistDetail(artist.id)}
-            >
-              {(index < service.currentSong.artists.length - 1)? 
-              <Text style={styles.songartist}>{artist.name}, </Text> : 
-              <Text style={styles.songartist}>{artist.name} </Text>}
-            </TouchableOpacity>
+            {service.currentSong.artists.map((artist, index) => (
+              <TouchableOpacity
+                key={artist.id}
+                onPress={() => moveToArtistDetail(artist.id)}
+              >
+                {index < service.currentSong.artists.length - 1 ? (
+                  <Text style={styles.songartist}>{artist.name}, </Text>
+                ) : (
+                  <Text style={styles.songartist}>{artist.name} </Text>
+                )}
+              </TouchableOpacity>
             ))}
           </Text>
         </View>

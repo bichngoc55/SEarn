@@ -37,7 +37,7 @@ class AudioService {
       ) {
         const { sound, status } = await Audio.Sound.createAsync(
           { uri: this.currentSong.preview_url },
-          { shouldPlay: true },
+          { shouldPlay: false },
           this.onPlaybackStatusUpdated.bind(this)
         );
         this.currentSound = { sound, status };
@@ -72,7 +72,7 @@ class AudioService {
       // if (this.isGetCoin) {
       //   try {
       //     const response = await fetch(
-      //       `http://localhost:3005/auth/${user?._id}/increaseCoin`,
+      //       `https://97a3-113-22-232-171.ngrok-free.app/auth/${user?._id}/increaseCoin`,
       //       {
       //         method: "PUT",
       //         headers: {
@@ -122,21 +122,21 @@ class AudioService {
     }
 
     await this.loadSong();
-    // if (this.currentSound != null) {
-    //   await this.currentSound.sound.setStatusAsync({
-    //     shouldPlay: true,
-    //     positionMillis: this.currentTime,
-    //   });
+    if (this.currentSound != null) {
+      await this.currentSound.sound.setStatusAsync({
+        shouldPlay: true,
+        positionMillis: this.currentTime,
+      });
 
-    //   // Phát audio từ vị trí hiện tại
-    //   if (this.currentTime) {
-    //     await this.currentSound.sound.playAsync();
-    //   }
-    //   // Cập nhật trạng thái phát
-    //   this.isPlay = true;
-    // } else {
-    //   await this.currentSound.sound.stopAsync();
-    // }
+      // Phát audio từ vị trí hiện tại
+      if (this.currentTime) {
+        await this.currentSound.sound.playAsync();
+      }
+      // Cập nhật trạng thái phát
+      this.isPlay = true;
+    } else {
+      await this.currentSound.sound.stopAsync();
+    }
   }
 
   async playNextAudio() {

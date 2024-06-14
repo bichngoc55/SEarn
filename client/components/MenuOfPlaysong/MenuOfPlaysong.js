@@ -10,6 +10,8 @@ import BottomSheetModal, {
 //import BottomSheet from "react-native-bottomsheet-reanimated";
 
 import scale from "../../constant/responsive";
+import RNFS from "react-native-fs";
+import Share from "react-native-share";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -78,6 +80,23 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
       setIsSuccessModalVisible(false);
     }, 4000);
   };
+  const shareMP3File = async (filePath, fileType) => {
+    try {
+      const fileContent = await RNFS.readFile(filePath, "base64");
+      const fileName = filePath.split("/").pop();
+
+      const shareOptions = {
+        title: "Share MP3 File",
+        type: fileType,
+        url: `data:${fileType};base64,${fileContent}`,
+        filename: fileName,
+      };
+
+      await Share.open(shareOptions);
+    } catch (error) {
+      console.log("Error sharing MP3 file", error);
+    }
+  };
   return (
     <Modal
       visible={visible}
@@ -112,7 +131,10 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
                 <Text style={styles.textSmall}>Visit Album</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconandtext}>
+              <TouchableOpacity
+                style={styles.iconandtext}
+                onPress={() => shareMP3File(song.preview_url, "audio/mpeg")}
+              >
                 <Entypo name="share" size={24} color="white" />
                 <Text style={styles.textSmall}>Share</Text>
               </TouchableOpacity>

@@ -26,7 +26,7 @@ const EditPlaylistModal = ({ visible, onClose, playlist }) => {
     try {
       if (accessToken) {
         await axios.patch(
-          `http://localhost:3005/playlists/${playlist._id}`,
+          `https://97a3-113-22-232-171.ngrok-free.app/playlists/${playlist._id}`,
           {
             name,
             description,

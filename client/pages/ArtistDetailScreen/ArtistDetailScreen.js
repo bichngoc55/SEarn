@@ -57,11 +57,13 @@ const ArtistDetailScreen = ({ route }) => {
     const fetchLikedAlbumList = async () => {
       try {
         if (accessToken) {
-          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
+          const { listLikedAlbums } = await getLikedAlbumList(
+            accessToken,
+            user._id
+          );
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
-        }
-        else alert("Chưa có accessToken");
+        } else alert("Chưa có accessToken");
       } catch (error) {
         console.error("Error fetching liked albums:", error);
       }
@@ -74,7 +76,7 @@ const ArtistDetailScreen = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -124,28 +126,34 @@ const ArtistDetailScreen = ({ route }) => {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ albumId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ albumId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ albumId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ albumId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -163,28 +171,34 @@ const ArtistDetailScreen = ({ route }) => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ songId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedSongs`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ songId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ songId }),
-    })
+    fetch(
+      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/unlikeSongs`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ songId }),
+      }
+    )
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -236,8 +250,13 @@ const ArtistDetailScreen = ({ route }) => {
                   data={artistAlbums}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => {
-                    return <ArtistAlbumItem input={item} onLikeUnlike={handleLikeUnlikeAlbum}
-                    isLiked={likedAlbumList.includes(item.id)}/>;
+                    return (
+                      <ArtistAlbumItem
+                        input={item}
+                        onLikeUnlike={handleLikeUnlikeAlbum}
+                        isLiked={likedAlbumList.includes(item.id)}
+                      />
+                    );
                   }}
                   nestedScrollEnabled={true}
                 />
@@ -246,9 +265,14 @@ const ArtistDetailScreen = ({ route }) => {
             </>
           }
           renderItem={({ item }) => {
-            return <SongItem input={item} songList={artistSongs}
-            onLikeUnlike={handleLikeUnlikeSong}
-            isLiked={songList.includes(item.id)}/>;
+            return (
+              <SongItem
+                input={item}
+                songList={artistSongs}
+                onLikeUnlike={handleLikeUnlikeSong}
+                isLiked={songList.includes(item.id)}
+              />
+            );
           }}
           nestedScrollEnabled={true}
         />
@@ -261,7 +285,7 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
-    paddingBottom: scale(60)
+    paddingBottom: scale(60),
   },
   img_and_backBtn: {
     width: "100%",

@@ -140,7 +140,7 @@ export default function UserPage() {
       // console.log("avatar : " + JSON.stringifydata.avatar);
       const response = await axios({
         method: method, // 'PATCH' for updates
-        url: `http://localhost:3005/auth/${user._id}/${endpoint}`,
+        url: `http://10.0.2.2:3005/auth/${user._id}/${endpoint}`,
         data: data,
         headers: {
           authorization: `Bearer ${accessToken}`,

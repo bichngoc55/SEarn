@@ -61,6 +61,5 @@ const styles = StyleSheet.create({
   co: {
     flex: 1,
     backgroundColor: "#1b1b1b",
-    paddingBottom: "10%",
   },
 });

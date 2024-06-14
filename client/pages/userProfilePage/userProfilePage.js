@@ -457,6 +457,9 @@ export default function UserPage() {
               height={scale(50)}
             />
           </View>
+          <View style={{height: scale(150)}}>
+
+          </View>
         </ScrollView>
       </View>
     </BlurView>
@@ -512,7 +515,8 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   scrollViewContent:{
-    marginHorizontal:scale(10)
+    marginHorizontal:scale(10),
+    flex: 1,
   },
   itemContainer: {
     flexDirection: "row",

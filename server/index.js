@@ -25,13 +25,13 @@ import reportRoutes from "./routes/report.js";
 // import configuration from "./contracts/PlaylistLikes.json" with { type: "json" }; // 2. Data import
 // import contractData from "./contracts/PlaylistLikes.json" assert { type: "json" };
 
-import contractData from "./contracts/PlaylistLikes.json" assert { type: "json" };
+// import contractData from "./contracts/PlaylistLikes.json" assert { type: "json" };
 
-const { abi, bytecode } = contractData;
+// const { abi, bytecode } = contractData;
 // const contract_abi = configuration.abi;
 // const contract_address = configuration.networks["5777"].address;
 
-let sender, web3, contract;
+// let sender, web3, contract;
 //config
 dotenv.config();
 //express app

@@ -1,7 +1,7 @@
 const getLikedArtistList = async (accessToken, userId) => {
   try {
     const response = await fetch(
-      `http://localhost:3005/auth/${userId}/getLikedArtists`,
+      `http://10.0.2.2:3005/auth/${userId}/getLikedArtists`,
       {
         method: "GET",
         headers: {

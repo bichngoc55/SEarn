@@ -30,7 +30,7 @@ export const refreshAccessToken = createAsyncThunk(
         throw new Error("Refresh token is missing");
       }
 
-      const response = await fetch("http://localhost:3005/auth/refresh", {
+      const response = await fetch("http://10.0.2.2:3005/auth/refresh", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       //   console.log("Inside login user in user slice");
-      const response = await fetch("http://localhost:3005/auth/login", {
+      const response = await fetch("http://10.0.2.2:3005/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

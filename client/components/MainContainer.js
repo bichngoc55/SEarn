@@ -171,7 +171,7 @@ function FavoriteTabs() {
 
 function BottomBar() {
   return (
-    <View style={{ flex: 1, flexDirection: "column" }}>
+    <View style={{ flex: 1, }}>
       <View style={styles.tabContainer}>
         <Tab.Navigator
           initialRouteName={homeName}
@@ -293,9 +293,8 @@ export default function MainNavigation() {
             />
             <Stack.Screen name="SignUpOrLogin" component={SignUpOrLoginPage} />
             <Stack.Screen name="Login" component={LoginPage} />
-            <Stack.Screen name="Register" component={RegisterPage} />
+            <Stack.Screen name="Register" component={RegisterPage}/>
             <Stack.Screen name="BottomBar" component={BottomBar} />
-            <Stack.Screen name="Miniplayer" component={MiniPlayer} />
           </>
         ) : (
           <Stack.Screen name="BottomBar" component={BottomBar} />
@@ -307,7 +306,7 @@ export default function MainNavigation() {
 const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
-    zIndex: 1,
+    zIndex: 0,
     bottom: 0,
   },
   tabBarLabel: {

@@ -47,7 +47,10 @@ export default function RelatedArtist() {
   const fetchArtistList = useCallback(async () => {
     try {
       if (accessToken) {
-        const { listLikedArtists } = await getLikedArtistList(accessToken, user?._id);
+        const { listLikedArtists } = await getLikedArtistList(
+          accessToken,
+          user?._id
+        );
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
         setLikedArtistList(artistIds); //Lấy liked artists từ db
 
@@ -83,7 +86,7 @@ export default function RelatedArtist() {
         const uniqueRelatedArtists = Array.from(
           new Set(allRelatedArtists.map((artist) => artist.id))
         ).map((id) => allRelatedArtists.find((artist) => artist.id === id));
-        
+
         setRelatedArtists(uniqueRelatedArtists);
       } else {
         alert("accessToken:" + accessTokenForSpotify);

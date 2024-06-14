@@ -54,7 +54,10 @@ export default function LikedAlbumTab() {
     const fetchAlbumList = async () => {
       try {
         if (accessToken) {
-          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user._id);
+          const { listLikedAlbums } = await getLikedAlbumList(
+            accessToken,
+            user._id
+          );
           // const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
 
           setAlbumList(listLikedAlbums);
@@ -76,9 +79,9 @@ export default function LikedAlbumTab() {
           //   getAlbum(accessTokenForSpotify, albumId)
           // );
           const albumPromises = albumList.map((likedAlbum) =>
-            getAlbum(accessTokenForSpotify, likedAlbum.id).then(album => ({
+            getAlbum(accessTokenForSpotify, likedAlbum.id).then((album) => ({
               ...album,
-              timeAdded: likedAlbum.timeAdded
+              timeAdded: likedAlbum.timeAdded,
             }))
           );
           const albumData = await Promise.all(albumPromises);
@@ -105,7 +108,9 @@ export default function LikedAlbumTab() {
           sortedAlbums.sort((a, b) => a.name.localeCompare(b.name));
           break;
         case 2:
-          sortedAlbums.sort((a, b) => new Date(b.timeAdded) - new Date(a.timeAdded));
+          sortedAlbums.sort(
+            (a, b) => new Date(b.timeAdded) - new Date(a.timeAdded)
+          );
           break;
         default:
           break;
@@ -118,6 +123,14 @@ export default function LikedAlbumTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    });
     fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
       method: "PATCH",
       headers: {
@@ -157,8 +170,6 @@ export default function LikedAlbumTab() {
     }
   };
 
-
-
   return (
     <SafeAreaView style={styles.tabContainer}>
       <View style={styles.sort}>
@@ -173,7 +184,11 @@ export default function LikedAlbumTab() {
             size={30}
           />
           <Text style={[styles.text, { marginLeft: 5 }]}>
-           {sortOrder === 0 ? 'Random' : sortOrder === 1 ?  'Sort by Name' : 'Recently Added'}
+            {sortOrder === 0
+              ? "Random"
+              : sortOrder === 1
+              ? "Sort by Name"
+              : "Recently Added"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -181,13 +196,14 @@ export default function LikedAlbumTab() {
         <FlatList
           data={albums}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => { 
-            return <AlbumItem
-            input={item}
-            onLikeUnlike={handleLikeUnlike}
-            isLiked={albumList.some((a) => a.id === item.id)}
-            />;
-
+          renderItem={({ item }) => {
+            return (
+              <AlbumItem
+                input={item}
+                onLikeUnlike={handleLikeUnlike}
+                isLiked={albumList.some((a) => a.id === item.id)}
+              />
+            );
           }}
           ListFooterComponent={<View style={{ height: scale(120) }} />}
         />
@@ -200,7 +216,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flex: 1,
     height: "100%",
-    marginHorizontal: scale(10)
+    marginHorizontal: scale(10),
   },
   sort: {
     marginVertical: 15,
@@ -211,7 +227,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: "white",
-    fontFamily:"semiBold"
+    fontFamily: "semiBold",
   },
   flatlistContainer: {
     marginHorizontal: scale(10),

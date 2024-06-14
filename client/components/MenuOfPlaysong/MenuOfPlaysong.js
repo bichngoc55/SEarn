@@ -48,6 +48,10 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
     bottomSheetRef.current?.expand();
     setIsOpen(true);
   }
+  function handleAddToPlaylistClose() {
+    bottomSheetRef.current?.close();
+    setIsOpen(false);
+  }
   const handleCloseBottomSheet = () => {
     setIsOpen(false);
     console.log(isOpen);
@@ -173,7 +177,10 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
                 backgroundColor: "transparent",
               }}
             >
-              <AddtoPlaylist song={song} />
+              <AddtoPlaylist
+                song={song}
+                onClose={() => handleAddToPlaylistClose()}
+              />
             </BottomSheetModal>
           ) : null}
         </BottomSheetModalProvider>

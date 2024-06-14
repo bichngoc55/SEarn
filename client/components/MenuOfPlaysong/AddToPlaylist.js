@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch, Provider } from "react-redux";
 import scale from "../../constant/responsive";
 import AddPlaylistModal from "../addPlaylistModal";
+import axios from "axios";
 import {
   Modal,
   StyleSheet,
@@ -29,7 +30,7 @@ import {
 import Checkbox from "expo-checkbox";
 import Toast from "react-native-toast-message";
 
-const AddtoPlaylist = ({ song }) => {
+const AddtoPlaylist = ({ song, onClose }) => {
   const [playlists, setPlaylists] = useState([]);
   const accessToken = useSelector((state) => state.user.accessToken);
   const isFocused = useIsFocused();
@@ -50,14 +51,33 @@ const AddtoPlaylist = ({ song }) => {
   }, [isFocused]);
 
   const savePlaylist = async () => {
-    getLikedSong();
-    const newSongValues = items
-      .filter((item) => item.isCheck)
-      .map((item) => item.value);
-    setSongList((prevSongList) => prevSongList.concat(newSongValues));
     items.map((item) => {
-      if (item.isCheck) {
-        updatePlaylist(item.value);
+      const updatedItems = items.filter((item) => {
+        return item.isCheck && item.songs.includes(song.id);
+      });
+      if (updatedItems.length > 0) {
+        const labelsToShow = updatedItems.map((item) => item.label).join(", ");
+        showToastPlaylist(labelsToShow);
+      } else {
+        if (item.isCheck) {
+          updatePlaylist(item);
+        }
+      }
+    });
+  };
+
+  const unSavePlaylist = async () => {
+    items.map((item) => {
+      const updatedItems = items.filter((item) => {
+        return item.isCheck && !item.songs.includes(song.id);
+      });
+      if (updatedItems.length > 0) {
+        const labelsToShow = updatedItems.map((item) => item.label).join(", ");
+        showToastUnPlaylist(labelsToShow);
+      } else {
+        if (item.isCheck) {
+          updateDeleteFromPlaylist(item);
+        }
       }
     });
   };
@@ -72,6 +92,63 @@ const AddtoPlaylist = ({ song }) => {
       autoHide: true,
       topOffset: 60,
       bottomOffset: 40,
+      onHide: () => {
+        onClose();
+      },
+    });
+  };
+
+  const showToastDelete = () => {
+    Toast.show({
+      type: "success",
+      position: "top",
+      text1: "Xóa thành công",
+      text2: "Đã xóa bài hát khỏi danh sách phát",
+      visibilityTime: 2000,
+      autoHide: true,
+      topOffset: 60,
+      bottomOffset: 40,
+      onHide: () => {
+        onClose();
+      },
+    });
+  };
+
+  const showToastPlaylist = (value) => {
+    Toast.show({
+      type: "error",
+      position: "top",
+      text1: "Không thể thêm, bài hát đã có trong",
+      text2: value,
+      visibilityTime: 2000,
+      textStyle: {
+        numberOfLines: 3, // Hiển thị tối đa 3 dòng cho text2
+      },
+      autoHide: true,
+      topOffset: 60,
+      bottomOffset: 40,
+      onSwipeUpComplete: () => {
+        Toast.hide(); // Tự động ẩn toast khi kéo lên
+      },
+    });
+  };
+
+  const showToastUnPlaylist = (value) => {
+    Toast.show({
+      type: "error",
+      position: "top",
+      text1: "Lỗi xóa, bài hát không có trong",
+      text2: value,
+      visibilityTime: 2000,
+      textStyle: {
+        numberOfLines: 3, // Hiển thị tối đa 3 dòng cho text2
+      },
+      autoHide: true,
+      topOffset: 60,
+      bottomOffset: 40,
+      onSwipeUpComplete: () => {
+        Toast.hide(); // Tự động ẩn toast khi kéo lên
+      },
     });
   };
 
@@ -98,6 +175,7 @@ const AddtoPlaylist = ({ song }) => {
         (filteredPlaylistshehe, index) => ({
           label: filteredPlaylistshehe.name,
           value: filteredPlaylistshehe._id,
+          songs: filteredPlaylistshehe.songs,
           isCheck: false,
         })
       );
@@ -105,32 +183,14 @@ const AddtoPlaylist = ({ song }) => {
     } catch (error) {}
   };
 
-  const getLikedSong = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3005/auth/${user._id}/getLikedSongs`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      const likedSong = await response.json();
-      setSongList(likedSong);
-    } catch (error) {
-      alert("Error in likedsong: " + error);
-    }
-  };
-
   const updatePlaylist = async (playlist) => {
     try {
       if (accessToken) {
+        console.log("co access token trong add to playlist");
         await axios.patch(
-          `http://localhost:3005/playlists/${playlist}`,
+          `http://localhost:3005/playlists/${playlist.value}`,
           {
-            songs,
+            songs: [...playlist.songs, song.id],
           },
           {
             headers: {
@@ -139,7 +199,32 @@ const AddtoPlaylist = ({ song }) => {
             },
           }
         );
-        onClose();
+        showToast();
+      } else alert("Chưa có accessToken");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const updateDeleteFromPlaylist = async (playlist) => {
+    try {
+      if (accessToken) {
+        const updatedSongs = playlist.songs.filter(
+          (songId) => songId !== song.id
+        );
+        await axios.patch(
+          `http://localhost:3005/playlists/${playlist.value}`,
+          {
+            songs: updatedSongs,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        showToastDelete();
       } else alert("Chưa có accessToken");
     } catch (error) {
       alert(error.message);
@@ -164,9 +249,14 @@ const AddtoPlaylist = ({ song }) => {
           <Text style={styles.text}>New playlist</Text>
         </TouchableOpacity>
 
-        <Text style={styles.textSave} onPress={() => savePlaylist()}>
-          Save
-        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.textSave1} onPress={() => unSavePlaylist()}>
+            Unsave
+          </Text>
+          <Text style={styles.textSave} onPress={() => savePlaylist()}>
+            Save
+          </Text>
+        </View>
       </View>
       <AddPlaylistModal visible={modalVisible} onClose={toggleModal} />
       <FlatList
@@ -246,6 +336,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(10),
     paddingVertical: "1%",
     borderRadius: 5,
+  },
+  textSave1: {
+    fontSize: scale(13),
+    color: "white",
+    fontFamily: "semiBold",
+    borderColor: "white",
+    borderWidth: 1,
+    paddingHorizontal: scale(10),
+    paddingVertical: "1%",
+    borderRadius: 5,
+    marginRight: "5%",
   },
   NewPlaylist: {
     flexDirection: "row",

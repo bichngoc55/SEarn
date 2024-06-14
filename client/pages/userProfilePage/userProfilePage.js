@@ -386,9 +386,7 @@ export default function UserPage() {
           </TouchableOpacity>
           <TouchableOpacity style={styles.itemContainer} onPress={openModal}>
             <MaterialIcons name="feedback" size={24} color="white" />
-            <Text style={styles.itemText}>
-              Give feedbacks & Report errors
-            </Text>
+            <Text style={styles.itemText}>Give feedbacks & Report errors</Text>
             <Modal isOpen={isModalOpen} onClose={closeModal}>
               <View style={styles.FeedbackContainer}>
                 <Text style={styles.feedbackText}>
@@ -406,7 +404,7 @@ export default function UserPage() {
                   <ReuseBtn
                     width={scale(120)}
                     height={scale(40)}
-                    textSize= {scale(15)}
+                    textSize={scale(15)}
                     btnText="Send Report"
                     onPress={() => handleSendReport(feedback)}
                   />
@@ -452,7 +450,7 @@ export default function UserPage() {
               onPress={handleSubmit}
               btnText="Log out"
               textColor="#ffffff"
-              textSize= {scale(18)}
+              textSize={scale(18)}
               width={scale(300)}
               height={scale(50)}
             />
@@ -492,7 +490,7 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf:"center",
+    alignSelf: "center",
     width: "50%",
     marginTop: scale(60),
     justifyContent: "center",
@@ -504,7 +502,7 @@ const styles = StyleSheet.create({
     fontSize: scale(15),
     borderBottomWidth: 1,
     textAlign: "center",
-    alignSelf:"center"
+    alignSelf: "center",
   },
   stack: {
     position: "absolute",
@@ -522,7 +520,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: scale(10),
-    marginHorizontal:scale(10)
+    marginHorizontal: scale(10),
   },
   itemText: {
     color: COLOR.textPrimaryColor,
@@ -576,13 +574,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical: scale(20),
     alignItems: "center",
-    width: scale(280)
+    width: scale(280),
   },
   FeedbackContainer: {
     backgroundColor: "black",
     alignItems: "center",
     borderRadius: scale(20),
-    width: scale(350)
+    width: scale(350),
   },
   feedbackText: {
     color: "white",
@@ -596,12 +594,11 @@ const styles = StyleSheet.create({
     width: scale(120),
     height: scale(40),
     fontFamily: "regular",
-    padding:scale(10),
+    padding: scale(10),
     backgroundColor: "red",
     borderRadius: scale(10),
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
   },
-
 });

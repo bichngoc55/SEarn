@@ -54,7 +54,7 @@ const PublicPlaylist = () => {
   useEffect(() => {
     const fetchPublicPlaylists = async () => {
       try {
-        const response = await fetch("http://localhost:3005/playlists/public", {
+        const response = await fetch("http://10.0.2.2:3005/playlists/public", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const PublicPlaylist = () => {
     const fetchLikedPlaylists = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3005/playlists/liked/${user._id}`,
+          `http://10.0.2.2:3005/playlists/liked/${user._id}`,
           {
             method: "GET",
             headers: {
@@ -94,7 +94,7 @@ const PublicPlaylist = () => {
   const handleLikeUnlike = async (playlistId) => {
     try {
       const response = await fetch(
-        `http://localhost:3005/playlists/liked/${playlistId}`,
+        `http://10.0.2.2:3005/playlists/liked/${playlistId}`,
         {
           method: "PUT",
           headers: {
@@ -130,7 +130,7 @@ const PublicPlaylist = () => {
       try {
         console.log("userId: " + userId);
         const response = await fetch(
-          `http://localhost:3005/auth/${userId}/coins`,
+          `http://10.0.2.2:3005/auth/${userId}/coins`,
           {
             method: "GET",
             headers: {

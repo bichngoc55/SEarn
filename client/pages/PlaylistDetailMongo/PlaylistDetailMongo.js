@@ -5,6 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Modal,
+  TextInput,
   Pressable,
   FlatList,
   Image,
@@ -14,12 +15,14 @@ import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { MaterialIcons } from "@expo/vector-icons";
+import renderComment from "../../components/renderComment/renderComment";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { Entypo } from "@expo/vector-icons";
 import { getTrack } from "../../service/songService";
 import SongItem from "../../components/songItem";
 import MenuOfPlaylist from "../../components/menuOfPlaylist";
+import { ScrollView } from "react-native-gesture-handler";
 
 const PlaylistDetailMongo = ({ route }) => {
   const { playlist } = route.params;
@@ -36,9 +39,63 @@ const PlaylistDetailMongo = ({ route }) => {
   const [description, setDescription] = useState(playlist.description);
   const songList = playlist.songs;
   const [modalVisible, setModalVisible] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [comments, setComments] = useState([]);
+  const { user } = useSelector((state) => state.user);
+
   const toggleModal = () => {
     setModalVisible(!modalVisible);
     getPlaylistDetails();
+  };
+  const toggleResponses = (commentId) => {
+    setSelectedCommentId((prevId) => (prevId === commentId ? null : commentId));
+  };
+  const handlePostComment = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:3005/comment/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: newComment,
+          userId: user?._id,
+        }),
+      });
+      const data = await response.json();
+      setNewComment("");
+      setSelectedCommentId(null);
+      getPlaylistDetails();
+    } catch (e) {
+      alert("Error in post comment: " + e);
+    }
+  };
+
+  const handlePostResponse = async (commentId, responseContent) => {
+    try {
+      const response = await fetch("http://10.0.2.2:3005/comment/response", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: responseContent,
+          userId: user._id,
+          commentId: commentId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to post response");
+      }
+      setSelectedCommentId(null);
+      getPlaylistDetails();
+    } catch (e) {
+      alert("Error in post response: " + e);
+    }
   };
 
   useEffect(() => {
@@ -62,10 +119,11 @@ const PlaylistDetailMongo = ({ route }) => {
   }, [isFocused]);
 
   const getPlaylistDetails = async () => {
+    // setIsLoading(true);
     try {
       if (accessToken) {
         const response = await fetch(
-          `http://localhost:3005/playlists/${playlist._id}`,
+          `http://10.0.2.2:3005/playlists/${playlist._id}`,
           {
             method: "GET",
             headers: {
@@ -75,7 +133,8 @@ const PlaylistDetailMongo = ({ route }) => {
           }
         );
         const playlistDetail = await response.json();
-        console.log("cap nhat lai playlist", playlistDetail);
+        const commentsData = playlistDetail.comments;
+        setComments(commentsData);
         setName(playlistDetail.name);
         setDescription(playlistDetail.description);
         setIsPublic(playlistDetail.privacyOrPublic);
@@ -112,7 +171,6 @@ const PlaylistDetailMongo = ({ route }) => {
           />
         </View>
       </View>
-
       <View
         style={{ width: "100%", alignItems: "center", marginVertical: "4%" }}
       >
@@ -137,9 +195,7 @@ const PlaylistDetailMongo = ({ route }) => {
           </View>
         </View>
       </View>
-
       {/* hehe */}
-
       <View style={styles.flatlistContainer}>
         <FlatList
           data={tracks}
@@ -149,6 +205,38 @@ const PlaylistDetailMongo = ({ route }) => {
           }}
         />
       </View>
+      (isPublic && (
+      <ScrollView style={styles.commentContainer}>
+        <View style={styles.commentPost}>
+          <TextInput
+            value={newComment}
+            onChangeText={setNewComment}
+            placeholder="Viết bình luận..."
+          />
+          <Button title="Đăng" onPress={handlePostComment} />
+        </View>
+        <View style={styles.commentRender}>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : (
+            <FlatList
+              data={comments}
+              keyExtractor={(comment) => comment._id}
+              renderItem={({ item }) => (
+                <renderComment
+                  comment={item}
+                  handlePostResponse={(content) =>
+                    handlePostResponse(item._id, content)
+                  }
+                  toggleResponses={toggleResponses}
+                  selectedCommentId={selectedCommentId}
+                />
+              )}
+            />
+          )}
+        </View>
+      </ScrollView>
+      ))
     </SafeAreaView>
   );
 };
@@ -211,6 +299,17 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: "6.5%",
     marginBottom: "10%",
+  },
+  commentPost: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    height: scale(50),
+    backgroundColor: "white",
+    paddingHorizontal: scale(10),
+    borderTopLeftRadius: scale(10),
+    borderTopRightRadius: scale(10),
   },
 });
 export default PlaylistDetailMongo;

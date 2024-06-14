@@ -65,7 +65,7 @@ const PlaylistDetailMongo = ({ route }) => {
     try {
       if (accessToken) {
         const response = await fetch(
-          `https://97a3-113-22-232-171.ngrok-free.app/playlists/${playlist._id}`,
+          `http://localhost:3005/playlists/${playlist._id}`,
           {
             method: "GET",
             headers: {
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   },
   textDes: {
     fontSize: scale(13),
-    fontWeight: "300",
+    fontFamily: "regular",
     color: "white",
   },
   follow_and_song: {

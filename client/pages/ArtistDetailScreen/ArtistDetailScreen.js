@@ -44,7 +44,7 @@ const ArtistDetailScreen = ({ route }) => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect artist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
   const [artistAlbums, setArtistAlbums] = useState([]);
@@ -76,7 +76,7 @@ const ArtistDetailScreen = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/getLikedSongs`,
+          `http://localhost:3005/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -126,34 +126,28 @@ const ArtistDetailScreen = ({ route }) => {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(
-      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(
-      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeAlbum`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -171,34 +165,28 @@ const ArtistDetailScreen = ({ route }) => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(
-      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedSongs`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ songId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(
-      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/unlikeSongs`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ songId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));

@@ -54,15 +54,12 @@ const PublicPlaylist = () => {
   useEffect(() => {
     const fetchPublicPlaylists = async () => {
       try {
-        const response = await fetch(
-          "https://97a3-113-22-232-171.ngrok-free.app/playlists/public",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch("http://localhost:3005/playlists/public", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         // console.log("public playlist " + JSON.stringify(data, null, 2));
         setAllPlaylistList(data);
@@ -75,7 +72,7 @@ const PublicPlaylist = () => {
     const fetchLikedPlaylists = async () => {
       try {
         const response = await fetch(
-          `https://97a3-113-22-232-171.ngrok-free.app/playlists/liked/${user._id}`,
+          `http://localhost:3005/playlists/liked/${user._id}`,
           {
             method: "GET",
             headers: {
@@ -97,7 +94,7 @@ const PublicPlaylist = () => {
   const handleLikeUnlike = async (playlistId) => {
     try {
       const response = await fetch(
-        `https://97a3-113-22-232-171.ngrok-free.app/playlists/liked/${playlistId}`,
+        `http://localhost:3005/playlists/liked/${playlistId}`,
         {
           method: "PUT",
           headers: {
@@ -133,7 +130,7 @@ const PublicPlaylist = () => {
       try {
         console.log("userId: " + userId);
         const response = await fetch(
-          `https://97a3-113-22-232-171.ngrok-free.app/auth/${userId}/coins`,
+          `http://localhost:3005/auth/${userId}/coins`,
           {
             method: "GET",
             headers: {
@@ -159,7 +156,7 @@ const PublicPlaylist = () => {
   //   const handleShowToken = async () => {
   //     try {
   //       const response = await fetch(
-  //         `https://97a3-113-22-232-171.ngrok-free.app/auth/${userId}/coins`,
+  //         `http://localhost:3005/auth/${userId}/coins`,
   //         {
   //           method: "GET",
   //           headers: {

@@ -41,29 +41,24 @@ const PlaylistPage = () => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect:", accessTokenForSpotify);
     }
   }, [dispatch, user?.id, accessTokenForSpotify]);
 
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch(
-        "https://97a3-113-22-232-171.ngrok-free.app/playlists/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("http://localhost:3005/playlists/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       // Lọc các playlist có userIdOwner khớp với userId được truyền vào
       const playlists = await response.json();
-      console.log("goi playlist tu db: " + playlists);
       let filteredPlaylistshehe = [];
 
       for (let i = 0; i < playlists.length; i++) {
-        console.log("Goi palylist tu db", playlists[i].name);
         if (playlists[i].userIdOwner === user._id) {
           filteredPlaylistshehe.push(playlists[i]);
         }
@@ -212,7 +207,7 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semibold",
     color: "white",
     marginRight: scale(10),
   },

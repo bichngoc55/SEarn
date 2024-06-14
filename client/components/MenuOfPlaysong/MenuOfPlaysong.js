@@ -8,10 +8,12 @@ import BottomSheetModal, {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 //import BottomSheet from "react-native-bottomsheet-reanimated";
-
 import scale from "../../constant/responsive";
-import RNFS from "react-native-fs";
-import Share from "react-native-share";
+import * as Sharing from "expo-sharing";
+import Video from "react-native-video";
+//import RNFS from "react-native-fs";
+import * as FileSystem from "expo-file-system";
+import { Share } from "react-native";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -39,6 +41,7 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenUpcoming, setIsOpenUpcoming] = useState(false);
   const [report, setReport] = useState("");
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const toggleModal = () => {
@@ -46,9 +49,14 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
   };
   const snapPoints = ["25%", "50%"];
   const bottomSheetRef = useRef(null);
+  const bottomUpcomingSheetRef = useRef(null);
   function presentModal() {
     bottomSheetRef.current?.expand();
     setIsOpen(true);
+  }
+  function presentUpcomingModal() {
+    bottomUpcomingSheetRef.current?.expand();
+    setIsOpenUpcoming(true);
   }
   function handleAddToPlaylistClose() {
     bottomSheetRef.current?.close();
@@ -80,21 +88,25 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
       setIsSuccessModalVisible(false);
     }, 4000);
   };
-  const shareMP3File = async (filePath, fileType) => {
+
+  const handleShare = async () => {
     try {
-      const fileContent = await RNFS.readFile(filePath, "base64");
-      const fileName = filePath.split("/").pop();
+      const audioUrl = song.preview_url;
+      const audioFileName = "audio.mp3";
+      const audioFilePath = `${FileSystem.cacheDirectory}${audioFileName}`;
 
-      const shareOptions = {
-        title: "Share MP3 File",
-        type: fileType,
-        url: `data:${fileType};base64,${fileContent}`,
-        filename: fileName,
-      };
+      await FileSystem.downloadAsync(audioUrl, audioFilePath);
 
-      await Share.open(shareOptions);
+      // Chia sẻ file âm thanh
+
+      await Sharing.shareAsync(audioFilePath, {
+        mimeType: "audio/mp3",
+        dialogTitle: "Share Audio File",
+        subject: song.name,
+        url: song.name,
+      });
     } catch (error) {
-      console.log("Error sharing MP3 file", error);
+      console.log("Error sharing audio file:", error.message);
     }
   };
   return (
@@ -133,7 +145,7 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
 
               <TouchableOpacity
                 style={styles.iconandtext}
-                onPress={() => shareMP3File(song.preview_url, "audio/mpeg")}
+                onPress={() => handleShare()}
               >
                 <Entypo name="share" size={24} color="white" />
                 <Text style={styles.textSmall}>Share</Text>
@@ -185,6 +197,14 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
                   onClose={() => setIsSuccessModalVisible(false)}
                 />
               </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.iconandtext}
+                onPress={() => presentUpcomingModal()}
+              >
+                <Entypo name="list" size={24} color="white" />
+                <Text style={styles.textSmall}>Upcoming</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -205,6 +225,21 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
               />
             </BottomSheetModal>
           ) : null}
+
+          {/* {isOpenUpcoming ? (
+            <BottomSheetModal
+              ref={bottomUpcomingSheetRef}
+              snapPoints={snapPoints}
+              enablePanDownToClose={true}
+              handleIndicatorStyle={{ backgroundColor: "white" }}
+              backgroundStyle={{
+                borderRadius: 50,
+                backgroundColor: "#1b1b1b",
+              }}
+            >
+              <Text>Hello</Text>
+            </BottomSheetModal>
+          ) : null} */}
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </Modal>
@@ -239,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontSize: scale(14),
+    fontFamily: "semibold",
     color: "white",
     fontFamily: "semiBold",
     color: "#FED215",
@@ -280,7 +315,7 @@ const styles = StyleSheet.create({
   feedbackText: {
     color: "white",
     fontSize: scale(20),
-    fontWeight: "bold",
+    fontFamily: "bold",
     marginTop: scale(20),
     marginBottom: scale(20),
     fontFamily: "regular",

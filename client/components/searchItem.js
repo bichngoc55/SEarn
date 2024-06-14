@@ -16,7 +16,6 @@ import { getAlbum } from "../service/albumService";
 import { getTrack } from "../service/songService";
 
 const SearchItem = ({ input }) => {
-
   const { user } = useSelector((state) => state.user);
 
   const { accessTokenForSpotify } = useSelector(
@@ -24,7 +23,7 @@ const SearchItem = ({ input }) => {
   );
   useEffect(() => {
     if (accessTokenForSpotify) {
-    console.log("Access Token in useEffect search:", accessTokenForSpotify);
+      console.log("Access Token in useEffect search:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
 
@@ -35,16 +34,14 @@ const SearchItem = ({ input }) => {
         artist: input,
       });
     else if (input.type === "album") {
-      moveToAlbumDetail()
-    }
-    else 
-      moveToPlaySong()
+      moveToAlbumDetail();
+    } else moveToPlaySong();
   };
 
   const moveToAlbumDetail = async () => {
-    try {        
+    try {
       if (accessTokenForSpotify) {
-        const albumData = await getAlbum(accessTokenForSpotify, input.id)
+        const albumData = await getAlbum(accessTokenForSpotify, input.id);
         navigation.navigate("AlbumDetail", {
           album: albumData,
         });
@@ -52,12 +49,12 @@ const SearchItem = ({ input }) => {
     } catch (error) {
       console.error("Error fetching search album hehe:", error);
     }
-  }; 
+  };
   const moveToPlaySong = async () => {
-    try {        
+    try {
       if (accessTokenForSpotify) {
-        const songData = await getTrack(accessTokenForSpotify, input.id)
-        console.log(songData)
+        const songData = await getTrack(accessTokenForSpotify, input.id);
+        console.log(songData);
         navigation.navigate("PlaySong", {
           song: songData,
         });
@@ -69,7 +66,7 @@ const SearchItem = ({ input }) => {
   let name, image;
 
   if (input.type === "artist" || input.type === "album") {
-    // Đối tượng là nghệ sĩ (artist) hoặc album 
+    // Đối tượng là nghệ sĩ (artist) hoặc album
     name = input.name;
     image = input.images[0]?.url;
   } else if (input.type === "track") {
@@ -81,20 +78,26 @@ const SearchItem = ({ input }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={moveToDetail}>
       <Image source={{ uri: image }} style={styles.circle} />
-      <View style={{ flexDirection: "column", flex: 1, marginHorizontal: scale(10), height: scale(60), justifyContent: "space-between"}}>
+      <View
+        style={{
+          flexDirection: "column",
+          flex: 1,
+          marginHorizontal: scale(10),
+          height: scale(60),
+          justifyContent: "space-between",
+        }}
+      >
         <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
           {name}
         </Text>
-        <Text style={styles.textArtist}>
-          {input.type}
-        </Text>
+        <Text style={styles.textArtist}>{input.type}</Text>
       </View>
     </TouchableOpacity>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     backgroundColor: "#2b2b2b",
     flexDirection: "row",
     alignItems: "center",
@@ -114,15 +117,15 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: "white",
-    fontFamily: "semiBold"
+    fontFamily: "semiBold",
   },
   textArtist: {
     fontSize: scale(12),
     color: "white",
     justifyContent: "flex-end",
-    fontFamily:"regular"
+    fontFamily: "regular",
   },
 });
 

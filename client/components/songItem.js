@@ -139,13 +139,15 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: "white",
     marginRight: scale(10),
+    fontSize: scale(14),
   },
   textArtist: {
     fontSize: scale(12),
     color: "white",
+    fontFamily: "regular",
     marginRight: scale(10),
   },
   trackContainer: {

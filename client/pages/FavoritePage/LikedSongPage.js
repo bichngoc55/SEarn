@@ -31,11 +31,12 @@ const LikedSongPage = () => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([]);
   const [tracks, setTracks] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     getLikedSong();
@@ -69,34 +70,28 @@ const LikedSongPage = () => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(
-      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/addLikedSongs`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ songId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(
-      `https://97a3-113-22-232-171.ngrok-free.app/auth/${user._id}/unlikeSongs`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ songId }),
-      }
-    )
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -111,6 +106,9 @@ const LikedSongPage = () => {
       setSongList([...songList, songId]);
     }
   };
+  const filteredSearchs = tracks.filter((search) =>
+    search.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -131,39 +129,64 @@ const LikedSongPage = () => {
           style={styles.iconSearch}
           color="#737373"
         />
-        <TextInput placeholder="Search your liked song" />
+        <TextInput
+          placeholder="Search your liked song"
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+        />
       </View>
-      <View style={styles.funcContainer}>
-        <View style={styles.func}>
-          <Text style={styles.text}>{tracks.length} songs</Text>
-          <View style={styles.iconContainer}>
-            <MaterialCommunityIcons
-              name="arrow-up-down"
-              size={24}
-              color="black"
-            />
-          </View>
-          <Text style={styles.text}>Default</Text>
-        </View>
-        <FontAwesome name="play-circle" size={scale(50)} color="#FED215" />
-      </View>
-
-      <View style={styles.flatlistContainer}>
+      {searchText ? (
         <FlatList
-          data={tracks}
+          key={1}
+          data={filteredSearchs}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
               <SongItem
                 input={item}
-                songList={tracks}
+                songList={filteredSearchs}
                 onLikeUnlike={handleLikeUnlike}
                 isLiked={songList.includes(item.id)}
               />
             );
           }}
+          nestedScrollEnabled={true}
+          style={[styles.flatlistContainer, { marginTop: "4%" }]}
         />
-      </View>
+      ) : (
+        <>
+          <View style={styles.funcContainer}>
+            <View style={styles.func}>
+              <Text style={styles.text}>{tracks.length} songs</Text>
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name="arrow-up-down"
+                  size={24}
+                  color="black"
+                />
+              </View>
+              <Text style={styles.text}>Default</Text>
+            </View>
+            <FontAwesome name="play-circle" size={scale(50)} color="#FED215" />
+          </View>
+          <View style={styles.flatlistContainer}>
+            <FlatList
+              data={tracks}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                return (
+                  <SongItem
+                    input={item}
+                    songList={tracks}
+                    onLikeUnlike={handleLikeUnlike}
+                    isLiked={songList.includes(item.id)}
+                  />
+                );
+              }}
+            />
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -230,7 +253,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#FFFFFF",
-    fontSize: scale(14),
+    fontFamily: "semibold",
   },
   flatlistContainer: {
     marginLeft: "8.48%",

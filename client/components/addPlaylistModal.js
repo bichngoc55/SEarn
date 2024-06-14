@@ -22,16 +22,13 @@ const AddPlaylistModal = ({ visible, onClose }) => {
   const toggleSwitch = () => setIsPublic((previousState) => !previousState);
   const CreateNewPlaylist = async () => {
     try {
-      await axios.post(
-        "https://97a3-113-22-232-171.ngrok-free.app/playlists/add",
-        {
-          name,
-          description,
-          songCount: 0,
-          privacyOrPublic: isPublic,
-          userIdOwner: user._id,
-        }
-      );
+      await axios.post("http://localhost:3005/playlists/add", {
+        name,
+        description,
+        songCount: 0,
+        privacyOrPublic: isPublic,
+        userIdOwner: user._id,
+      });
       onClose();
       setName("");
       setDescription("");
@@ -63,7 +60,7 @@ const AddPlaylistModal = ({ visible, onClose }) => {
             style={{
               fontSize: scale(11),
               color: "white",
-              fontWeight: "300",
+              fontFamily: "regular",
               marginBottom: scale(20),
             }}
           >
@@ -156,7 +153,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: "black",
-    fontWeight: "bold",
+    fontFamily: "bold",
     textAlign: "center",
   },
   modalText: {
@@ -181,7 +178,7 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
     fontSize: scale(11),
     color: "white",
-    fontWeight: "500",
+    fontFamily: "bold",
     marginBottom: scale(5),
   },
   input: {

@@ -15,8 +15,8 @@ import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import renderComment from "../../components/renderComment/renderComment";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { Entypo } from "@expo/vector-icons";
 import { getTrack } from "../../service/songService";
@@ -32,6 +32,7 @@ const PlaylistDetailMongo = ({ route }) => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
+  const isFocused = useIsFocused();
   const [tracks, setTracks] = useState([]);
   const [isPublic, setIsPublic] = useState(playlist.privacyOrPublic);
   const [name, setName] = useState(playlist.name);
@@ -108,9 +109,14 @@ const PlaylistDetailMongo = ({ route }) => {
         setTracks(trackData);
       } catch (error) {}
     };
+    if (isFocused) {
+      console.log("playlist is focused");
+      getPlaylistDetails();
+      fetchTracks();
+    }
     getPlaylistDetails();
     fetchTracks();
-  }, [accessTokenForSpotify, songList]);
+  }, [isFocused]);
 
   const getPlaylistDetails = async () => {
     // setIsLoading(true);
@@ -172,7 +178,7 @@ const PlaylistDetailMongo = ({ route }) => {
         <Text style={styles.textDes}>{description}</Text>
         <View style={styles.follow_and_song}>
           <View style={{ alignItems: "center" }}>
-            <Text style={styles.textName}>{playlist.songCount}</Text>
+            <Text style={styles.textName}>{playlist.songs.length}</Text>
             <Text style={styles.textDes}>Songs</Text>
           </View>
           <View style={{ alignItems: "center" }}>
@@ -279,7 +285,7 @@ const styles = StyleSheet.create({
   },
   textDes: {
     fontSize: scale(13),
-    fontWeight: "300",
+    fontFamily: "regular",
     color: "white",
   },
   follow_and_song: {

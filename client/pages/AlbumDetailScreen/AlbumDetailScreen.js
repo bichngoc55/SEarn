@@ -92,13 +92,13 @@ const AlbumDetailScreen = ({ route }) => {
     };
     fetchAlbumTracks();
   }, [accessTokenForSpotify, album.id]);
-  
- //get liked song from db
+
+  //get liked song from db
   useEffect(() => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          `http://localhost:3005/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -118,7 +118,7 @@ const AlbumDetailScreen = ({ route }) => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +132,7 @@ const AlbumDetailScreen = ({ route }) => {
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -182,9 +182,14 @@ const AlbumDetailScreen = ({ route }) => {
             data={albumTracks}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              return <SongItem input={item} songList={albumTracks} 
-              onLikeUnlike={handleLikeUnlikeSong}
-              isLiked={likedSongList.includes(item.id)}/>;
+              return (
+                <SongItem
+                  input={item}
+                  songList={albumTracks}
+                  onLikeUnlike={handleLikeUnlikeSong}
+                  isLiked={likedSongList.includes(item.id)}
+                />
+              );
             }}
             nestedScrollEnabled={true}
           />

@@ -67,6 +67,11 @@ function HomeStack() {
         options={{ presentation: "modal" }}
       />
       <Stack.Screen
+        name="Lyric"
+        component={LyricPage}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
         name="AddTo"
         component={AddtoPlaylist}
         options={{ presentation: "modal" }}
@@ -171,7 +176,7 @@ function FavoriteTabs() {
 
 function BottomBar() {
   return (
-    <View style={{ flex: 1, }}>
+    <View style={{ flex: 1 }}>
       <View style={styles.tabContainer}>
         <Tab.Navigator
           initialRouteName={homeName}
@@ -293,7 +298,7 @@ export default function MainNavigation() {
             />
             <Stack.Screen name="SignUpOrLogin" component={SignUpOrLoginPage} />
             <Stack.Screen name="Login" component={LoginPage} />
-            <Stack.Screen name="Register" component={RegisterPage}/>
+            <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
           </>
         ) : (

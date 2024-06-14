@@ -12,7 +12,7 @@ import scale from "../constant/responsive";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const ArtistItem = ({input, onLikeUnlike, isLiked }) => {
+const ArtistItem = ({ input, onLikeUnlike, isLiked }) => {
   const navigation = useNavigation();
   const MoveToArtistDetail = () => {
     navigation.navigate("ArtistDetail", {
@@ -31,19 +31,22 @@ const ArtistItem = ({input, onLikeUnlike, isLiked }) => {
     setLiked(!liked);
   };
   return (
-    <TouchableOpacity style={styles.albumContainer} onPress={MoveToArtistDetail}>
+    <TouchableOpacity
+      style={styles.albumContainer}
+      onPress={MoveToArtistDetail}
+    >
       <Image source={{ uri: input.images[0].url }} style={styles.circle} />
       <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
-          {input.name}
+        {input.name}
       </Text>
       <TouchableOpacity onPress={handleLike}>
-          <Ionicons
-            style={styles.heartBtn}
-            name={isLiked ? "heart" : "heart-outline"}
-            size={scale(25)}
-            color="#FED215"
-          />
-        </TouchableOpacity>
+        <Ionicons
+          style={styles.heartBtn}
+          name={isLiked ? "heart" : "heart-outline"}
+          size={scale(25)}
+          color="#FED215"
+        />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
@@ -69,7 +72,7 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: "white",
     flex: 1,
     marginHorizontal: scale(10),
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
   textArtist: {
     fontSize: scale(12),
     color: "white",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
 });
 

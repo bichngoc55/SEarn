@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius:scale(100),
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     // height: scale(150),
     width: scale(236),
     height: scale(170),
-    marginBottom: 17
+    marginBottom: 17,
   },
   musicifyText: {
     fontFamily: "regular",
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   descriptionText: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     marginHorizontal: scale(15),
     fontFamily: "regular",
     marginBottom: scale(20),

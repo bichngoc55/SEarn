@@ -68,7 +68,6 @@ const PlaySongPage = ({ route }) => {
         setProgress(progress);
         setTotal(total);
       };
-      //console.log("progress" + progress)
       service.registerPlaybackStatusCallback(handlePlaybackStatus);
     }
 
@@ -132,7 +131,7 @@ const PlaySongPage = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3005/auth/${user?._id}/getLikedSongs`,
+          `http://localhost:3005/auth/${user?._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -152,7 +151,7 @@ const PlaySongPage = ({ route }) => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -166,7 +165,7 @@ const PlaySongPage = ({ route }) => {
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -178,11 +177,11 @@ const PlaySongPage = ({ route }) => {
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
-  
+
   useEffect(() => {
-    setLiked(likedSongList?.includes(song.id));
-  }, [song.id, likedSongList]);
-  // Handle like/unlike action
+    setLiked(likedSongList?.includes(service.currentSong.id));
+  }, [service.currentSong.id, likedSongList]);
+  //Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {
       await unlikeSong(songId);
@@ -193,14 +192,14 @@ const PlaySongPage = ({ route }) => {
     }
   };
   const handleLike = () => {
-    handleLikeUnlikeSong(song.id);
+    handleLikeUnlikeSong(service.currentSong.id);
     setLiked(!liked);
   };
 
   const moveToArtistDetail = async (artistId) => {
-    try {        
+    try {
       if (accessTokenForSpotify) {
-        const artistData = await getArtist(accessTokenForSpotify, artistId)
+        const artistData = await getArtist(accessTokenForSpotify, artistId);
         navigation.navigate("ArtistDetail", {
           artist: artistData,
         });
@@ -208,7 +207,7 @@ const PlaySongPage = ({ route }) => {
     } catch (error) {
       console.error("Error fetching move to artist hehe:", error);
     }
-  }; 
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -250,15 +249,17 @@ const PlaySongPage = ({ route }) => {
         <View>
           <Text style={styles.songname}>{service.currentSong.name}</Text>
           <Text style={styles.songartist}>
-          {service.currentSong.artists.map((artist, index) => (
-            <TouchableOpacity
-              key={artist.id} 
-              onPress={() => moveToArtistDetail(artist.id)}
-            >
-              {(index < service.currentSong.artists.length - 1)? 
-              <Text style={styles.songartist}>{artist.name}, </Text> : 
-              <Text style={styles.songartist}>{artist.name} </Text>}
-            </TouchableOpacity>
+            {service.currentSong.artists.map((artist, index) => (
+              <TouchableOpacity
+                key={artist.id}
+                onPress={() => moveToArtistDetail(artist.id)}
+              >
+                {index < service.currentSong.artists.length - 1 ? (
+                  <Text style={styles.songartist}>{artist.name}, </Text>
+                ) : (
+                  <Text style={styles.songartist}>{artist.name} </Text>
+                )}
+              </TouchableOpacity>
             ))}
           </Text>
         </View>
@@ -444,13 +445,13 @@ const styles = StyleSheet.create({
   },
   songname: {
     color: "#FFFFFF",
-    fontWeight: "500",
+    fontFamily: "bold",
     fontSize: scale(16),
     marginBottom: scale(5),
   },
   songartist: {
     color: "#FFFFFF",
-    fontWeight: "300",
+    fontFamily: "regular",
     fontSize: scale(12),
   },
   iconContainer: {

@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius:scale(100),
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     fontSize: scale(12),
     color: COLOR.textPrimaryColor,
     lineHeight: scale(20),
-    fontWeight: "bold",
+    fontFamily: "bold",
   },
   icon: {
     width: scale(24),
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: scale(15),
-    fontWeight: "bold",
+    fontFamily: "bold",
     marginBottom: scale(8),
     fontFamily: "regular",
     color: COLOR.btnBackgroundColor,

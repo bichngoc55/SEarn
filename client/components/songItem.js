@@ -26,9 +26,8 @@ import { Audio } from "expo-av";
 import AudioService from "../service/audioService";
 import { getTrack } from "../service/songService";
 
-
-const SongItem = ({ input, songList, onLikeUnlike, isLiked  }) => {
-  const navigation = useNavigation(); 
+const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
+  const navigation = useNavigation();
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
@@ -62,8 +61,9 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked  }) => {
     service.currentPlaylist = songList;
     service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
-    service.playCurrentAudio();
+    //service.playCurrentAudio();
     service.isGetCoin = true;
+    console.log(service.currentSong);
     navigation.navigate("PlaySong", {});
   };
 
@@ -139,13 +139,15 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: "white",
     marginRight: scale(10),
+    fontSize: scale(14),
   },
   textArtist: {
     fontSize: scale(12),
     color: "white",
+    fontFamily: "regular",
     marginRight: scale(10),
   },
   trackContainer: {

@@ -191,6 +191,7 @@ const AddtoPlaylist = ({ song, onClose }) => {
           `http://localhost:3005/playlists/${playlist.value}`,
           {
             songs: [...playlist.songs, song.id],
+            songCount: songs.length,
           },
           {
             headers: {

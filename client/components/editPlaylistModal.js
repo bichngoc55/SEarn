@@ -68,7 +68,7 @@ const EditPlaylistModal = ({ visible, onClose, playlist }) => {
             style={{
               fontSize: scale(11),
               color: "white",
-              fontWeight: "300",
+              fontFamily: "regular",
               marginBottom: scale(20),
             }}
           >
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: "black",
-    fontWeight: "bold",
+    fontFamily: "bold",
     textAlign: "center",
   },
   modalText: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
     fontSize: scale(11),
     color: "white",
-    fontWeight: "500",
+    fontFamily: "bold",
     marginBottom: scale(5),
   },
   input: {

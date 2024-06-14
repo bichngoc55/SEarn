@@ -255,13 +255,13 @@ const styles = StyleSheet.create({
   },
   songname: {
     color: "#FFFFFF",
-    fontWeight: "500",
+    fontFamily: "bold",
     fontSize: scale(14),
     marginBottom: scale(5),
   },
   songartist: {
     color: "#FFFFFF",
-    fontWeight: "300",
+    fontFamily: "semiBold",
     fontSize: scale(10),
   },
   circle: {

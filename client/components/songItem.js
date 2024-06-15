@@ -55,14 +55,15 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
 
   const MoveToPlaySong = async () => {
     let service = new AudioService();
-    service.loadSong();
     service.currentSong = input;
+    service.loadSong();
     console.log(service.currentSong);
     service.currentPlaylist = songList;
     service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
-    //service.playCurrentAudio();
+    service.playCurrentAudio();
     service.isGetCoin = true;
+    service.isShuffle = false;
     console.log(service.currentSong);
     navigation.navigate("PlaySong", {});
   };

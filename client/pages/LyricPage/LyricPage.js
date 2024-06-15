@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import axios from "axios";
 import {
@@ -27,34 +27,42 @@ import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import AudioService from "../../service/audioService";
+import MenuOfPlaysong from "../../components/MenuOfPlaysong/MenuOfPlaysong";
 //import { ScrollView } from "react-native-gesture-handler";
 
 const LyricPage = ({ route }) => {
   const { song } = route.params;
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   let service = new AudioService();
+  const isFocused = useIsFocused();
+  const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
   const [lyric, setLyric] = useState("Loading lyric...");
+
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
   useEffect(() => {
-    // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
-    const handlePlaybackStatus = ({ progress, total }) => {
-      setProgress(progress);
-      setTotal(total);
-    };
+    dispatch(fetchSpotifyAccessToken());
+  }, [dispatch]);
+  useEffect(() => {
     getLyric();
-    console.log(progress);
-
-    service.registerPlaybackStatusCallback(handlePlaybackStatus);
-
-    // const intervalId = setInterval(
-    //   handlePlaybackStatus({ progress, total }),
-    //   1000
-    // );
-    return () => {
-      //service.unregisterPlaybackStatusCallback(handlePlaybackStatus);
-    };
-  }, [service.currentSound]);
+    if (isFocused) {
+      const handlePlaybackStatus = ({ progress, total }) => {
+        setProgress(progress);
+        setTotal(total);
+      };
+      service.registerPlaybackStatusCallback(handlePlaybackStatus);
+    }
+    return () => {};
+  }, [service.currentTime]);
   const formatTime = (timeInMillis) => {
     const totalSeconds = Math.floor(timeInMillis / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -81,6 +89,67 @@ const LyricPage = ({ route }) => {
       setLyric("No lyrics support available");
     }
   };
+  const [liked, setLiked] = useState();
+  const [likedSongList, setLikedSongList] = useState([]);
+  const addToLikedSongs = async (songId) => {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike song on db
+  const unlikeSong = async (songId) => {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    setLikedSongList(user.likedSongs);
+    setLiked(likedSongList?.includes(service.currentSong.id));
+  }, [service.currentSong.id, likedSongList]);
+  //Handle like/unlike action
+
+  const handleLikeUnlikeSong = async (songId) => {
+    if (likedSongList?.includes(songId)) {
+      await unlikeSong(songId);
+      setLikedSongList(likedSongList.filter((id) => id !== songId));
+    } else {
+      await addToLikedSongs(songId);
+      setLikedSongList([...likedSongList, songId]);
+    }
+  };
+  const handleLike = () => {
+    handleLikeUnlikeSong(service.currentSong.id);
+    setLiked(!liked);
+  };
+  const moveToArtistDetail = async (artistId) => {
+    try {
+      if (accessTokenForSpotify) {
+        const artistData = await getArtist(accessTokenForSpotify, artistId);
+        navigation.navigate("ArtistDetail", {
+          artist: artistData,
+        });
+      } else alert("accessToken: " + accessTokenForSpotify);
+    } catch (error) {
+      console.error("Error fetching move to artist hehe:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -98,8 +167,18 @@ const LyricPage = ({ route }) => {
             onPress={navigation.goBack}
           />
           <Text style={styles.headerText}>Now playing</Text>
-          <Entypo name="dots-three-vertical" size={24} color="#737373" />
+          <Entypo
+            name="dots-three-vertical"
+            size={24}
+            color="#737373"
+            onPress={toggleModal}
+          />
         </View>
+        <MenuOfPlaysong
+          visible={modalVisible}
+          onClose={toggleModal}
+          song={service.currentSong}
+        />
         <ScrollView style={{ marginTop: "3%" }}>
           <Text style={styles.lyricText}>{lyric}</Text>
         </ScrollView>
@@ -118,12 +197,28 @@ const LyricPage = ({ route }) => {
             <View style={{ flex: 1 }}>
               <Text style={styles.songname}>{service.currentSong.name}</Text>
               <Text style={styles.songartist}>
-                {service.currentSong.artists
-                  .map((artist) => artist.name)
-                  .join(", ")}
+                {service.currentSong.artists.map((artist, index) => (
+                  <TouchableOpacity
+                    key={artist.id}
+                    onPress={() => moveToArtistDetail(artist.id)}
+                  >
+                    {index < service.currentSong.artists.length - 1 ? (
+                      <Text style={styles.songartist}>{artist.name}, </Text>
+                    ) : (
+                      <Text style={styles.songartist}>{artist.name} </Text>
+                    )}
+                  </TouchableOpacity>
+                ))}
               </Text>
             </View>
-            <Ionicons name="heart-outline" size={scale(25)} color="#FED215" />
+            <TouchableOpacity onPress={handleLike}>
+              <Ionicons
+                style={styles.heartBtn}
+                name={liked ? "heart" : "heart-outline"}
+                size={scale(30)}
+                color="#FED215"
+              />
+            </TouchableOpacity>
           </View>
           <View>
             <Slider
@@ -221,7 +316,7 @@ const LyricPage = ({ route }) => {
                 size={scale(20)}
                 color="#FED215"
                 onPress={() => {
-                  service.isShuffle = false;
+                  service.shufflePlaylist();
                 }}
               />
             ) : (
@@ -230,7 +325,7 @@ const LyricPage = ({ route }) => {
                 size={scale(20)}
                 color="#737373"
                 onPress={() => {
-                  service.isShuffle = true;
+                  service.shufflePlaylist();
                   service.isRepeat = false;
                 }}
               />
@@ -250,8 +345,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#1C1B1B",
   },
   headerL: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     height: scale(35),
     alignItems: "center",
     marginTop: "2.68%",
@@ -287,7 +382,7 @@ const styles = StyleSheet.create({
   Bottom: {
     width: "100%",
     backgroundColor: "#1C1B1B",
-    paddingHorizontal: "8.48%",
+    paddingHorizontal: "5.1%",
     paddingTop: "4.48%",
   },
   textIcon: {

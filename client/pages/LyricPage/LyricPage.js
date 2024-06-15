@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
+import axios from "axios";
 import {
   View,
   Text,
@@ -9,6 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  ScrollView,
   FlatList,
   ImageBackground,
 } from "react-native";
@@ -25,6 +27,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import AudioService from "../../service/audioService";
+//import { ScrollView } from "react-native-gesture-handler";
 
 const LyricPage = ({ route }) => {
   const { song } = route.params;
@@ -32,12 +35,14 @@ const LyricPage = ({ route }) => {
   let service = new AudioService();
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
+  const [lyric, setLyric] = useState("Loading lyric...");
   useEffect(() => {
     // service.registerPlaybackStatusCallback(handlePlaybackStatusUpdate);
     const handlePlaybackStatus = ({ progress, total }) => {
       setProgress(progress);
       setTotal(total);
     };
+    getLyric();
     console.log(progress);
 
     service.registerPlaybackStatusCallback(handlePlaybackStatus);
@@ -58,6 +63,24 @@ const LyricPage = ({ route }) => {
       .toString()
       .padStart(2, "0")}`;
   };
+  const getLyric = async () => {
+    const response = await axios.get(
+      `http://api.musixmatch.com/ws/1.1/track.search?q_artist=${service.currentSong.artists[0].name}&apikey=63a9e2c4de53b2981cc9b3a8df6b9f32&q_track=${service.currentSong.name}`
+    );
+
+    const songM = response.data;
+    const songId = songM.message.body.track_list[0].track.track_id;
+    const response2 = await axios.get(
+      `https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=${songId}&apikey=63a9e2c4de53b2981cc9b3a8df6b9f32`
+    );
+
+    const lyric = response2.data.message;
+    if (lyric.body.length != 0) {
+      setLyric(lyric.body.lyrics.lyrics_body);
+    } else {
+      setLyric("No lyrics support available");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,7 +100,9 @@ const LyricPage = ({ route }) => {
           <Text style={styles.headerText}>Now playing</Text>
           <Entypo name="dots-three-vertical" size={24} color="#737373" />
         </View>
-        <Text style={styles.lyricText}>Hello lyric</Text>
+        <ScrollView style={{ marginTop: "3%" }}>
+          <Text style={styles.lyricText}>{lyric}</Text>
+        </ScrollView>
         <View style={styles.Bottom}>
           <View style={styles.textIcon}>
             <View style={styles.imageContainCircle}>
@@ -242,9 +267,11 @@ const styles = StyleSheet.create({
   },
   lyricText: {
     color: "#FFFFFF",
-    fontSize: scale(14),
+    fontSize: scale(16),
+    fontFamily: "regular",
     justifyContent: "center",
     flex: 1,
+    marginHorizontal: "5%",
   },
   imageContainer: {
     flex: 1,
@@ -270,13 +297,13 @@ const styles = StyleSheet.create({
   },
   songname: {
     color: "#FFFFFF",
-    fontWeight: "500",
-    fontSize: scale(14),
+    fontFamily: "bold",
+    fontFamily: "semiBold",
     marginBottom: scale(5),
   },
   songartist: {
     color: "#FFFFFF",
-    fontWeight: "300",
+    fontFamily: "regular",
     fontSize: scale(10),
   },
   imageContainCircle: {

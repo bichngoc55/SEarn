@@ -13,7 +13,7 @@ import scale from "../constant/responsive";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const AlbumItem = ({ input, onLikeUnlike, isLiked }) => { 
+const AlbumItem = ({ input, onLikeUnlike, isLiked }) => {
   const navigation = useNavigation();
   const MoveToListAlbum = () => {
     navigation.navigate("AlbumDetail", {
@@ -34,7 +34,15 @@ const AlbumItem = ({ input, onLikeUnlike, isLiked }) => {
   return (
     <TouchableOpacity style={styles.albumContainer} onPress={MoveToListAlbum}>
       <Image source={{ uri: input.images[0].url }} style={styles.circle} />
-      <View style={{ flexDirection: "column", flex: 1, marginRight: scale(10), height: scale(60), justifyContent: "space-between"}}>
+      <View
+        style={{
+          flexDirection: "column",
+          flex: 1,
+          marginRight: scale(10),
+          height: scale(60),
+          justifyContent: "space-between",
+        }}
+      >
         <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
           {input.name}
         </Text>
@@ -43,13 +51,13 @@ const AlbumItem = ({ input, onLikeUnlike, isLiked }) => {
         </Text>
       </View>
       <TouchableOpacity onPress={handleLike}>
-          <Ionicons
-            style={styles.heartBtn}
-            name={isLiked ? "heart" : "heart-outline"}
-            size={scale(25)}
-            color="#FED215"
-          />
-        </TouchableOpacity>
+        <Ionicons
+          style={styles.heartBtn}
+          name={isLiked ? "heart" : "heart-outline"}
+          size={scale(25)}
+          color="#FED215"
+        />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
@@ -75,13 +83,13 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: "white",
   },
   textArtist: {
     fontSize: scale(12),
     color: "white",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
 });
 

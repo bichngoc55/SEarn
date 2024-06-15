@@ -37,8 +37,7 @@ const CategoryDetailScreen = ({ route }) => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-
-      console.log("Access Token in useEffect playlist:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect playlist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
   const [categoryPlaylists, setCategoryPlaylists] = useState([]);
@@ -48,9 +47,14 @@ const CategoryDetailScreen = ({ route }) => {
       try {
         console.log("calling accesstoken: " + accessTokenForSpotify);
         if (accessTokenForSpotify) {
-          const { items } = await getCategorysPlaylists(accessTokenForSpotify, category.id);
+          const { items } = await getCategorysPlaylists(
+            accessTokenForSpotify,
+            category.id
+          );
           const categoryPlaylistsPromises = [...items];
-          const categoryPlaylistsData = await Promise.all(categoryPlaylistsPromises);
+          const categoryPlaylistsData = await Promise.all(
+            categoryPlaylistsPromises
+          );
           categoryPlaylistsData.forEach((categoryPlaylist) => {});
           setCategoryPlaylists(categoryPlaylistsData);
         } else alert("accessToken:" + accessTokenForSpotify);
@@ -64,40 +68,43 @@ const CategoryDetailScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.Container}>
       <View style={styles.img_and_backBtn}>
-        <Image source={{ uri: category.icons[0].url }}
-        style={styles.categoryImg}
-        resizeMode="cover"/>
+        <Image
+          source={{ uri: category.icons[0].url }}
+          style={styles.categoryImg}
+          resizeMode="cover"
+        />
         <View style={styles.backButtonContainer}>
           <Pressable
             style={styles.backButton}
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.goBack()}
+          >
             <Ionicons name="chevron-back-sharp" size={24} color="black" />
           </Pressable>
         </View>
       </View>
-    <Text style={styles.categoryName}>{category.name}</Text> 
-    <View style={styles.content}>
-      <View style={styles.flatlistContainer}>
-        <FlatList
-          data={categoryPlaylists}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            return <PlayListItem input={item} />;
-          }}
-          nestedScrollEnabled={true}
-        />
+      <Text style={styles.categoryName}>{category.name}</Text>
+      <View style={styles.content}>
+        <View style={styles.flatlistContainer}>
+          <FlatList
+            data={categoryPlaylists}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              return <PlayListItem input={item} />;
+            }}
+            nestedScrollEnabled={true}
+          />
+        </View>
       </View>
-    </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: "#121212",
 
-    paddingBottom: scale(60)
+    paddingBottom: scale(60),
   },
   img_and_backBtn: {
     width: "100%",
@@ -119,7 +126,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius:scale(100),
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",

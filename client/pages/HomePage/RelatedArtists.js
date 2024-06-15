@@ -14,12 +14,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getRelatedArtists } from "../../service/getRelatedArtists";
 import ArtistItem from "../../components/artistItem";
 import { getLikedArtistList } from "../../service/getLikedArtistList";
-
+import { getTracksRecommendations } from "../../service/songsRecommendations";
 export default function RelatedArtist() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -47,20 +46,19 @@ export default function RelatedArtist() {
   const fetchArtistList = useCallback(async () => {
     try {
       if (accessToken) {
-        const { listLikedArtists } = await getLikedArtistList(
-          accessToken,
-          user?._id
-        );
+        const { listLikedArtists } = await getLikedArtistList(accessToken, user?._id);
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
-        setLikedArtistList(artistIds); //Lấy liked artists từ db
-
+        setLikedArtistList(artistIds); // Lấy liked artists từ db
+  
         let finalArtistList = artistIds;
         if (artistIds.length > 5) {
           finalArtistList = artistIds
             .sort(() => 0.5 - Math.random())
             .slice(0, 5);
+        } else if (artistIds.length === 0) {
+          const recommendations = await getTracksRecommendations(accessTokenForSpotify);
+          finalArtistList = recommendations.items.map(item => item.track.artists[0].id);
         }
-
         setArtistList(finalArtistList);
       } else {
         alert("Chưa có accessToken");
@@ -68,33 +66,34 @@ export default function RelatedArtist() {
     } catch (error) {
       console.error("Error fetching liked artists:", error);
     }
-  }, [accessToken, user?._id]);
+  }, [accessToken, user?._id, accessTokenForSpotify]);
 
   //get Related artist
   const fetchRelatedArtists = useCallback(async () => {
     try {
-      if (accessTokenForSpotify) {
+      if (accessTokenForSpotify && likedArtistList.length > 0) {
         const artistPromises = artistList.map((artistId) =>
           getRelatedArtists(accessTokenForSpotify, artistId)
         );
         const relatedArtistsData = await Promise.all(artistPromises);
-
+  
         const allRelatedArtists = relatedArtistsData.flatMap(
           (data) => data.artists
         );
-        // đảm bảo rằng các related artist trùng nhau thì sẽ chỉ lấy 1
+        // Đảm bảo rằng các related artist trùng nhau thì sẽ chỉ lấy 1
         const uniqueRelatedArtists = Array.from(
           new Set(allRelatedArtists.map((artist) => artist.id))
         ).map((id) => allRelatedArtists.find((artist) => artist.id === id));
-
+  
         setRelatedArtists(uniqueRelatedArtists);
       } else {
-        alert("accessToken:" + accessTokenForSpotify);
+        alert("Bạn chưa thích nghệ sĩ nào");
       }
     } catch (error) {
       console.error("Error fetching related artists hehe:", error);
     }
   }, [accessTokenForSpotify, artistList]);
+
   useEffect(() => {
     if (!isDataFetched) {
       fetchArtistList().then(() => {
@@ -102,11 +101,8 @@ export default function RelatedArtist() {
         setIsDataFetched(true);
       });
     }
-  }, [
-    isDataFetched,
-    // fetchArtistList, fetchRelatedArtists
-  ]);
-
+  }, [isDataFetched, fetchArtistList, fetchRelatedArtists]);
+  
   useFocusEffect(
     useCallback(() => {
       if (!isDataFetched) {
@@ -115,10 +111,7 @@ export default function RelatedArtist() {
           setIsDataFetched(true);
         });
       }
-    }, [
-      isDataFetched,
-      // fetchArtistList, fetchRelatedArtists
-    ])
+    }, [isDataFetched, fetchArtistList, fetchRelatedArtists])
   );
 
   //add like artist to db
@@ -155,9 +148,12 @@ export default function RelatedArtist() {
       await unlikeArtist(artistId);
       setLikedArtistList(likedArtistList.filter((id) => id !== artistId));
     } else {
-      await addToLikedArtists(artistId);
+      await addToLikedArtists(artistId); 
       setLikedArtistList([...likedArtistList, artistId]);
     }
+    fetchArtistList().then(() => {
+      fetchRelatedArtists();
+    });
   };
 
   return (
@@ -177,7 +173,7 @@ export default function RelatedArtist() {
               );
             }}
             nestedScrollEnabled={true}
-            ListFooterComponent={<View style={{ height: scale(60) }} />}
+            ListFooterComponent={<View style={{ height: scale(120) }} />}
           />
         </View>
       </View>

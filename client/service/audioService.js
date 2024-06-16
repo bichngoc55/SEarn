@@ -36,6 +36,7 @@ class AudioService {
         this.currentSong.preview_url != undefined ||
         this.currentSong.preview_url != null
       ) {
+        console.log("co current song");
         const { sound, status } = await Audio.Sound.createAsync(
           { uri: this.currentSong.preview_url },
           { shouldPlay: false },
@@ -127,11 +128,13 @@ class AudioService {
   // }
 
   async playCurrentAudio() {
-    if (this.currentSound.sound != null) {
-      try {
-        await this.currentSound.sound.stopAsync();
-      } catch (error) {
-        console.error("Lỗi khi dừng âm thanh:", error);
+    if (this.currentSound !== null) {
+      if (this.currentSound.sound != null) {
+        try {
+          await this.currentSound.sound.stopAsync();
+        } catch (error) {
+          console.error("Lỗi khi dừng âm thanh:", error);
+        }
       }
     }
 
@@ -208,20 +211,6 @@ class AudioService {
     this.currentSong = this.currentPlaylist[this.currentAudioIndex];
 
     await this.playCurrentAudio();
-  }
-
-  async stopSound() {
-    if (!this.currentSound) {
-      throw new Error("Chưa có âm thanh được tải");
-    }
-
-    try {
-      await this.currentSound.stopAsync();
-      // this.currentAudio = null; // Reset the currentAudio after stopping
-      // this.isPlay = false; // Reset the isPlay state
-    } catch (error) {
-      console.error("Error stopping sound:", error);
-    }
   }
 }
 

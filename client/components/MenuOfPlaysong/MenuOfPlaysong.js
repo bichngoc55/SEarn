@@ -162,95 +162,105 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
               <Upcoming onClose={() => handleUpcomingClose()} />
             </BottomSheetModal>
           ) : (
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <View style={styles.headerX}>
-                  <Text style={styles.text}>Song Menu</Text>
-                  <Feather
-                    name="x-circle"
-                    size={24}
-                    color="#FED215"
-                    onPress={onClose}
-                  />
-                </View>
+            <Modal
+              visible={visible}
+              animationType="slide"
+              transparent={true}
+              onRequestClose={onClose}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <View style={styles.headerX}>
+                    <Text style={styles.text}>Song Menu</Text>
+                    <Feather
+                      name="x-circle"
+                      size={24}
+                      color="#FED215"
+                      onPress={onClose}
+                    />
+                  </View>
 
-                <TouchableOpacity
-                  style={styles.iconandtext}
-                  onPress={handleAddToPlaylist}
-                >
-                  <FontAwesome6 name="plus" size={24} color="white" />
-                  <Text style={styles.textSmall}> Add To Playlist</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.iconandtext}
+                    onPress={handleAddToPlaylist}
+                  >
+                    <FontAwesome6 name="plus" size={24} color="white" />
+                    <Text style={styles.textSmall}> Add To Playlist</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity style={styles.iconandtext}>
-                  <MaterialIcons name="album" size={24} color="white" />
-                  <Text style={styles.textSmall}>Visit Album</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity style={styles.iconandtext}>
+                    <MaterialIcons name="album" size={24} color="white" />
+                    <Text style={styles.textSmall}>Visit Album</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.iconandtext}
-                  onPress={() => handleShare()}
-                >
-                  <Entypo name="share" size={24} color="white" />
-                  <Text style={styles.textSmall}>Share</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.iconandtext}
+                    onPress={() => handleShare()}
+                  >
+                    <Entypo name="share" size={24} color="white" />
+                    <Text style={styles.textSmall}>Share</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.iconandtext}
-                  onPress={handleReport}
-                >
-                  <Octicons name="report" size={24} color="white" />
-                  <Text style={styles.textSmall}>Report</Text>
-                  <Modal2 isOpen={isReportModalOpen} onClose={closeReportModal}>
-                    <View style={styles.FeedbackContainer}>
-                      <Text style={styles.feedbackText}>Report form</Text>
-                      <TextField
-                        placeholder="Enter your report"
-                        width={scale(310)}
-                        height={scale(65)}
-                        onChangeText={handleChange}
-                        value={report}
-                      />
-                      <View style={styles.btnContainer2}>
-                        <ReuseBtn
-                          width={scale(150)}
-                          height={scale(60)}
-                          btnText="Send Report"
-                          onPress={() => handleSendReport(report)}
+                  <TouchableOpacity
+                    style={styles.iconandtext}
+                    onPress={handleReport}
+                  >
+                    <Octicons name="report" size={24} color="white" />
+                    <Text style={styles.textSmall}>Report</Text>
+                    <Modal2
+                      isOpen={isReportModalOpen}
+                      onClose={closeReportModal}
+                    >
+                      <View style={styles.FeedbackContainer}>
+                        <Text style={styles.feedbackText}>Report form</Text>
+                        <TextField
+                          placeholder="Enter your report"
+                          width={scale(310)}
+                          height={scale(65)}
+                          onChangeText={handleChange}
+                          value={report}
                         />
-                        <TouchableOpacity
-                          style={styles.btnClose}
-                          onPress={closeReportModal}
-                        >
-                          <Text
-                            style={{
-                              color: "white",
-                              fontSize: scale(18),
-                              fontFamily: "regular",
-                            }}
+                        <View style={styles.btnContainer2}>
+                          <ReuseBtn
+                            width={scale(150)}
+                            height={scale(60)}
+                            btnText="Send Report"
+                            onPress={() => handleSendReport(report)}
+                          />
+                          <TouchableOpacity
+                            style={styles.btnClose}
+                            onPress={closeReportModal}
                           >
-                            Close
-                          </Text>
-                        </TouchableOpacity>
+                            <Text
+                              style={{
+                                color: "white",
+                                fontSize: scale(18),
+                                fontFamily: "regular",
+                              }}
+                            >
+                              Close
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
-                    </View>
-                  </Modal2>
-                  <SuccessfulModal
-                    text={"You have sent report successfully"}
-                    isVisible={isSuccessModalVisible}
-                    onClose={() => setIsSuccessModalVisible(false)}
-                  />
-                </TouchableOpacity>
+                    </Modal2>
+                    <SuccessfulModal
+                      text={"You have sent report successfully"}
+                      isVisible={isSuccessModalVisible}
+                      onClose={() => setIsSuccessModalVisible(false)}
+                    />
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.iconandtext}
-                  onPress={handleUpcoming}
-                >
-                  <Entypo name="list" size={24} color="white" />
-                  <Text style={styles.textSmall}>Upcoming</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.iconandtext}
+                    onPress={handleUpcoming}
+                  >
+                    <Entypo name="list" size={24} color="white" />
+                    <Text style={styles.textSmall}>Upcoming</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            </Modal>
           )}
           {/* {showOverlay ? <View style={styles.overlay} /> : null} */}
           {isOpen ? (

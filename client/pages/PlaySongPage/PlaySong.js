@@ -313,22 +313,17 @@ const PlaySongPage = ({ route }) => {
           }}
         />
         {service.isPlay ? (
-          <View
-            style={styles.circle}
-            onPress={() => {
-              service.currentSound.sound.pauseAsync();
-              console.log(service.isPlay);
-              service.isPlay = false;
-            }}
-          >
+          <View style={styles.circle}>
             <FontAwesome5
               name="pause"
               size={scale(27)}
               color="black"
               onPress={() => {
-                service.currentSound.sound.pauseAsync();
-                console.log(service.isPlay);
-                service.isPlay = false;
+                if (service.currentSound.sound != null) {
+                  service.currentSound.sound.pauseAsync();
+                  console.log("dừng");
+                  service.isPlay = false;
+                } else console.log("sound dang null");
               }}
             />
           </View>
@@ -339,7 +334,7 @@ const PlaySongPage = ({ route }) => {
             color="#FED215"
             onPress={() => {
               service.currentSound.sound.playAsync();
-              console.log(service.isPlay);
+              console.log("phát");
               service.isPlay = true;
             }}
           />
@@ -420,7 +415,7 @@ const styles = StyleSheet.create({
   imageContain: {
     marginLeft: "5.1%",
     marginRight: "5.1%",
-    marginTop: "4.68%",
+    marginTop: "2.68%",
     borderRadius: 50,
     height: scale(350),
     backgroundColor: "white",

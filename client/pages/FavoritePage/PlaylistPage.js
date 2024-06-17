@@ -41,7 +41,7 @@ const PlaylistPage = () => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect:", accessTokenForSpotify);
     }
   }, [dispatch, user?.id, accessTokenForSpotify]);
 
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semibold",
     color: "white",
     marginRight: scale(10),
   },

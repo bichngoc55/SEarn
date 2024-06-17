@@ -19,7 +19,7 @@ const ArtistAlbumItem = ({ input, onLikeUnlike, isLiked }) => {
       album: input,
     });
   };
-  
+
   const [liked, setLiked] = useState(isLiked);
 
   useEffect(() => {
@@ -34,9 +34,16 @@ const ArtistAlbumItem = ({ input, onLikeUnlike, isLiked }) => {
   return (
     <TouchableOpacity style={styles.albumContainer} onPress={MoveToListAlbum}>
       <Image source={{ uri: input.images[0].url }} style={styles.img} />
-      <View style={{flexDirection: "row", alignItems: "center", flex: 1, justifyContent: 'space-between'}}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          flex: 1,
+          justifyContent: "space-between",
+        }}
+      >
         <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
-            {input.name}
+          {input.name}
         </Text>
         <TouchableOpacity onPress={handleLike}>
           <Ionicons
@@ -60,8 +67,8 @@ const styles = StyleSheet.create({
     marginRight: scale(20),
     borderRadius: scale(15),
     height: scale(180),
-    width:scale(140),
-    overflow: "hidden", 
+    width: scale(140),
+    overflow: "hidden",
   },
   img: {
     width: scale(140),
@@ -72,10 +79,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: "white",
     marginHorizontal: scale(10),
-    flex:1
+    flex: 1,
   },
   heartBtn: {
     marginHorizontal: scale(10),

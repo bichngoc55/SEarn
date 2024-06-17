@@ -38,7 +38,7 @@ const PlaylistDetailScreen = ({ route }) => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect playlist:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect playlist:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
   const [playlistTracks, setPlaylistTracks] = useState([]);
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: scale(35),
     height: scale(35),
-    borderRadius:scale(100),
+    borderRadius: scale(100),
     backgroundColor: "lightgray",
     justifyContent: "center",
     alignItems: "center",

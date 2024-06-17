@@ -1,4 +1,10 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import TextField from "../textField";
 import ReuseBtn from "../buttonComponent";
 import SuccessfulModal from "../successfulModal";
@@ -8,8 +14,12 @@ import BottomSheetModal, {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 //import BottomSheet from "react-native-bottomsheet-reanimated";
-
 import scale from "../../constant/responsive";
+import * as Sharing from "expo-sharing";
+import Video from "react-native-video";
+//import RNFS from "react-native-fs";
+import * as FileSystem from "expo-file-system";
+import { Share } from "react-native";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -31,12 +41,15 @@ import {
 } from "@expo/vector-icons";
 import AddtoPlaylist from "./AddToPlaylist";
 import Modal2 from "../modal";
+import Upcoming from "./Upcoming";
 
 const MenuOfPlaysong = ({ visible, onClose, song }) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [isOpenUpcoming, setIsOpenUpcoming] = useState(false);
   const [report, setReport] = useState("");
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const toggleModal = () => {
@@ -44,18 +57,36 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
   };
   const snapPoints = ["25%", "50%"];
   const bottomSheetRef = useRef(null);
+  const bottomUpcomingSheetRef = useRef(null);
   function presentModal() {
     bottomSheetRef.current?.expand();
+    setShowOverlay(true);
     setIsOpen(true);
   }
+  function presentUpcomingModal() {
+    //bottomUpcomingSheetRef.current?.expand();
+    console.log("Upcoming");
+    setShowOverlay(true);
+    setIsOpenUpcoming(true);
+  }
+  function presentUpcomingModal() {
+    bottomUpcomingSheetRef.current?.expand();
+    setIsOpenUpcoming(true);
+  }
   function handleAddToPlaylistClose() {
-    bottomSheetRef.current?.close();
     setIsOpen(false);
+    setShowOverlay(false);
+  }
+  function handleUpcomingClose() {
+    setIsOpenUpcoming(false);
+    setShowOverlay(false);
+    onClose();
   }
   const handleCloseBottomSheet = () => {
     setIsOpen(false);
-    console.log(isOpen);
+    setShowOverlay(false);
   };
+
   const handleReport = () => {
     openReportModal();
   };
@@ -78,6 +109,34 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
       setIsSuccessModalVisible(false);
     }, 4000);
   };
+  const handleAddToPlaylist = () => {
+    presentModal();
+  };
+  const handleUpcoming = () => {
+    setShowOverlay(true);
+    setIsOpenUpcoming(true);
+  };
+
+  const handleShare = async () => {
+    try {
+      const audioUrl = song.preview_url;
+      const audioFileName = "audio.mp3";
+      const audioFilePath = `${FileSystem.cacheDirectory}${audioFileName}`;
+
+      await FileSystem.downloadAsync(audioUrl, audioFilePath);
+
+      // Chia sẻ file âm thanh
+
+      await Sharing.shareAsync(audioFilePath, {
+        mimeType: "audio/mp3",
+        dialogTitle: "Share Audio File",
+        subject: song.name,
+        url: song.name,
+      });
+    } catch (error) {
+      console.log("Error sharing audio file:", error.message);
+    }
+  };
   return (
     <Modal
       visible={visible}
@@ -87,90 +146,119 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
     >
       <GestureHandlerRootView>
         <BottomSheetModalProvider>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View style={styles.headerX}>
-                <Text style={styles.text}>Song Menu</Text>
-                <Feather
-                  name="x-circle"
-                  size={24}
-                  color="#FED215"
-                  onPress={onClose}
-                />
-              </View>
+          {showOverlay ? <View style={styles.overlay} /> : null}
+          {isOpenUpcoming ? (
+            <BottomSheetModal
+              ref={bottomUpcomingSheetRef}
+              snapPoints={snapPoints}
+              enablePanDownToClose={true}
+              onClose={handleUpcomingClose}
+              handleIndicatorStyle={{ backgroundColor: "white" }}
+              backgroundStyle={{
+                borderRadius: 50,
+                backgroundColor: "#1b1b1b",
+              }}
+            >
+              <Upcoming onClose={() => handleUpcomingClose()} />
+            </BottomSheetModal>
+          ) : (
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.headerX}>
+                  <Text style={styles.text}>Song Menu</Text>
+                  <Feather
+                    name="x-circle"
+                    size={24}
+                    color="#FED215"
+                    onPress={onClose}
+                  />
+                </View>
 
-              <TouchableOpacity
-                style={styles.iconandtext}
-                onPress={() => presentModal()}
-              >
-                <FontAwesome6 name="plus" size={24} color="white" />
-                <Text style={styles.textSmall}> Add To Playlist</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.iconandtext}
+                  onPress={handleAddToPlaylist}
+                >
+                  <FontAwesome6 name="plus" size={24} color="white" />
+                  <Text style={styles.textSmall}> Add To Playlist</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconandtext}>
-                <MaterialIcons name="album" size={24} color="white" />
-                <Text style={styles.textSmall}>Visit Album</Text>
-              </TouchableOpacity>
+                <TouchableOpacity style={styles.iconandtext}>
+                  <MaterialIcons name="album" size={24} color="white" />
+                  <Text style={styles.textSmall}>Visit Album</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconandtext}>
-                <Entypo name="share" size={24} color="white" />
-                <Text style={styles.textSmall}>Share</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.iconandtext}
+                  onPress={() => handleShare()}
+                >
+                  <Entypo name="share" size={24} color="white" />
+                  <Text style={styles.textSmall}>Share</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.iconandtext}
-                onPress={handleReport}
-              >
-                <Octicons name="report" size={24} color="white" />
-                <Text style={styles.textSmall}>Report</Text>
-                <Modal2 isOpen={isReportModalOpen} onClose={closeReportModal}>
-                  <View style={styles.FeedbackContainer}>
-                    <Text style={styles.feedbackText}>Report form</Text>
-                    <TextField
-                      placeholder="Enter your report"
-                      width={scale(310)}
-                      height={scale(65)}
-                      onChangeText={handleChange}
-                      value={report}
-                    />
-                    <View style={styles.btnContainer2}>
-                      <ReuseBtn
-                        width={scale(150)}
-                        height={scale(60)}
-                        btnText="Send Report"
-                        onPress={() => handleSendReport(report)}
+                <TouchableOpacity
+                  style={styles.iconandtext}
+                  onPress={handleReport}
+                >
+                  <Octicons name="report" size={24} color="white" />
+                  <Text style={styles.textSmall}>Report</Text>
+                  <Modal2 isOpen={isReportModalOpen} onClose={closeReportModal}>
+                    <View style={styles.FeedbackContainer}>
+                      <Text style={styles.feedbackText}>Report form</Text>
+                      <TextField
+                        placeholder="Enter your report"
+                        width={scale(310)}
+                        height={scale(65)}
+                        onChangeText={handleChange}
+                        value={report}
                       />
-                      <TouchableOpacity
-                        style={styles.btnClose}
-                        onPress={closeReportModal}
-                      >
-                        <Text
-                          style={{
-                            color: "white",
-                            fontSize: scale(18),
-                            fontFamily: "regular",
-                          }}
+                      <View style={styles.btnContainer2}>
+                        <ReuseBtn
+                          width={scale(150)}
+                          height={scale(60)}
+                          btnText="Send Report"
+                          onPress={() => handleSendReport(report)}
+                        />
+                        <TouchableOpacity
+                          style={styles.btnClose}
+                          onPress={closeReportModal}
                         >
-                          Close
-                        </Text>
-                      </TouchableOpacity>
+                          <Text
+                            style={{
+                              color: "white",
+                              fontSize: scale(18),
+                              fontFamily: "regular",
+                            }}
+                          >
+                            Close
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                </Modal2>
-                <SuccessfulModal
-                  text={"You have sent report successfully"}
-                  isVisible={isSuccessModalVisible}
-                  onClose={() => setIsSuccessModalVisible(false)}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+                  </Modal2>
+                  <SuccessfulModal
+                    text={"You have sent report successfully"}
+                    isVisible={isSuccessModalVisible}
+                    onClose={() => setIsSuccessModalVisible(false)}
+                  />
+                </TouchableOpacity>
 
+                <TouchableOpacity
+                  style={styles.iconandtext}
+                  onPress={handleUpcoming}
+                >
+                  <Entypo name="list" size={24} color="white" />
+                  <Text style={styles.textSmall}>Upcoming</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {/* {showOverlay ? <View style={styles.overlay} /> : null} */}
           {isOpen ? (
             <BottomSheetModal
               ref={bottomSheetRef}
               snapPoints={snapPoints}
               enablePanDownToClose={true}
+              onClose={handleCloseBottomSheet}
               handleIndicatorStyle={{ backgroundColor: "white" }}
               backgroundStyle={{
                 borderRadius: 50,
@@ -183,6 +271,21 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
               />
             </BottomSheetModal>
           ) : null}
+          {/* {isOpenUpcoming ? (
+            <BottomSheetModal
+              ref={bottomUpcomingSheetRef}
+              snapPoints={snapPoints}
+              enablePanDownToClose={true}
+              onClose={handleUpcomingClose}
+              handleIndicatorStyle={{ backgroundColor: "white" }}
+              backgroundStyle={{
+                borderRadius: 50,
+                backgroundColor: "#1b1b1b",
+              }}
+            >
+              <Upcoming onClose={() => handleUpcomingClose()} />
+            </BottomSheetModal>
+          ) : null} */}
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </Modal>
@@ -217,7 +320,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontSize: scale(14),
+    fontFamily: "semibold",
     color: "white",
     fontFamily: "semiBold",
     color: "#FED215",
@@ -240,7 +343,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.75)",
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
   },
   btnContainer2: {
     flexDirection: "row",
@@ -258,7 +361,7 @@ const styles = StyleSheet.create({
   feedbackText: {
     color: "white",
     fontSize: scale(20),
-    fontWeight: "bold",
+    fontFamily: "bold",
     marginTop: scale(20),
     marginBottom: scale(20),
     fontFamily: "regular",

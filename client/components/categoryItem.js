@@ -20,7 +20,6 @@ const CategoryItem = ({ input }) => {
       category: input,
     });
   };
-  
 
   return (
     <TouchableOpacity style={styles.container} onPress={MoveToCategoryDetail}>
@@ -41,12 +40,12 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(12),
     borderRadius: scale(15),
     height: scale(100),
-    width:scale(150),
-    overflow: "hidden", 
-    shadowColor: 'blue',
+    width: scale(150),
+    overflow: "hidden",
+    shadowColor: "blue",
     shadowOffset: {
       width: -scale(10),
-      height: -scale(10)
+      height: -scale(10),
     },
     shadowOpacity: 2,
     shadowRadius: 20,
@@ -59,17 +58,17 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
-    marginTop:scale(2)
+    marginTop: scale(2),
   },
   textName: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: COLOR.hightlightText,
     marginHorizontal: scale(5),
-    fontFamily: "semiBold"
+    fontFamily: "semiBold",
   },
-//   heartBtn: {
-//     marginHorizontal: scale(10),
-//   },
+  //   heartBtn: {
+  //     marginHorizontal: scale(10),
+  //   },
 });
 
 export default CategoryItem;

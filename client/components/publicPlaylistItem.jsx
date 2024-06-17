@@ -77,12 +77,12 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: scale(16),
-    fontWeight: "bold",
+    fontFamily: "bold",
     fontFamily: "bold",
     color: "white",
   },
   description: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     fontFamily: "regular",
     color: "white",
   },

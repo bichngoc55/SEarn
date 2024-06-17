@@ -67,6 +67,11 @@ function HomeStack() {
         options={{ presentation: "modal" }}
       />
       <Stack.Screen
+        name="Lyric"
+        component={LyricPage}
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
         name="AddTo"
         component={AddtoPlaylist}
         options={{ presentation: "modal" }}

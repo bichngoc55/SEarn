@@ -31,11 +31,12 @@ const LikedSongPage = () => {
 
   useEffect(() => {
     if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([]);
   const [tracks, setTracks] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     getLikedSong();
@@ -43,18 +44,7 @@ const LikedSongPage = () => {
 
   const getLikedSong = async () => {
     try {
-      const response = await fetch(
-        `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      const likedSong = response.json();
-      setSongList(likedSong);
+      setSongList(user.likedSongs);
     } catch (error) {
       alert("Error in likedsong: " + error);
     }
@@ -80,7 +70,7 @@ const LikedSongPage = () => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +84,7 @@ const LikedSongPage = () => {
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -116,6 +106,9 @@ const LikedSongPage = () => {
       setSongList([...songList, songId]);
     }
   };
+  const filteredSearchs = tracks.filter((search) =>
+    search.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -136,39 +129,64 @@ const LikedSongPage = () => {
           style={styles.iconSearch}
           color="#737373"
         />
-        <TextInput placeholder="Search your liked song" />
+        <TextInput
+          placeholder="Search your liked song"
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+        />
       </View>
-      <View style={styles.funcContainer}>
-        <View style={styles.func}>
-          <Text style={styles.text}>{tracks.length} songs</Text>
-          <View style={styles.iconContainer}>
-            <MaterialCommunityIcons
-              name="arrow-up-down"
-              size={24}
-              color="black"
-            />
-          </View>
-          <Text style={styles.text}>Default</Text>
-        </View>
-        <FontAwesome name="play-circle" size={scale(50)} color="#FED215" />
-      </View>
-
-      <View style={styles.flatlistContainer}>
+      {searchText ? (
         <FlatList
-          data={tracks}
+          key={1}
+          data={filteredSearchs}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
               <SongItem
                 input={item}
-                songList={tracks}
+                songList={filteredSearchs}
                 onLikeUnlike={handleLikeUnlike}
                 isLiked={songList.includes(item.id)}
               />
             );
           }}
+          nestedScrollEnabled={true}
+          style={[styles.flatlistContainer, { marginTop: "4%" }]}
         />
-      </View>
+      ) : (
+        <>
+          <View style={styles.funcContainer}>
+            <View style={styles.func}>
+              <Text style={styles.text}>{tracks.length} songs</Text>
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name="arrow-up-down"
+                  size={24}
+                  color="black"
+                />
+              </View>
+              <Text style={styles.text}>Default</Text>
+            </View>
+            <FontAwesome name="play-circle" size={scale(50)} color="#FED215" />
+          </View>
+          <View style={styles.flatlistContainer}>
+            <FlatList
+              data={tracks}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                return (
+                  <SongItem
+                    input={item}
+                    songList={tracks}
+                    onLikeUnlike={handleLikeUnlike}
+                    isLiked={songList.includes(item.id)}
+                  />
+                );
+              }}
+            />
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -184,8 +202,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerL: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     height: scale(35),
     alignItems: "center",
     marginTop: "2.68%",
@@ -200,8 +218,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   searchBarContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     backgroundColor: "#D9D9D9",
     height: scale(40),
     borderRadius: scale(20),
@@ -216,8 +234,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   funcContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     flexDirection: "row",
     alignItems: "center",
     marginTop: "6.48%",
@@ -235,11 +253,13 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#FFFFFF",
-    fontSize: scale(14),
+    fontFamily: "semibold",
   },
   flatlistContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
+    flex: 1,
+    marginBottom: "25%",
   },
 });
 export default LikedSongPage;

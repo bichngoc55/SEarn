@@ -25,14 +25,14 @@ const LibraryPage = () => {
   );
 
   const AlbumScreen = () => (
-    <View style={{ flex: 1}}>
-      <LikedAlbumTab/>
+    <View style={{ flex: 1 }}>
+      <LikedAlbumTab />
     </View>
   );
-  
+
   const ArtistScreen = () => (
-    <View style={{ flex: 1}}>
-      <LikedArtistTab/>
+    <View style={{ flex: 1 }}>
+      <LikedArtistTab />
     </View>
   );
   const [index, setIndex] = useState(0);
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: "#FFFFFF",
     fontSize: scale(20),
-    fontWeight: "bold",
+    fontFamily: "bold",
   },
 });
 

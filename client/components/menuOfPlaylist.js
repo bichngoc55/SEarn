@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontSize: scale(14),
+    fontFamily: "semiBold",
     color: "white",
     fontFamily: "semiBold",
     color: "#FED215",

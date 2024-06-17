@@ -141,6 +141,10 @@ function UserStack() {
       />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
       <Stack.Screen name="publicPlaylist" component={PublicPlaylist} />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
+      />
     </Stack.Navigator>
   );
 }
@@ -171,7 +175,7 @@ function FavoriteTabs() {
 
 function BottomBar() {
   return (
-    <View style={{ flex: 1, }}>
+    <View style={{ flex: 1 }}>
       <View style={styles.tabContainer}>
         <Tab.Navigator
           initialRouteName={homeName}
@@ -293,7 +297,7 @@ export default function MainNavigation() {
             />
             <Stack.Screen name="SignUpOrLogin" component={SignUpOrLoginPage} />
             <Stack.Screen name="Login" component={LoginPage} />
-            <Stack.Screen name="Register" component={RegisterPage}/>
+            <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
           </>
         ) : (

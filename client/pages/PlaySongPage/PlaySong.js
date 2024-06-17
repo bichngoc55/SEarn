@@ -132,7 +132,7 @@ const PlaySongPage = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3005/auth/${user?._id}/getLikedSongs`,
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -178,10 +178,10 @@ const PlaySongPage = ({ route }) => {
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
-  
+
   useEffect(() => {
-    setLiked(likedSongList?.includes(song.id));
-  }, [song.id, likedSongList]);
+    setLiked(likedSongList?.includes(song?.id));
+  }, [song?.id, likedSongList]);
   // Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {
@@ -198,9 +198,9 @@ const PlaySongPage = ({ route }) => {
   };
 
   const moveToArtistDetail = async (artistId) => {
-    try {        
+    try {
       if (accessTokenForSpotify) {
-        const artistData = await getArtist(accessTokenForSpotify, artistId)
+        const artistData = await getArtist(accessTokenForSpotify, artistId);
         navigation.navigate("ArtistDetail", {
           artist: artistData,
         });
@@ -208,7 +208,7 @@ const PlaySongPage = ({ route }) => {
     } catch (error) {
       console.error("Error fetching move to artist hehe:", error);
     }
-  }; 
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -250,15 +250,17 @@ const PlaySongPage = ({ route }) => {
         <View>
           <Text style={styles.songname}>{service.currentSong.name}</Text>
           <Text style={styles.songartist}>
-          {service.currentSong.artists.map((artist, index) => (
-            <TouchableOpacity
-              key={artist.id} 
-              onPress={() => moveToArtistDetail(artist.id)}
-            >
-              {(index < service.currentSong.artists.length - 1)? 
-              <Text style={styles.songartist}>{artist.name}, </Text> : 
-              <Text style={styles.songartist}>{artist.name} </Text>}
-            </TouchableOpacity>
+            {service.currentSong.artists.map((artist, index) => (
+              <TouchableOpacity
+                key={artist.id}
+                onPress={() => moveToArtistDetail(artist.id)}
+              >
+                {index < service.currentSong.artists.length - 1 ? (
+                  <Text style={styles.songartist}>{artist.name}, </Text>
+                ) : (
+                  <Text style={styles.songartist}>{artist.name} </Text>
+                )}
+              </TouchableOpacity>
             ))}
           </Text>
         </View>

@@ -18,9 +18,9 @@ import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
 import RenderComment from "../../components/renderComment/renderComment";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { Entypo } from "@expo/vector-icons";
 import { getTrack } from "../../service/songService";
@@ -36,7 +36,6 @@ const PlaylistDetailMongo = ({ route }) => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
-  const isFocused = useIsFocused();
   const [tracks, setTracks] = useState([]);
   const [isPublic, setIsPublic] = useState(playlist.privacyOrPublic);
   const [name, setName] = useState(playlist.name);
@@ -159,14 +158,9 @@ const PlaylistDetailMongo = ({ route }) => {
         setTracks(trackData);
       } catch (error) {}
     };
-    if (isFocused) {
-      console.log("playlist is focused");
-      getPlaylistDetails();
-      fetchTracks();
-    }
     getPlaylistDetails();
     fetchTracks();
-  }, [isFocused]);
+  }, [accessTokenForSpotify, songList]);
 
   const getPlaylistDetails = async () => {
     // setIsLoading(true);
@@ -223,28 +217,28 @@ const PlaylistDetailMongo = ({ route }) => {
             />
           </View>
         </View>
-
-      <View
-        style={{ width: "100%", alignItems: "center", marginVertical: "4%" }}
-      >
-        <Text style={styles.textName}>{name}</Text>
-        <Text style={styles.textDes}>{description}</Text>
-        <View style={styles.follow_and_song}>
-          <View style={{ alignItems: "center" }}>
-            <Text style={styles.textName}>{playlist.songs.length}</Text>
-            <Text style={styles.textDes}>Songs</Text>
-          </View>
-          <View style={{ alignItems: "center" }}>
-            {isPublic ? (
-              <MaterialIcons name="public" size={26} color="white" />
-            ) : (
-              <MaterialIcons name="public-off" size={26} color="white" />
-            )}
-            <Text style={styles.textDes}>Status</Text>
-          </View>
-          <View style={{ alignItems: "center" }}>
-            <Text style={styles.textName}>{playlist.numberOfLikes}</Text>
-            <Text style={styles.textDes}>Likes</Text>
+        <View
+          style={{ width: "100%", alignItems: "center", marginVertical: "4%" }}
+        >
+          <Text style={styles.textName}>{name}</Text>
+          <Text style={styles.textDes}>{description}</Text>
+          <View style={styles.follow_and_song}>
+            <View style={{ alignItems: "center" }}>
+              <Text style={styles.textName}>{playlist.songCount}</Text>
+              <Text style={styles.textDes}>Songs</Text>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              {isPublic ? (
+                <MaterialIcons name="public" size={26} color="white" />
+              ) : (
+                <MaterialIcons name="public-off" size={26} color="white" />
+              )}
+              <Text style={styles.textDes}>Status</Text>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Text style={styles.textName}>{playlist.numberOfLikes}</Text>
+              <Text style={styles.textDes}>Likes</Text>
+            </View>
           </View>
         </View>
         {/* hehe */}
@@ -344,7 +338,7 @@ const styles = StyleSheet.create({
   },
   textDes: {
     fontSize: scale(13),
-    fontFamily: "regular",
+    fontWeight: "300",
     color: "white",
   },
   follow_and_song: {

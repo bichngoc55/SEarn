@@ -121,7 +121,7 @@ const PlaySongPage = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3005/auth/${user?._id}/getLikedSongs`,
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -169,9 +169,9 @@ const PlaySongPage = ({ route }) => {
   };
 
   useEffect(() => {
-    setLiked(likedSongList?.includes(service.currentSong.id));
-  }, [service.currentSong.id, likedSongList]);
-  //Handle like/unlike action
+    setLiked(likedSongList?.includes(song?.id));
+  }, [song?.id, likedSongList]);
+  // Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {
       await unlikeSong(songId);

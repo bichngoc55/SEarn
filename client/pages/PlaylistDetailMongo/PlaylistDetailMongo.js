@@ -5,6 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   Modal,
+  Button,
+  TouchableOpacity,
   TextInput,
   Pressable,
   FlatList,
@@ -14,8 +16,10 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
-import renderComment from "../../components/renderComment/renderComment";
+import { ActivityIndicator } from "react-native";
+import RenderComment from "../../components/renderComment/renderComment";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { Entypo } from "@expo/vector-icons";
@@ -66,6 +70,24 @@ const PlaylistDetailMongo = ({ route }) => {
         }),
       });
       const data = await response.json();
+      // console.log("id ne: ", data._id);
+      // console.log(
+      //   "link ne: ",
+      //   `http://10.0.2.2:3005/${playlist._id}/addComment`
+      // );
+      const reponseAdd = await fetch(
+        `http://10.0.2.2:3005/playlists/${playlist._id}/addComment`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            commentId: data._id,
+          }),
+        }
+      );
+      // console.log("data nho comment: ", JSON.stringify(reponseAdd));
       setNewComment("");
       setSelectedCommentId(null);
       getPlaylistDetails();
@@ -73,24 +95,52 @@ const PlaylistDetailMongo = ({ route }) => {
       alert("Error in post comment: " + e);
     }
   };
+  const handleModifyComment = async (commentId) => {
+    console.log("khong biet lam j ");
+  };
+  const handleDeleteComment = async (commentId) => {
+    // console.log("HEHHEHEHEHE :", commentId);
+    try {
+      // console.log("HEHEHEH");
+      const response = await fetch(
+        `http://10.0.2.2:3005/comment/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log("HEHHEHEHEHE :", commentId);
 
+      if (!response.ok) {
+        throw new Error("Failed to delete comment");
+      }
+      getPlaylistDetails();
+    } catch (e) {}
+  };
   const handlePostResponse = async (commentId, responseContent) => {
     try {
-      const response = await fetch("http://10.0.2.2:3005/comment/response", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: responseContent,
-          userId: user._id,
-          commentId: commentId,
-        }),
-      });
+      const response = await fetch(
+        "http://10.0.2.2:3005/comment/add/response",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            commentId: commentId,
+            userId: user._id,
+            content: responseContent,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to post response");
       }
+      console.log("Response Data:", JSON.stringify(response));
+
       setSelectedCommentId(null);
       getPlaylistDetails();
     } catch (e) {
@@ -134,6 +184,7 @@ const PlaylistDetailMongo = ({ route }) => {
         );
         const playlistDetail = await response.json();
         const commentsData = playlistDetail.comments;
+        // console.log("comment data: ", commentsData);
         setComments(commentsData);
         setName(playlistDetail.name);
         setDescription(playlistDetail.description);
@@ -143,34 +194,36 @@ const PlaylistDetailMongo = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.img_and_backBtn}>
-        <Image
-          source={{
-            uri: "https://i.scdn.co/image/ab67616d0000b273212f0300aefcb79b00d2a6cf",
-          }}
-          style={styles.albumImg}
-          resizeMode="cover"
-        />
-        <View style={styles.iconHeader}>
-          <View style={styles.backButtonContainer}>
-            <Pressable
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Ionicons name="chevron-back-sharp" size={24} color="black" />
-            </Pressable>
-          </View>
-          <Pressable style={styles.backButton} onPress={toggleModal}>
-            <Entypo name="dots-three-vertical" size={20} color="black" />
-          </Pressable>
-          <MenuOfPlaylist
-            visible={modalVisible}
-            onClose={toggleModal}
-            playlist={playlist}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.img_and_backBtn}>
+          <Image
+            source={{
+              uri: "https://i.scdn.co/image/ab67616d0000b273212f0300aefcb79b00d2a6cf",
+            }}
+            style={styles.albumImg}
+            resizeMode="cover"
           />
+          <View style={styles.iconHeader}>
+            <View style={styles.backButtonContainer}>
+              <Pressable
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons name="chevron-back-sharp" size={24} color="black" />
+              </Pressable>
+            </View>
+            <Pressable style={styles.backButton} onPress={toggleModal}>
+              <Entypo name="dots-three-vertical" size={20} color="black" />
+            </Pressable>
+            <MenuOfPlaylist
+              visible={modalVisible}
+              onClose={toggleModal}
+              playlist={playlist}
+            />
+          </View>
         </View>
-      </View>
+
       <View
         style={{ width: "100%", alignItems: "center", marginVertical: "4%" }}
       >
@@ -194,50 +247,56 @@ const PlaylistDetailMongo = ({ route }) => {
             <Text style={styles.textDes}>Likes</Text>
           </View>
         </View>
-      </View>
-      {/* hehe */}
-      <View style={styles.flatlistContainer}>
-        <FlatList
-          data={tracks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            return <SongItem input={item} songList={tracks} />;
-          }}
-        />
-      </View>
-      (isPublic && (
-      <ScrollView style={styles.commentContainer}>
-        <View style={styles.commentPost}>
-          <TextInput
-            value={newComment}
-            onChangeText={setNewComment}
-            placeholder="Viết bình luận..."
+        {/* hehe */}
+        <ScrollView style={styles.flatlistContainer}>
+          <FlatList
+            data={tracks}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              return <SongItem input={item} songList={tracks} />;
+            }}
           />
-          <Button title="Đăng" onPress={handlePostComment} />
-        </View>
-        <View style={styles.commentRender}>
-          {isLoading ? (
-            <ActivityIndicator size="large" color="white" />
-          ) : (
-            <FlatList
-              data={comments}
-              keyExtractor={(comment) => comment._id}
-              renderItem={({ item }) => (
-                <renderComment
-                  comment={item}
-                  handlePostResponse={(content) =>
-                    handlePostResponse(item._id, content)
-                  }
-                  toggleResponses={toggleResponses}
-                  selectedCommentId={selectedCommentId}
-                />
-              )}
-            />
-          )}
-        </View>
-      </ScrollView>
-      ))
-    </SafeAreaView>
+          <View style={styles.commentContainer}>
+            <View style={styles.commentPost}>
+              <TextInput
+                style={styles.textComment}
+                placeholderTextColor={"grey"}
+                value={newComment}
+                onChangeText={setNewComment}
+                placeholder="Viết bình luận..."
+              />
+
+              <TouchableOpacity
+                onPress={handlePostComment}
+                style={{
+                  paddingHorizontal: scale(10),
+                  paddingVertical: scale(5),
+                  borderRadius: scale(10),
+                }}
+              >
+                <Feather name="send" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.commentRender}>
+              <FlatList
+                data={comments}
+                keyExtractor={(comment) => comment._id}
+                renderItem={({ item }) => (
+                  <RenderComment
+                    comment={item}
+                    handlePostResponse={handlePostResponse}
+                    toggleResponses={toggleResponses}
+                    selectedCommentId={selectedCommentId}
+                    onDeleteComment={handleDeleteComment}
+                    onModifyComment={handleModifyComment}
+                  />
+                )}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 const styles = StyleSheet.create({
@@ -300,16 +359,21 @@ const styles = StyleSheet.create({
     marginHorizontal: "6.5%",
     marginBottom: "10%",
   },
+  textComment: {
+    paddingHorizontal: scale(10),
+    paddingVertical: scale(5),
+    color: "grey",
+    placeholderTextColor: "white",
+    borderRadius: scale(10),
+  },
   commentPost: {
     flexDirection: "row",
     justifyContent: "space-between",
+    borderRadius: scale(10),
+    borderWidth: 1,
+    color: "grey",
     alignItems: "center",
     width: "100%",
-    height: scale(50),
-    backgroundColor: "white",
-    paddingHorizontal: scale(10),
-    borderTopLeftRadius: scale(10),
-    borderTopRightRadius: scale(10),
   },
 });
 export default PlaylistDetailMongo;

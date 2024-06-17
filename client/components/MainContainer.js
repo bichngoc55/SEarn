@@ -146,6 +146,10 @@ function UserStack() {
       />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
       <Stack.Screen name="publicPlaylist" component={PublicPlaylist} />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
+      />
     </Stack.Navigator>
   );
 }

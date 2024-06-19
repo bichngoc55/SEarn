@@ -34,7 +34,7 @@ export default function RegisterScreen({ navigation }) {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await fetch("http://localhost:3005/auth/register", {
+      const response = await fetch("http://10.0.2.2:3005/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -44,7 +44,10 @@ const PlaylistDetailMongo = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [selectedCommentId, setSelectedCommentId] = useState(null);
-
+  const [modifiedComment, setModifiedComment] = useState({
+    content: "",
+    commentId: null,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [comments, setComments] = useState([]);
   const { user } = useSelector((state) => state.user);
@@ -94,8 +97,48 @@ const PlaylistDetailMongo = ({ route }) => {
       alert("Error in post comment: " + e);
     }
   };
-  const handleModifyComment = async (commentId) => {
-    console.log("khong biet lam j ");
+  const handleSubmitModifiedComment = async (modifiedComment) => {
+    // console.log(
+    //   "modifed : ",
+    //   modifiedComment.content,
+    //   " ",
+    //   modifiedComment.commentId
+    // );
+    if (!modifiedComment.content.trim() || !modifiedComment.commentId) return;
+    const commentId = modifiedComment.commentId;
+    // console.log("comment content modified: ", modifiedComment.content.trim());
+    // console.log("API: ", `http://10.0.2.2:3005/comment/${commentId}`);
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:3005/comment/${commentId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: modifiedComment.content,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to modify comment");
+      }
+      // console.log("sao m k chay");
+      const updatedComments = comments.map((comment) =>
+        comment._id === modifiedComment.commentId
+          ? { ...comment, content: modifiedComment.content }
+          : comment
+      );
+      // console.log("Updated comments : ", JSON.stringify(updatedComments));
+      setComments(updatedComments);
+
+      setModifiedComment({ content: "", commentId: null });
+    } catch (error) {
+      console.error("Error modifying comment:", error);
+      alert("Error modifying comment: " + error.message);
+    }
   };
   const handleDeleteComment = async (commentId) => {
     // console.log("HEHHEHEHEHE :", commentId);
@@ -271,7 +314,13 @@ const PlaylistDetailMongo = ({ route }) => {
                 <Feather name="send" size={24} color="white" />
               </TouchableOpacity>
             </View>
-            <View style={styles.commentRender}>
+            <View
+              style={{
+                display: "flex",
+                minHeight: scale(150),
+                marginBottom: scale(20),
+              }}
+            >
               <FlatList
                 data={comments}
                 keyExtractor={(comment) => comment._id}
@@ -281,8 +330,9 @@ const PlaylistDetailMongo = ({ route }) => {
                     handlePostResponse={handlePostResponse}
                     toggleResponses={toggleResponses}
                     selectedCommentId={selectedCommentId}
+                    setModifiedComment={setModifiedComment}
                     onDeleteComment={handleDeleteComment}
-                    onModifyComment={handleModifyComment}
+                    onSubmitModifiedComment={handleSubmitModifiedComment}
                   />
                 )}
               />

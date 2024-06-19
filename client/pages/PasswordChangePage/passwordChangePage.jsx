@@ -43,21 +43,18 @@ export default function PasswordChangePage() {
       if (!token) {
         throw new Error("No token found. Please log in again.");
       }
-      const response = await fetch(
-        "http://localhost:3005/auth/changePassword",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            user: user,
-            oldPassword: values.oldPassword,
-            newPassword: values.newPassword,
-          }),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:3005/auth/changePassword", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user: user,
+          oldPassword: values.oldPassword,
+          newPassword: values.newPassword,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

@@ -50,7 +50,7 @@ const MiniPlayer = () => {
     artists: "Not found artists",
   });
   const OpenPlaySong = async () => {
-    if (service.currentSong) {
+    if (service?.currentSong) {
       navigation.navigate("PlaySong", {
         song: service.currentSong,
       });
@@ -69,7 +69,7 @@ const MiniPlayer = () => {
             duration: 300,
             useNativeDriver: true,
           }).start(() => {
-            if (service.currentSound.sound != null) {
+            if (service?.currentSound?.sound != null) {
               service.currentSound.sound.stopAsync();
             }
             setIsVisible(false);

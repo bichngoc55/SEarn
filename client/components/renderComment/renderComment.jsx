@@ -27,16 +27,20 @@ const RenderComment = ({
   toggleResponses,
   handlePostResponse,
   selectedCommentId,
+  setModifiedComment,
   onDeleteComment,
-  onModifyComment,
+  onSubmitModifiedComment,
 }) => {
   const [newResponse, setNewResponse] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [selectedComment, setSelectedComment] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleReplyClick = (target, isResponse = false) => {
     setReplyingTo({ ...target, isResponse });
   };
+  const toggleEdit = () => setIsEditing(!isEditing);
 
   const handleCancelReply = () => {
     setReplyingTo(null);
@@ -46,31 +50,69 @@ const RenderComment = ({
     onDeleteComment(comment._id);
   };
 
-  const handleModifyComment = () => {
-    onModifyComment(comment);
+  const handleSaveModifiedComment = async () => {
+    // console.log("heheheh: ", comment._id, " ", editContent);
+    await setModifiedComment({ commentId: comment._id, content: editContent });
+    await onSubmitModifiedComment({
+      commentId: comment._id,
+      content: editContent,
+    });
+    toggleEdit();
+    setEditContent("");
   };
 
   return (
     <View key={comment._id} style={{ marginVertical: 2 }}>
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        <Text style={styles.commentContent}>{comment.content}</Text>
-
-        <Menu style={styles.menuTriggerContainer}>
-          <MenuTrigger>
-            <Entypo
-              name="dots-three-vertical"
-              size={16}
-              color="grey"
-              style={{ marginTop: scale(22) }}
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        {isEditing ? (
+          <>
+            <TextInput
+              value={editContent}
+              onChangeText={setEditContent}
+              style={styles.editInput}
             />
-          </MenuTrigger>
-          <MenuOptions>
-            <MenuOption onSelect={handleModifyComment} text="Modify" />
-            <MenuOption onSelect={() => handleDeleteComment(comment._id)}>
-              <Text style={{ color: "red" }}>Delete</Text>
-            </MenuOption>
-          </MenuOptions>
-        </Menu>
+            <TouchableOpacity onPress={handleSaveModifiedComment}>
+              <Feather
+                style={{
+                  marginRight: scale(10),
+                  marginTop: scale(3),
+                  marginLeft: scale(5),
+                }}
+                name="check"
+                size={24}
+                color="green"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleEdit}>
+              <MaterialIcons
+                style={{ marginTop: scale(5) }}
+                name="cancel"
+                size={24}
+                color="red"
+              />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <Text style={styles.commentContent}>{comment.content}</Text>
+            <Menu style={styles.menuTriggerContainer}>
+              <MenuTrigger>
+                <Entypo
+                  name="dots-three-vertical"
+                  size={16}
+                  color="grey"
+                  style={{ marginLeft: "auto", marginTop: scale(10) }}
+                />
+              </MenuTrigger>
+              <MenuOptions>
+                <MenuOption onSelect={toggleEdit} text="Modify" />
+                <MenuOption onSelect={() => onDeleteComment(comment._id)}>
+                  <Text style={{ color: "red" }}>Delete</Text>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
+          </>
+        )}
       </View>
       <View style={{ flex: 1, flexDirection: "row" }}>
         <Text
@@ -324,6 +366,18 @@ const styles = StyleSheet.create({
   menuTriggerContainer: {
     marginLeft: "auto",
     marginRight: scale(10),
+  },
+  editInput: {
+    flex: 1,
+
+    color: "white",
+    fontFamily: "regular",
+    fontSize: scale(15),
+    paddingVertical: scale(5),
+    backgroundColor: "grey",
+    paddingHorizontal: scale(10),
+    marginTop: scale(15),
+    borderRadius: scale(10),
   },
 });
 

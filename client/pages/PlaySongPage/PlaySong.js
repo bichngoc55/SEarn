@@ -78,16 +78,6 @@ const PlaySongPage = ({ route }) => {
     return () => {};
   }, [service.currentTime]);
 
-  const {
-    currentSong,
-    currentPosition,
-    currentSound,
-    audioPlayer,
-    currentTime,
-    isPlaying,
-    playlist,
-  } = useSelector((state) => state.mediaPlayer);
-
   const formatTime = (timeInMillis) => {
     const totalSeconds = Math.floor(timeInMillis / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -131,7 +121,7 @@ const PlaySongPage = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3005/auth/${user?._id}/getLikedSongs`,
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -179,9 +169,9 @@ const PlaySongPage = ({ route }) => {
   };
 
   useEffect(() => {
-    setLiked(likedSongList?.includes(service.currentSong.id));
-  }, [service.currentSong.id, likedSongList]);
-  //Handle like/unlike action
+    setLiked(likedSongList?.includes(song?.id));
+  }, [song?.id, likedSongList]);
+  // Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {
       await unlikeSong(songId);
@@ -246,7 +236,7 @@ const PlaySongPage = ({ route }) => {
         )}
       </View>
       <View style={styles.textIcon}>
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.songname}>{service.currentSong.name}</Text>
           <Text style={styles.songartist}>
             {service.currentSong.artists.map((artist, index) => (
@@ -369,7 +359,7 @@ const PlaySongPage = ({ route }) => {
             size={scale(25)}
             color="#FED215"
             onPress={() => {
-              service.isShuffle = false;
+              service.shufflePlaylist();
             }}
           />
         ) : (
@@ -378,7 +368,7 @@ const PlaySongPage = ({ route }) => {
             size={scale(25)}
             color="#737373"
             onPress={() => {
-              service.isShuffle = true;
+              service.shufflePlaylist();
               service.isRepeat = false;
             }}
           />
@@ -414,8 +404,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerL: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     alignItems: "center",
     marginTop: "2.68%",
     flexDirection: "row",
@@ -428,16 +418,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   imageContain: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     marginTop: "4.68%",
     borderRadius: 50,
     height: scale(350),
     backgroundColor: "white",
   },
   textIcon: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     marginTop: "6.68%",
     flexDirection: "row",
     alignItems: "center",
@@ -445,8 +435,8 @@ const styles = StyleSheet.create({
   },
   songname: {
     color: "#FFFFFF",
-    fontFamily: "bold",
-    fontSize: scale(16),
+    fontFamily: "semiBold",
+    fontSize: scale(15),
     marginBottom: scale(5),
   },
   songartist: {
@@ -455,8 +445,8 @@ const styles = StyleSheet.create({
     fontSize: scale(12),
   },
   iconContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
@@ -467,12 +457,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   textDuration: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
+  heartBtn: {},
 });
 
 export default PlaySongPage;

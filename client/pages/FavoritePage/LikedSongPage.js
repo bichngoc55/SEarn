@@ -202,8 +202,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerL: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     height: scale(35),
     alignItems: "center",
     marginTop: "2.68%",
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   searchBarContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     backgroundColor: "#D9D9D9",
     height: scale(40),
     borderRadius: scale(20),
@@ -234,8 +234,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   funcContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
     flexDirection: "row",
     alignItems: "center",
     marginTop: "6.48%",
@@ -256,8 +256,10 @@ const styles = StyleSheet.create({
     fontFamily: "semibold",
   },
   flatlistContainer: {
-    marginLeft: "8.48%",
-    marginRight: "8.48%",
+    marginLeft: "5.1%",
+    marginRight: "5.1%",
+    flex: 1,
+    marginBottom: "25%",
   },
 });
 export default LikedSongPage;

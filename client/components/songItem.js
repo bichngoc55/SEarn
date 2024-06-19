@@ -63,6 +63,7 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
     service.currentAudioIndex = currentSongIndex;
     service.playCurrentAudio();
     service.isGetCoin = true;
+    service.isShuffle = false;
     console.log(service.currentSong);
     navigation.navigate("PlaySong", {});
   };

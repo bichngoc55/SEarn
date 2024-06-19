@@ -15,6 +15,7 @@ class AudioService {
       this.isRepeat = false;
       this.isShuffle = false;
       this.currentPlaylist = [];
+      this.originalPlaylist = [];
       this.currentSong = null;
       this.currentAudio = null;
       this.userId = null;
@@ -56,15 +57,11 @@ class AudioService {
     }
     //const { user } = useSelector((state) => state.user);
     if (status.didJustFinish) {
-      console.log("Next song");
       status.positionMillis = 0;
       await this.currentSound.sound.stopAsync();
       if (this.isRepeat) {
         console.log("Repeat");
         await this.playCurrentAudio();
-      } else if (this.isShuffle) {
-        console.log("Random");
-        await this.playRandomSong();
       } else {
         console.log("Next song");
         await this.playNextAudio();
@@ -98,6 +95,23 @@ class AudioService {
     // Nếu component đã đăng ký callback này, hãy gọi nó
     if (this.playbackStatusCallback) {
       this.playbackStatusCallback(status);
+    }
+  }
+
+  shufflePlaylist() {
+    if (this.currentPlaylist.length > 1) {
+      if (this.isShuffle) {
+        // Nếu đang ở chế độ shuffle, trả lại danh sách ban đầu
+        this.currentPlaylist = [...this.originalPlaylist];
+        this.isShuffle = false;
+      } else {
+        // Nếu không ở chế độ shuffle, shuffle danh sách
+        this.originalPlaylist = [...this.currentPlaylist]; // Lưu trữ danh sách ban đầu
+        this.currentPlaylist = this.currentPlaylist.sort(
+          () => Math.random() - 0.5
+        ); // Shuffle danh sách
+        this.isShuffle = true;
+      }
     }
   }
 

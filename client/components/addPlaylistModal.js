@@ -22,7 +22,7 @@ const AddPlaylistModal = ({ visible, onClose }) => {
   const toggleSwitch = () => setIsPublic((previousState) => !previousState);
   const CreateNewPlaylist = async () => {
     try {
-      await axios.post("http://localhost:3005/playlists/add", {
+      await axios.post("http://10.0.2.2:3005/playlists/add", {
         name,
         description,
         songCount: 0,

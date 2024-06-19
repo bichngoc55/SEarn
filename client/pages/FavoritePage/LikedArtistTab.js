@@ -196,7 +196,7 @@ export default function LikedArtistTab() {
               />
             );
           }}
-          ListFooterComponent={<View style={{ height: scale(60) }} />}
+          ListFooterComponent={<View style={{ height: scale(120) }} />}
         />
       </View>
     </SafeAreaView>

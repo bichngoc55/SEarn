@@ -1,4 +1,4 @@
-import React, { useState } from "react";import {
+import React, { useState, useEffect } from "react";import {
   View,
   Text,
   StyleSheet,
@@ -10,11 +10,53 @@ import React, { useState } from "react";import {
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-
+import { useSelector,  } from "react-redux";
 import NewsTab from "./NewTabScreen";
 import RelatedArtist from "./RelatedArtists";
+import PublicPlaylist from "./PublicPlaylist";
+
+import AudioService from "../../service/audioService";
+import { getTrack } from "../../service/songService";
 
 const HomePage = () => {
+  const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
+
+  const [recentlyPlayingSong, setRecentlyPlayingSong] = useState();
+
+  // const MoveToPlaySong = async () => {
+  //   let service = new AudioService();
+  //   service.currentSong = input;
+  //   service.loadSong();
+  //   console.log(service.currentSong)
+  //   service.currentTime = 0;
+  //   service.playCurrentAudio();
+  //   service.isGetCoin = true;
+  //   console.log(service.currentSong);
+  //   navigation.navigate("PlaySong", {});
+  // };
+
+  // //get in4 recentlySong from spotify
+  // useEffect(() => {
+  //   const fetchRecentlyPlayingSong = async () => {
+  //     try {
+  //       if (accessTokenForSpotify) {
+  //         const song= await getTrack(accessTokenForSpotify, user.recentListeningSong);
+  //         console.log("nhìn nè",user.recentListeningSong)
+  //         setRecentlyPlayingSong(song);
+  //         console.log(song)
+  //       } else alert("Chưa có accessTokenForSpotify");
+  //     } catch (error) {
+  //       console.error("Error fetching recently playing song in HomeScreen:", error);
+  //     }
+  //   };
+
+  //   fetchRecentlyPlayingSong();
+  // }, [user?._id, accessTokenForSpotify]);
+
   const NewsTabScreen = () => (
     <View style={{ flex: 1 }}>
       <NewsTab />
@@ -26,15 +68,23 @@ const HomePage = () => {
       <RelatedArtist/>
     </View>
   );
+
+  const PublicPlaylistScreen =() =>{
+    <View style={{ flex: 1}}>
+      <PublicPlaylist/>
+    </View>
+  }
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "news", title: "News" },
     { key: "artist", title: "Artist" },
+    { key: "playlist", title: "Playlist"}
   ]);
 
   const renderScene = SceneMap({
     news: NewsTabScreen,
     artist: RelatedArtistScreen,
+    playlist: PublicPlaylistScreen,
   });
   const renderTabBar = (props) => ( 
     <TabBar
@@ -81,7 +131,7 @@ const HomePage = () => {
       <View style={styles.recentSongContainer}>
         <View style={{flexDirection: "column", marginHorizontal:scale(10),}}>
           <Text>
-            Hello
+            {/* {recentlyPlayingSong.name} */}
           </Text>
         </View>
         <View style={styles.circle}>
@@ -114,7 +164,6 @@ const styles = StyleSheet.create({
     paddingHorizontal:scale(10),
     borderBottomLeftRadius: scale(20),
     borderBottomRightRadius: scale(20)
-
   },
   circle: {
     width: scale(120),

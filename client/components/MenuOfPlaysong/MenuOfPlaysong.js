@@ -9,11 +9,12 @@ import BottomSheetModal, {
 } from "@gorhom/bottom-sheet";
 //import BottomSheet from "react-native-bottomsheet-reanimated";
 import scale from "../../constant/responsive";
-import * as Sharing from "expo-sharing";
-import Video from "react-native-video";
-//import RNFS from "react-native-fs";
-import * as FileSystem from "expo-file-system";
-import { Share } from "react-native";
+import { useSelector } from "react-redux";
+// import * as Sharing from "expo-sharing";
+// import Video from "react-native-video";
+// //import RNFS from "react-native-fs";
+// import * as FileSystem from "expo-file-system";
+// import { Share } from "react-native";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -24,7 +25,6 @@ import {
   FlatList,
   Pressable,
   TouchableOpacity,
-  Button,
 } from "react-native";
 import {
   Feather,
@@ -35,15 +35,21 @@ import {
 } from "@expo/vector-icons";
 import AddtoPlaylist from "./AddToPlaylist";
 import Modal2 from "../modal";
+import AudioService from "../../service/audioService";
+import { getAlbum } from "../../service/albumService";
 
-const MenuOfPlaysong = ({ visible, onClose, song }) => {
+const MenuOfPlaysong = ({visible, onClose, song }) => {
   const navigation = useNavigation();
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
   const [modalVisible, setModalVisible] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenUpcoming, setIsOpenUpcoming] = useState(false);
   const [report, setReport] = useState("");
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
+  let service=new AudioService();
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -62,6 +68,35 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
     bottomSheetRef.current?.close();
     setIsOpen(false);
   }
+
+  const getAlbumDetail = async (albumId) => {
+    try {
+      if (accessTokenForSpotify) {
+        const albumData = await getAlbum(accessTokenForSpotify, albumId);
+        return albumData;
+      } else {
+        alert("accessToken: " + accessTokenForSpotify);
+      }
+    } catch (error) {
+      console.error("Error fetching album detail:", error);
+    }
+  };
+
+  const moveToAlbum = async () => {
+    if (service.currentSong?.album?.id) {
+      const albumDetail = await getAlbumDetail(service.currentSong.album.id);
+      console.log(albumDetail)
+      if (albumDetail) {
+        navigation.navigate("AlbumDetail", {
+          album: albumDetail,
+        });
+      } else {
+        alert("Error fetching album detail");
+      }
+    } else {
+      alert("Album ID is undefined");
+    }
+  };
   const handleCloseBottomSheet = () => {
     setIsOpen(false);
     console.log(isOpen);
@@ -138,7 +173,8 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
                 <Text style={styles.textSmall}> Add To Playlist</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.iconandtext}>
+              <TouchableOpacity style={styles.iconandtext}
+                onPress={moveToAlbum}>
                 <MaterialIcons name="album" size={24} color="white" />
                 <Text style={styles.textSmall}>Visit Album</Text>
               </TouchableOpacity>
@@ -274,7 +310,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontFamily: "semibold",
+    fontFamily: "semiBold",
     color: "white",
     fontFamily: "semiBold",
     color: "#FED215",

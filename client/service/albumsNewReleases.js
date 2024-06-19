@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const getAlbumsNewReleases = async (accessToken) => {
-  try {    console.log("Có gọi đc ko")
+  try {   
+    //  console.log("Có gọi đc ko")
 
     const response = await axios.get(
       `https://api.spotify.com/v1/browse/new-releases`,
@@ -13,7 +14,6 @@ const getAlbumsNewReleases = async (accessToken) => {
     );
 
     const albumsNewReleases = response.data;
-    console.log(albumsNewReleases)
     return {
       items: albumsNewReleases.albums.items.map((item) => ({
         id: item.id,

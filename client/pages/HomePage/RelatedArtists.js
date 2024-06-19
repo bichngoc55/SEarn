@@ -33,7 +33,7 @@ export default function RelatedArtist() {
     const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
     console.log(
       "new access token for spotify in new related artist screen: " +
-        accessToken
+      accessToken
     );
   }, [dispatch]);
 
@@ -57,7 +57,7 @@ export default function RelatedArtist() {
             .slice(0, 5);
         } else if (artistIds.length === 0) {
           const recommendations = await getTracksRecommendations(accessTokenForSpotify);
-          finalArtistList = recommendations.items.map(item => item.track.artists[0].id);
+          finalArtistList = recommendations.items.slice(0, 20).map(item => item.track.artists[0].id);
         }
         setArtistList(finalArtistList);
       } else {
@@ -87,7 +87,7 @@ export default function RelatedArtist() {
   
         setRelatedArtists(uniqueRelatedArtists);
       } else {
-        alert("Bạn chưa thích nghệ sĩ nào");
+        // alert("Bạn chưa thích nghệ sĩ nào");
       }
     } catch (error) {
       console.error("Error fetching related artists hehe:", error);

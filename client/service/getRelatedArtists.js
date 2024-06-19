@@ -13,7 +13,7 @@ const getRelatedArtists = async (accessToken, artistId) => {
 
     const relatedArtists = response.data;
     const limitedArtists = relatedArtists.artists
-      .slice(0, 10) // Giới hạn chỉ lấy 10 nghệ sĩ
+      .slice(0, 5) // Giới hạn chỉ lấy 10 nghệ sĩ
       .map((artist) => ({
         id: artist.id,
         name: artist.name,

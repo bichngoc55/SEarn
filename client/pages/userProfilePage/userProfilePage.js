@@ -283,7 +283,7 @@ export default function UserPage() {
           );
         }
       } else {
-        console.log("no access token");
+        // console.log("no access token");
       }
     };
 

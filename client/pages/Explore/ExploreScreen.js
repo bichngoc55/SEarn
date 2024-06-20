@@ -104,7 +104,7 @@ export default function ExploreScreen() {
             }}
             nestedScrollEnabled={true}
             style={styles.flatlistContainer}
-            ListFooterComponent={<View style={{ height: scale(60) }} />}
+            ListFooterComponent={<View style={{ height: scale(120) }} />}
           />
         ) : (
           <FlatList
@@ -117,7 +117,7 @@ export default function ExploreScreen() {
             }}
             nestedScrollEnabled={true}
             style={styles.flatlistContainer}
-            ListFooterComponent={<View style={{ height: scale(60) }} />}
+            ListFooterComponent={<View style={{ height: scale(120) }} />}
           />
         )}
       </View>

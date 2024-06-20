@@ -128,7 +128,7 @@ class AudioService {
   // }
 
   async playCurrentAudio() {
-    if (this.currentSound !== null) {
+    if (this.currentSound != null) {
       if (this.currentSound.sound != null) {
         try {
           await this.currentSound.sound.stopAsync();
@@ -139,11 +139,13 @@ class AudioService {
     }
 
     await this.loadSong();
+    console.log("phát 0");
     if (this.currentSound != null) {
       await this.currentSound.sound.setStatusAsync({
         shouldPlay: true,
         positionMillis: this.currentTime,
       });
+      console.log("phát");
 
       // Phát audio từ vị trí hiện tại
       if (this.currentTime) {

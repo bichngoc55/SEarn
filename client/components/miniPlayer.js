@@ -50,7 +50,7 @@ const MiniPlayer = () => {
     artists: "Not found artists",
   });
   const OpenPlaySong = async () => {
-    if (service.currentSong) {
+    if (service?.currentSong) {
       navigation.navigate("PlaySong", {
         song: service.currentSong,
       });
@@ -69,7 +69,7 @@ const MiniPlayer = () => {
             duration: 300,
             useNativeDriver: true,
           }).start(() => {
-            if (service.currentSound.sound != null) {
+            if (service?.currentSound?.sound != null) {
               service.currentSound.sound.stopAsync();
             }
             setIsVisible(false);
@@ -237,9 +237,8 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: "3%",
     paddingHorizontal: "6.48%",
-    paddingRight: "6.48%",
     width: "100%",
-    backgroundColor: "#2b2b2b",
+    backgroundColor: "rgba(30, 30, 30, 0.75)",
     borderRadius: scale(20),
     flexDirection: "row",
     alignItems: "center",

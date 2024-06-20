@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/images/logoSEarn.png",
         "backgroundColor": "#000000"
       },
       "permissions": ["android.permission.RECORD_AUDIO"],
@@ -39,5 +39,9 @@
         "projectId": "0c2a237d-0b9f-4b14-ba49-7c3e4dbc98fd"
       }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-1174542728096738~7133794419"
+
   }
 }

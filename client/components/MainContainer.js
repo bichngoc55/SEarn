@@ -37,7 +37,7 @@ import PlaylistDetailScreen from "../pages/Explore/PlaylistDetailScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import AddtoPlaylist from "./MenuOfPlaysong/AddToPlaylist";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
-import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
+// import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
 import MiniPlayer from "./miniPlayer";
 import scale from "../constant/responsive";
 const Stack = createNativeStackNavigator();
@@ -146,6 +146,10 @@ function UserStack() {
       />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
       <Stack.Screen name="publicPlaylist" component={PublicPlaylist} />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
+      />
     </Stack.Navigator>
   );
 }
@@ -323,5 +327,6 @@ const styles = StyleSheet.create({
     bottom: scale(60),
     left: 0,
     right: 0,
+    marginBottom: scale (5)
   },
 });

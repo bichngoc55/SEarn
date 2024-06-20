@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     marginRight: scale(10),
   },
   textName: {
-    fontFamily: "semibold",
+    fontFamily: "semiBold",
     color: "white",
     marginRight: scale(10),
   },

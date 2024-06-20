@@ -226,12 +226,12 @@ export default function NewsTab() {
                 input={item}
                 songList={tracksRecommendations}
                 onLikeUnlike={handleLikeUnlikeSong}
-                isLiked={likedSongList.includes(item.id)}
+                isLiked={likedSongList?.includes(item.id)}
               />
             );
           }}
           nestedScrollEnabled={true}
-          ListFooterComponent={<View style={{ height: scale(60) }} />}
+          ListFooterComponent={<View style={{ height: scale(120) }} />}
         />
       </GestureHandlerRootView>
     </SafeAreaView>

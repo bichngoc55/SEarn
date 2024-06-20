@@ -7,7 +7,7 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
     try {
       // console.log("hêhhe");
       const response = await axios.get(
-        "http://localhost:3005/auth/getAccessToken"
+        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/getAccessToken"
       );
 
       // console.log("response: " + JSON.stringify(response));

@@ -55,16 +55,19 @@ const PlaylistDetailMongo = ({ route }) => {
   };
   const handlePostComment = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:3005/comment/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: newComment,
-          userId: user?._id,
-        }),
-      });
+      const response = await fetch(
+        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/comment/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: newComment,
+            userId: user?._id,
+          }),
+        }
+      );
       const data = await response.json();
       setNewComment("");
       setSelectedCommentId(null);
@@ -76,17 +79,20 @@ const PlaylistDetailMongo = ({ route }) => {
 
   const handlePostResponse = async (commentId, responseContent) => {
     try {
-      const response = await fetch("http://10.0.2.2:3005/comment/response", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: responseContent,
-          userId: user._id,
-          commentId: commentId,
-        }),
-      });
+      const response = await fetch(
+        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/comment/response",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: responseContent,
+            userId: user._id,
+            commentId: commentId,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to post response");
@@ -123,7 +129,7 @@ const PlaylistDetailMongo = ({ route }) => {
     try {
       if (accessToken) {
         const response = await fetch(
-          `http://10.0.2.2:3005/playlists/${playlist._id}`,
+          `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/playlists/${playlist._id}`,
           {
             method: "GET",
             headers: {

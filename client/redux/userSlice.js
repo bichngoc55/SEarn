@@ -58,7 +58,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      //   console.log("Inside login user in user slice");
+      console.log("Inside login user in user slice");
       const response = await fetch("http://10.0.2.2:3005/auth/login", {
         method: "POST",
         headers: {
@@ -68,6 +68,7 @@ export const loginUser = createAsyncThunk(
       });
 
       if (!response.ok) {
+        r;
         const data = await response.json();
         if (data.msg === "User does not exist.") {
           throw new Error("User does not exist.");

@@ -47,7 +47,7 @@ const PlaylistPage = () => {
 
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch("http://localhost:3005/playlists/", {
+      const response = await fetch("http://10.0.2.2:3005/playlists/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -60,10 +60,12 @@ const PlaylistPage = () => {
 
       for (let i = 0; i < playlists.length; i++) {
         if (playlists[i].userIdOwner === user._id) {
+          console.log("goi playlist tu db: " + playlists[i]);
           filteredPlaylistshehe.push(playlists[i]);
         }
       }
       setPlaylists(filteredPlaylistshehe);
+      console.log("da vào fetchPlaylist");
     } catch (error) {}
   };
 

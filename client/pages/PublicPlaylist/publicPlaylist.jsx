@@ -156,7 +156,7 @@ const PublicPlaylist = () => {
   //   const handleShowToken = async () => {
   //     try {
   //       const response = await fetch(
-  //         `http://localhost:3005/auth/${userId}/coins`,
+  //         `http://10.0.2.2:3005/auth/${userId}/coins`,
   //         {
   //           method: "GET",
   //           headers: {

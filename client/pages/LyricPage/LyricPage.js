@@ -92,7 +92,7 @@ const LyricPage = ({ route }) => {
   const [liked, setLiked] = useState();
   const [likedSongList, setLikedSongList] = useState([]);
   const addToLikedSongs = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -106,7 +106,7 @@ const LyricPage = ({ route }) => {
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

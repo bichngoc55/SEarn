@@ -76,7 +76,7 @@ const ArtistDetailScreen = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -126,7 +126,7 @@ const ArtistDetailScreen = ({ route }) => {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedAlbums`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -140,7 +140,7 @@ const ArtistDetailScreen = ({ route }) => {
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeAlbum`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -165,7 +165,7 @@ const ArtistDetailScreen = ({ route }) => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -179,7 +179,7 @@ const ArtistDetailScreen = ({ route }) => {
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

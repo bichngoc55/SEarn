@@ -56,7 +56,7 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
   const MoveToPlaySong = async () => {
     let service = new AudioService();
     service.currentSong = input;
-    service.loadSong();
+    //service.loadSong();
     console.log(service.currentSong);
     service.currentPlaylist = songList;
     service.currentTime = 0;

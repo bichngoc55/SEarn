@@ -26,7 +26,7 @@ const EditPlaylistModal = ({ visible, onClose, playlist }) => {
     try {
       if (accessToken) {
         await axios.patch(
-          `http://localhost:3005/playlists/${playlist._id}`,
+          `http://10.0.2.2:3005/playlists/${playlist._id}`,
           {
             name,
             description,

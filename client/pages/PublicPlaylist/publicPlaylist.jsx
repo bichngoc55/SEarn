@@ -179,6 +179,7 @@
 //     console.log("Sorting...");
 //     const sortedPlaylist = [...renderedPlaylist];
 
+
 //     if (isDescending) {
 //       sortedPlaylist.sort((a, b) => a.numberOfLikes - b.numberOfLikes);
 //     } else {

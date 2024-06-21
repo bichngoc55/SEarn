@@ -11,15 +11,16 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
       );
 
       // console.log("response: " + JSON.stringify(response));
-      const { data } = await response;
+      const data = await response;
       // console.log("chay di ba noi: " + JSON.stringify(data));
+
       const { accessTokenForSpotify, expires_in } = data;
       // console.log("data cua spotify access token2: ");
       console.log("data cua spotify access token: " + accessTokenForSpotify);
       return { accessTokenForSpotify, expires_in };
       //       return response.data.accessToken;
     } catch (error) {
-      return rejectWithValue("error.response.data");
+      return rejectWithValue("error.response.data" + error.message);
     }
   }
 );
@@ -75,5 +76,6 @@ export const {
   fetchAccessTokenRequest,
   fetchAccessTokenSuccess,
   fetchAccessTokenFailure,
+  updateSpotifyAccessToken,
 } = accessTokenSlice.actions;
 export default accessTokenSlice.reducer;

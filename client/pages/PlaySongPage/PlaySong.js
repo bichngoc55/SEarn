@@ -120,7 +120,7 @@ const PlaySongPage = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          `http://10.0.2.2:3005/auth/${user?._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -140,7 +140,7 @@ const PlaySongPage = ({ route }) => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -154,7 +154,7 @@ const PlaySongPage = ({ route }) => {
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -312,22 +312,17 @@ const PlaySongPage = ({ route }) => {
           }}
         />
         {service.isPlay ? (
-          <View
-            style={styles.circle}
-            onPress={() => {
-              service.currentSound.sound.pauseAsync();
-              console.log(service.isPlay);
-              service.isPlay = false;
-            }}
-          >
+          <View style={styles.circle}>
             <FontAwesome5
               name="pause"
               size={scale(27)}
               color="black"
               onPress={() => {
-                service.currentSound.sound.pauseAsync();
-                console.log(service.isPlay);
-                service.isPlay = false;
+                if (service.currentSound.sound != null) {
+                  service.currentSound.sound.pauseAsync();
+                  console.log("dừng");
+                  service.isPlay = false;
+                } else console.log("sound dang null");
               }}
             />
           </View>
@@ -338,7 +333,7 @@ const PlaySongPage = ({ route }) => {
             color="#FED215"
             onPress={() => {
               service.currentSound.sound.playAsync();
-              console.log(service.isPlay);
+              console.log("phát");
               service.isPlay = true;
             }}
           />
@@ -419,7 +414,7 @@ const styles = StyleSheet.create({
   imageContain: {
     marginLeft: "5.1%",
     marginRight: "5.1%",
-    marginTop: "4.68%",
+    marginTop: "2.68%",
     borderRadius: 50,
     height: scale(350),
     backgroundColor: "white",

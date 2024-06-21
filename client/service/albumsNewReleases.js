@@ -24,8 +24,8 @@ const getAlbumsNewReleases = async (accessToken) => {
       })),
     };
   } catch (error) {
-    console.error("Error fetching albums new releases:", error);
-    throw error;
+    // console.error("Error fetching albums new releases:", error);
+    // throw error;
   }
 };
 

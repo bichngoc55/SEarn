@@ -84,7 +84,7 @@ const LikedSongPage = () => {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/addLikedSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const LikedSongPage = () => {
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(`http://localhost:3005/auth/${user._id}/unlikeSongs`, {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -25,8 +25,8 @@ const getAlbumTrack = async (accessToken, albumId) => {
       })),
     };
   } catch (error) {
-    console.error("Error fetching album's top tracks:", error);
-    throw error;
+    // console.error("Error fetching album's top tracks:", error);
+    // throw error;
   }
 };
 

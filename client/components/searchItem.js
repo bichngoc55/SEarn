@@ -45,7 +45,7 @@ const SearchItem = ({ input }) => {
         navigation.navigate("AlbumDetail", {
           album: albumData,
         });
-      } else alert("accessToken: " + accessTokenForSpotify);
+      }
     } catch (error) {
       console.error("Error fetching search album hehe:", error);
     }

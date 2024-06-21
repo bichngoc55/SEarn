@@ -22,7 +22,7 @@ const DeletePlaylistModal = ({ visible, onClose, playlist }) => {
   const DeletePlaylist = async () => {
     try {
       if (accessToken) {
-        await axios.delete(`http://localhost:3005/playlists/${playlist._id}`, {
+        await axios.delete(`http://10.0.2.2:3005/playlists/${playlist._id}`, {
           headers: {
             "Content-Type": "application/json",
             authorization: `Bearer ${accessToken}`,

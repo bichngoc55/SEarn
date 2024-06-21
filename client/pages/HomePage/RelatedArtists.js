@@ -14,11 +14,13 @@ import { useFocusEffect } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { useSelector, useDispatch } from "react-redux";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import { getRelatedArtists } from "../../service/getRelatedArtists";
 import ArtistItem from "../../components/artistItem";
 import { getLikedArtistList } from "../../service/getLikedArtistList";
 import { getTracksRecommendations } from "../../service/songsRecommendations";
+
 export default function RelatedArtist() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -29,13 +31,13 @@ export default function RelatedArtist() {
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
-  useEffect(() => {
-    const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
-    console.log(
-      "new access token for spotify in new related artist screen: " +
-      accessToken
-    );
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
+  //   // console.log(
+  //   //   "new access token for spotify in new related artist screen: " +
+  //   //     accessToken
+  //   // );
+  // }, [dispatch]);
 
   const [artistList, setArtistList] = useState([]);
   const [relatedArtists, setRelatedArtists] = useState([]);
@@ -46,10 +48,10 @@ export default function RelatedArtist() {
   const fetchArtistList = useCallback(async () => {
     try {
       if (accessToken) {
+        // const listLikedArtists = await user?.likedArtists
         const { listLikedArtists } = await getLikedArtistList(accessToken, user?._id);
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
-        setLikedArtistList(artistIds); // Lấy liked artists từ db
-  
+        setLikedArtistList(artistIds);
         let finalArtistList = artistIds;
         if (artistIds.length > 5) {
           finalArtistList = artistIds
@@ -59,6 +61,7 @@ export default function RelatedArtist() {
           const recommendations = await getTracksRecommendations(accessTokenForSpotify);
           finalArtistList = recommendations.items.slice(0, 20).map(item => item.track.artists[0].id);
         }
+
         setArtistList(finalArtistList);
       } else {
         alert("Chưa có accessToken");
@@ -76,7 +79,7 @@ export default function RelatedArtist() {
           getRelatedArtists(accessTokenForSpotify, artistId)
         );
         const relatedArtistsData = await Promise.all(artistPromises);
-  
+
         const allRelatedArtists = relatedArtistsData.flatMap(
           (data) => data.artists
         );
@@ -87,7 +90,7 @@ export default function RelatedArtist() {
   
         setRelatedArtists(uniqueRelatedArtists);
       } else {
-        // alert("Bạn chưa thích nghệ sĩ nào");
+        // alert("accessToken:" + accessTokenForSpotify);
       }
     } catch (error) {
       console.error("Error fetching related artists hehe:", error);
@@ -102,7 +105,7 @@ export default function RelatedArtist() {
       });
     }
   }, [isDataFetched, fetchArtistList, fetchRelatedArtists]);
-  
+
   useFocusEffect(
     useCallback(() => {
       if (!isDataFetched) {
@@ -148,15 +151,17 @@ export default function RelatedArtist() {
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
+  
   // Handle like/unlike action
   const handleLikeUnlike = async (artistId) => {
     if (likedArtistList.includes(artistId)) {
       await unlikeArtist(artistId);
       setLikedArtistList(likedArtistList.filter((id) => id !== artistId));
     } else {
-      await addToLikedArtists(artistId); 
+      await addToLikedArtists(artistId);
       setLikedArtistList([...likedArtistList, artistId]);
     }
+    // Cập nhật lại danh sách nghệ sĩ liên quan sau khi thay đổi trạng thái like/unlike
     fetchArtistList().then(() => {
       fetchRelatedArtists();
     });

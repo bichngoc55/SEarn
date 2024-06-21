@@ -89,7 +89,7 @@ export default function ExploreScreen() {
           style={{marginHorizontal: scale(10)}}
           color="#737373" 
         />
-        <TextInput placeholder="Search ..." value={searchText}
+        <TextInput placeholder="Search for artists, albums, songs" value={searchText}
           onChangeText={(text) => setSearchText(text)} // Cập nhật state khi có nhập liệu
         />
       </View>

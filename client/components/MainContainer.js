@@ -37,7 +37,7 @@ import PlaylistDetailScreen from "../pages/Explore/PlaylistDetailScreen";
 import LikedArtistTab from "../pages/FavoritePage/LikedArtistTab";
 import AddtoPlaylist from "./MenuOfPlaysong/AddToPlaylist";
 import LikedAlbumTab from "../pages/FavoritePage/LikedAlbumTab";
-// import PublicPlaylist from "../pages/PublicPlaylist/publicPlaylist";
+import PublicPlaylist from "../pages/HomePage/PublicPlaylist";
 import MiniPlayer from "./miniPlayer";
 import scale from "../constant/responsive";
 const Stack = createNativeStackNavigator();
@@ -59,8 +59,8 @@ function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="HomePage" component={HomePage} />
-      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
-      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen}/>
       <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
@@ -145,7 +145,6 @@ function UserStack() {
         component={TermsAndConditionsPage}
       />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyPage} />
-      <Stack.Screen name="publicPlaylist" component={PublicPlaylist} />
       <Stack.Screen
         name="PlaylistDetailMongo"
         component={PlaylistDetailMongo}

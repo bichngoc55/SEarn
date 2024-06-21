@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   View,
@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { COLOR } from "../../constant/color";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -24,10 +25,8 @@ export default function LikedArtistTab() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const accessToken = useSelector((state) => state.user.accessToken);
-  const { accessTokenForSpotify } = useSelector(
-    (state) => state.spotifyAccessToken
-  );
+  const{accessToken}   = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector((state) => state.spotifyAccessToken);
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
@@ -35,39 +34,52 @@ export default function LikedArtistTab() {
     dispatch(fetchSpotifyAccessToken());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (accessTokenForSpotify) {
-      //console.log("Access Token in useEffect artist:", accessTokenForSpotify);
-    }
-  }, [user, accessTokenForSpotify]);
+  // useEffect(() => {
+  //   if (accessTokenForSpotify) {
+  //     //console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+  //   }
+  // }, [user, accessTokenForSpotify]);
+  
   const [artistList, setArtistList] = useState([]);
   const [artists, setArtists] = useState([]);
   const [sortOrder, setSortOrder] = useState(0);
 
   //get liked artist list on db
-  useEffect(() => {
-    const fetchArtistList = async () => {
-      try {
-        if (accessToken) {
+  const [isFetching, setIsFetching] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+  
+      const fetchArtistList = async () => {
+        if (!accessToken) return;
+  
+        try {
+          setIsFetching(true);
           const { listLikedArtists } = await getLikedArtistList(
             accessToken,
-            user._id
+            user?._id
           );
-          // const artistIds = listLikedArtists.map(
-          //   (likedArtist) => likedArtist.id
-          // );
-          setArtistList(listLikedArtists);
-          // setArtistList(artistIds);
-        } else alert("Chưa có accessToken");
-      } catch (error) {
-        console.error("Error fetching artists:", error);
-      }
-    };
-
-    if (!artistList.length && accessToken && user?._id) {
+          if (isActive) {
+            setArtistList(listLikedArtists);
+          }
+        } catch (error) {
+          console.error("Error fetching artists:", error);
+          // Có thể thêm xử lý lỗi ở đây, ví dụ: hiển thị thông báo lỗi
+        } finally {
+          if (isActive) {
+            setIsFetching(false);
+          }
+        }
+      };
+  
       fetchArtistList();
-    }
-  }, [user?._id, accessToken]);
+  
+      return () => {
+        isActive = false;
+      };
+    }, [user?._id, accessToken])
+  );
 
   //get in4 of artist from Spotify
   useEffect(() => {
@@ -151,13 +163,24 @@ export default function LikedArtistTab() {
   };
   // Handle like/unlike action
   const handleLikeUnlike = async (artistId) => {
-    if (artistList.includes(artistId)) {
+    // Tìm nghệ sĩ trong danh sách `artistList`
+    const artist = artistList.find((a) => a.id === artistId);
+    if (artist) {
+      // Nếu nghệ sĩ đã được yêu thích, thực hiện hành động `unlike`
       await unlikeArtist(artistId);
-      setArtistList(artistList.filter((id) => id !== artistId));
+      // Cập nhật `artistList` và `artists`
+      setArtistList(artistList.filter((a) => a.id !== artistId));
+      setArtists(artists.filter((a) => a.id !== artistId));
     } else {
+      // Nếu nghệ sĩ chưa được yêu thích, thực hiện hành động `like`
       await addToLikedArtists(artistId);
       const timeAdded = new Date().toISOString();
-      setArtistList([...artistList, { id: artistId, timeAdded }]);
+      const newArtist = { id: artistId, timeAdded };
+      // Cập nhật `artistList` và `artists`
+      setArtistList([...artistList, newArtist]);
+      // Fetch lại thông tin nghệ sĩ từ Spotify và cập nhật `artists`
+      const artistData = await getArtist(accessTokenForSpotify, artistId);
+      setArtists([...artists, { ...artistData, timeAdded }]);
     }
   };
 
@@ -196,7 +219,7 @@ export default function LikedArtistTab() {
               />
             );
           }}
-          ListFooterComponent={<View style={{ height: scale(120) }} />}
+          ListFooterComponent={<View style={{ height: scale(190) }} />}
         />
       </View>
     </SafeAreaView>

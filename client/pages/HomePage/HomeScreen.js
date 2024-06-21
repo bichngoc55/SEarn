@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";import {
   ScrollView,
   StatusBar,
   Pressable,
+  Image
 } from "react-native";
 
 import scale from "../../constant/responsive";
@@ -27,35 +28,36 @@ const HomePage = () => {
 
   const [recentlyPlayingSong, setRecentlyPlayingSong] = useState();
 
-  // const MoveToPlaySong = async () => {
-  //   let service = new AudioService();
-  //   service.currentSong = input;
-  //   service.loadSong();
-  //   console.log(service.currentSong)
-  //   service.currentTime = 0;
-  //   service.playCurrentAudio();
-  //   service.isGetCoin = true;
-  //   console.log(service.currentSong);
-  //   navigation.navigate("PlaySong", {});
-  // };
+  const MoveToPlaySong = async () => {
+    let service = new AudioService();
+    service.currentSong = input;
+    service.loadSong();
+    console.log(service.currentSong)
+    service.currentTime = 0;
+    service.playCurrentAudio();
+    service.isGetCoin = true;
+    console.log(service.currentSong);
+    navigation.navigate("PlaySong", {});
+  };
 
-  // //get in4 recentlySong from spotify
-  // useEffect(() => {
-  //   const fetchRecentlyPlayingSong = async () => {
-  //     try {
-  //       if (accessTokenForSpotify) {
-  //         const song= await getTrack(accessTokenForSpotify, user.recentListeningSong);
-  //         console.log("nhìn nè",user.recentListeningSong)
-  //         setRecentlyPlayingSong(song);
-  //         console.log(song)
-  //       } else alert("Chưa có accessTokenForSpotify");
-  //     } catch (error) {
-  //       console.error("Error fetching recently playing song in HomeScreen:", error);
-  //     }
-  //   };
-
-  //   fetchRecentlyPlayingSong();
-  // }, [user?._id, accessTokenForSpotify]);
+  //get in4 recentlySong from spotify
+  useEffect(() => {
+    const fetchRecentlyPlayingSong = async () => {
+      console.log("inside fetch recent playing song inside home screen")
+      try {
+        if (accessTokenForSpotify) {
+          const song= await getTrack(accessTokenForSpotify, user?.recentListeningSong);
+          setRecentlyPlayingSong(song);
+          console.log(song)
+        } else alert("Chưa có accessTokenForSpotify");
+      } catch (error) {
+        console.error("Error fetching recently playing song in HomeScreen:", error);
+      }
+    };
+    if (accessTokenForSpotify && user?._id && user?.recentListeningSong) {
+      fetchRecentlyPlayingSong();
+    }
+  }, [user?._id, accessTokenForSpotify, user?.recentListeningSong]);
 
   const NewsTabScreen = () => (
     <View style={{ flex: 1 }}>
@@ -69,11 +71,11 @@ const HomePage = () => {
     </View>
   );
 
-  const PublicPlaylistScreen =() =>{
+  const PublicPlaylistScreen =() =>(
     <View style={{ flex: 1}}>
       <PublicPlaylist/>
     </View>
-  }
+  )
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "news", title: "News" },
@@ -129,13 +131,27 @@ const HomePage = () => {
         barStyle="light-content"
       />
       <View style={styles.recentSongContainer}>
-        <View style={{flexDirection: "column", marginHorizontal:scale(10),}}>
-          <Text>
-            {/* {recentlyPlayingSong.name} */}
-          </Text>
-        </View>
-        <View style={styles.circle}>
-        </View>
+        {recentlyPlayingSong ? (
+          <>
+            <View style={{ flexDirection: "column", marginHorizontal: scale(10) }}>
+              <Text style={styles.songName}>{recentlyPlayingSong?.name}</Text>
+              <Text style={styles.artistsName}>{recentlyPlayingSong?.artists.map((artist) => artist.name).join(", ")}{" "}</Text>
+            </View>
+            <Image
+              source={{ uri: recentlyPlayingSong?.album?.image }}
+              style={styles.circle}
+            />
+          </>
+        ) : (
+          <>
+            <View style={{ flexDirection: "column", marginHorizontal: scale(10), width:scale(170) }}>
+              <Text style={styles.artistsName}>Chưa có bài hát nào được phát gần đây</Text>
+            </View>
+            <View
+              style={styles.circle}
+            />
+          </>
+        )}
       </View>
       <TabView
           navigationState={{ index, routes }}
@@ -157,13 +173,15 @@ const styles = StyleSheet.create({
   recentSongContainer: {
     width:"100%",
     height: scale(200),
-    backgroundColor: "grey",
+    backgroundColor: "rgba(35, 35, 35, 0.75)",
     flexDirection:"row",
     alignItems:"center",
     justifyContent: "space-between",
     paddingHorizontal:scale(10),
     borderBottomLeftRadius: scale(20),
-    borderBottomRightRadius: scale(20)
+    borderBottomRightRadius: scale(20),
+    borderColor: COLOR.btnBackgroundColor,
+    borderBottomWidth: 1
   },
   circle: {
     width: scale(120),
@@ -174,6 +192,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  songName: {
+    fontSize: scale(17),
+    fontFamily: "semiBold",
+    color: COLOR.btnBackgroundColor,
+    marginBottom: scale(5)
+  },
+  artistsName:{
+    fontSize: scale(15),
+    fontFamily: "regular",
+    color: "white"
+  }
 });
 
 export default HomePage;

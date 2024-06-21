@@ -46,7 +46,7 @@ const MiniPlayer = () => {
 
   const [track, setTrack] = useState({
     title: "No playing track",
-    image: "https://i.scdn.co/image/ab67616d0000b273212f0300aefcb79b00d2a6cf",
+    image: require("../assets/images/logoSEarn.png"),
     artists: "Not found artists",
   });
   const OpenPlaySong = async () => {
@@ -121,9 +121,7 @@ const MiniPlayer = () => {
                   height: "100%",
                   borderRadius: scale(50),
                 }}
-                source={{
-                  uri: track.image,
-                }}
+                source={track.image}
               />
             )}
           </View>
@@ -238,7 +236,7 @@ const styles = StyleSheet.create({
     paddingVertical: "3%",
     paddingHorizontal: "6.48%",
     width: "100%",
-    backgroundColor: "rgba(30, 30, 30, 0.75)",
+    backgroundColor: "rgba(30, 30, 30, 0.85)",
     borderRadius: scale(20),
     flexDirection: "row",
     alignItems: "center",
@@ -254,14 +252,14 @@ const styles = StyleSheet.create({
   },
   songname: {
     color: "#FFFFFF",
-    fontFamily: "bold",
+    fontFamily: "semiBold",
     fontSize: scale(14),
     marginBottom: scale(5),
   },
   songartist: {
     color: "#FFFFFF",
-    fontFamily: "semiBold",
-    fontSize: scale(10),
+    fontFamily: "regular",
+    fontSize: scale(12),
   },
   circle: {
     width: scale(32),

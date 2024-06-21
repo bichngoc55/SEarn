@@ -49,9 +49,9 @@ const LyricPage = ({ route }) => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchSpotifyAccessToken());
+  // }, [dispatch]);
   useEffect(() => {
     getLyric();
     if (isFocused) {

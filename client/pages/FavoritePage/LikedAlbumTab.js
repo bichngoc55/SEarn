@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   View,
@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { COLOR } from "../../constant/color";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -31,15 +32,15 @@ export default function LikedAlbumTab() {
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchSpotifyAccessToken());
+  // }, [dispatch]);
 
-  useEffect(() => {
-    if (accessTokenForSpotify) {
-      //console.log("Access Token in useEffect album:", accessTokenForSpotify);
-    }
-  }, [user, accessTokenForSpotify]);
+  // useEffect(() => {
+  //   if (accessTokenForSpotify) {
+  //     //console.log("Access Token in useEffect album:", accessTokenForSpotify);
+  //   }
+  // }, [user, accessTokenForSpotify]);
 
   const [albumList, setAlbumList] = useState([]);
   const [albums, setAlbums] = useState([]);
@@ -50,34 +51,43 @@ export default function LikedAlbumTab() {
   };
 
   //get liked album list on db
-  useEffect(() => {
-    const fetchAlbumList = async () => {
-      try {
-        if (accessToken) {
-          const { listLikedAlbums } = await getLikedAlbumList(
-            accessToken,
-            user._id
-          );
-          // const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
+  const [isFetching, setIsFetching] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-          setAlbumList(listLikedAlbums);
-          // setAlbumList(albumIds);
-        } else alert("Chưa có accessToken");
-      } catch (error) {
-        console.error("Error fetching albums:", error);
-      }
-    };
+      const fetchAlbumList = async () => {
+        if (!accessToken) return;
 
-    fetchAlbumList();
-  }, [user?._id, accessToken]);
+        try {
+          setIsFetching(true);
+          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user?._id);
+          if (isActive) {
+            setAlbumList(listLikedAlbums);
+          }
+        } catch (error) {
+          console.error("Error fetching albums:", error);
+          // Có thể thêm xử lý lỗi ở đây, ví dụ: hiển thị thông báo lỗi
+        } finally {
+          if (isActive) {
+            setIsFetching(false);
+          }
+        }
+      };
+
+      fetchAlbumList();
+
+      return () => {
+        isActive = false;
+      };
+    }, [user?._id, accessToken])
+  );
+
   //Get in4 for albums
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
         if (accessTokenForSpotify) {
-          // const albumPromises = albumList.map((albumId) =>
-          //   getAlbum(accessTokenForSpotify, albumId)
-          // );
           const albumPromises = albumList.map((likedAlbum) =>
             getAlbum(accessTokenForSpotify, likedAlbum.id).then((album) => ({
               ...album,
@@ -93,7 +103,9 @@ export default function LikedAlbumTab() {
       }
     };
 
-    fetchAlbums();
+    if (accessTokenForSpotify) {
+      fetchAlbums();
+    }
   }, [accessTokenForSpotify, albumList]);
 
   // Sort albums based on sortOrder
@@ -163,10 +175,17 @@ export default function LikedAlbumTab() {
     if (album) {
       await unlikeAlbum(albumId);
       setAlbumList(albumList.filter((a) => a.id !== albumId));
+      setAlbums(albums.filter((a) => a.id !== albumId));
     } else {
       await addToLikedAlbums(albumId);
       const timeAdded = new Date().toISOString();
       setAlbumList([...albumList, { id: albumId, timeAdded }]);
+      const newAlbum = { id: albumId, timeAdded };
+      // Cập nhật `albumList` và `albums`
+      setAlbumList([...albumList, newAlbum]);
+      // Fetch lại thông tin nghệ sĩ từ Spotify và cập nhật `albums`
+      const albumData = await getAlbum(accessTokenForSpotify, albumId);
+      setAlbums([...albums, { ...albumData, timeAdded }]);
     }
   };
 

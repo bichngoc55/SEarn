@@ -13,12 +13,12 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
       // console.log("response: " + JSON.stringify(response));
       const data = await response;
       // console.log("chay di ba noi: " + JSON.stringify(data));
-      //   console.log("hêhhe");
+
       const { accessTokenForSpotify, expires_in } = data;
-      // // console.log("data cua spotify access token2: ");
-      // console.log("data cua spotify access token: " + accessToken);
-      dispatch(updateSpotifyAccessToken(data.accessTokenForSpotify));
-      return data.accessTokenForSpotify;
+      // console.log("data cua spotify access token2: ");
+      console.log("data cua spotify access token: " + accessTokenForSpotify);
+      return { accessTokenForSpotify, expires_in };
+      //       return response.data.accessToken;
     } catch (error) {
       return rejectWithValue("error.response.data" + error.message);
     }
@@ -58,12 +58,12 @@ const accessTokenSlice = createSlice({
       })
       .addCase(fetchSpotifyAccessToken.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessTokenForSpotify = action.payload;
+        state.accessTokenForSpotify = action.payload.accessTokenForSpotify;
         // console.log("action payload " + JSON.stringify(action.payload));
-        // console.log(
-        //   "trong fetch spotify access token fullfil : " +
-        //     state.accessTokenForSpotify
-        // );
+        console.log(
+          "trong fetch spotify access token fullfil : " +
+            state.accessTokenForSpotify
+        );
       })
       .addCase(fetchSpotifyAccessToken.rejected, (state, action) => {
         state.loading = false;

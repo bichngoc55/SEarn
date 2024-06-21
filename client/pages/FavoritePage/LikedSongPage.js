@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getTrack } from "../../service/songService";
 import { FontAwesome } from "@expo/vector-icons";
+import { getLikedSongList } from "../../service/getLikedSongList";
 import SongItem from "../../components/songItem";
 
 const LikedSongPage = () => {
@@ -29,30 +30,43 @@ const LikedSongPage = () => {
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
-  useEffect(() => {
-    if (accessTokenForSpotify) {
-      //console.log("Access Token in useEffect:", accessTokenForSpotify);
-    }
-  }, [user, accessTokenForSpotify]);
+  // useEffect(() => {
+  //   if (accessTokenForSpotify) {
+  //     //console.log("Access Token in useEffect:", accessTokenForSpotify);
+  //   }
+  // }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [searchText, setSearchText] = useState("");
 
+  //get liked song from db
   useEffect(() => {
+    const getLikedSong = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setSongList(likedSong);
+      } catch (error) {
+        alert("Error in likedsong: " + error);
+      }
+    };
     getLikedSong();
-  }, []);
+  }, [user?._id, accessToken]);
 
-  const getLikedSong = async () => {
-    try {
-      setSongList(user.likedSongs);
-    } catch (error) {
-      alert("Error in likedsong: " + error);
-    }
-  };
+  
   //get song's in4 from Spotify
   useEffect(() => {
     const fetchTracks = async () => {
-      dispatch(fetchSpotifyAccessToken());
+      // dispatch(fetchSpotifyAccessToken());
       try {
         const trackPromises = songList.map((songId) =>
           getTrack(accessTokenForSpotify, songId)
@@ -152,6 +166,7 @@ const LikedSongPage = () => {
           }}
           nestedScrollEnabled={true}
           style={[styles.flatlistContainer, { marginTop: "4%" }]}
+          ListFooterComponent={<View style={{ height: scale(190) }} />}
         />
       ) : (
         <>
@@ -183,6 +198,7 @@ const LikedSongPage = () => {
                   />
                 );
               }}
+              ListFooterComponent={<View style={{ height: scale(30) }} />}
             />
           </View>
         </>
@@ -194,16 +210,14 @@ const LikedSongPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    height: "100%",
     backgroundColor: "#1C1B1B",
+    marginTop: scale(20)
   },
   scrollView: {
     flex: 1,
   },
   headerL: {
-    marginLeft: "5.1%",
-    marginRight: "5.1%",
+    marginHorizontal: "5.1%",
     height: scale(35),
     alignItems: "center",
     marginTop: "2.68%",
@@ -253,7 +267,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#FFFFFF",
-    fontFamily: "semibold",
+    fontFamily: "semiBold",
   },
   flatlistContainer: {
     marginLeft: "5.1%",

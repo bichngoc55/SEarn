@@ -31,9 +31,9 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchSpotifyAccessToken());
+  // }, [dispatch]);
 
   const { mediaPlayer } = useSelector((state) => state.mediaPlayer);
   const {

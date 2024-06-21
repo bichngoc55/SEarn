@@ -35,18 +35,27 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const loginError = useSelector((state) => state.user.error);
+  const { accessTokenForSpotify } = useSelector((state) => state.spotifyAccessToken);
   const { accessToken } = useSelector((state) => state.user);
   const handleSubmit = async (values) => {
     try {
       // console.log(values);
       await dispatch(loginUser(values));
-      await dispatch(fetchSpotifyAccessToken());
-
+        await dispatch(fetchSpotifyAccessToken());
+       
       if (accessToken) {
         navigation.navigate("BottomBar");
+        console.log("access token for user l1 trong login: ", accessToken);
       } else {
         // console.error("Login error:", error);
       }
+      if(accessTokenForSpotify)
+        {
+          console.log("co access token cho spotify r : ", accessTokenForSpotify);
+        }
+        else {
+          console.log(" co cai l : ", accessTokenForSpotify);
+        }
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -69,7 +78,7 @@ export default function LoginScreen({ navigation }) {
             resizeMode="contain"
           />
 
-          <Text style={styles.registerText}>Sign In</Text>
+          <Text style={styles.loginText}>Sign In</Text>
 
           <Formik
             initialValues={{ email: "", password: "" }}
@@ -163,29 +172,30 @@ const styles = StyleSheet.create({
     width: scale(35),
     height: scale(35),
     borderRadius:scale(100),
-    backgroundColor: "lightgray",
+    backgroundColor: "rgba(211, 211, 211, 0.8)",
     justifyContent: "center",
     alignItems: "center",
   },
   backButtonIcon: {
     width: scale(25),
     height: scale(25),
-    marginLeft: scale(10),
   },
   content: {
     flex: 1,
     alignItems: "center",
+    marginTop:scale(30),
     paddingHorizontal: scale(24),
   },
   logo: {
-    marginVertical: scale(10),
+    marginVertical: scale(20),
     width: scale(208),
     height: scale(150),
   },
-  registerText: {
+  loginText: {
     fontSize: 30,
     color: COLOR.textPrimaryColor,
     marginBottom: 10,
+    fontFamily:"semiBold"
   },
   errorMessage: {
     color: "red",

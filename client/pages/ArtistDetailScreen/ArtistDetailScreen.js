@@ -63,7 +63,7 @@ const ArtistDetailScreen = ({ route }) => {
           );
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
-        } else alert("Chưa có accessToken");
+        }
       } catch (error) {
         console.error("Error fetching liked albums:", error);
       }

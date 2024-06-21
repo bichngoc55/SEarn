@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   View,
@@ -61,7 +61,10 @@ export default function LikedAlbumTab() {
 
         try {
           setIsFetching(true);
-          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user?._id);
+          const { listLikedAlbums } = await getLikedAlbumList(
+            accessToken,
+            user?._id
+          );
           if (isActive) {
             setAlbumList(listLikedAlbums);
           }

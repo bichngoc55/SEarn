@@ -27,6 +27,8 @@ import { getTrack } from "../../service/songService";
 import SongItem from "../../components/songItem";
 import MenuOfPlaylist from "../../components/menuOfPlaylist";
 import { ScrollView } from "react-native-gesture-handler";
+import { SwipeListView } from "react-native-swipe-list-view";
+import axios from "axios";
 
 const PlaylistDetailMongo = ({ route }) => {
   const { playlist } = route.params;
@@ -37,6 +39,7 @@ const PlaylistDetailMongo = ({ route }) => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
+
   const [tracks, setTracks] = useState([]);
   const [isPublic, setIsPublic] = useState(playlist.privacyOrPublic);
   const [name, setName] = useState(playlist.name);
@@ -230,8 +233,49 @@ const PlaylistDetailMongo = ({ route }) => {
         setName(playlistDetail.name);
         setDescription(playlistDetail.description);
         setIsPublic(playlistDetail.privacyOrPublic);
-      } else alert("Chưa có accessToken");
+      }
     } catch (error) {}
+  };
+  const renderItem = (data) => <SongItem input={data.item} songList={tracks} />;
+  const renderHiddenItem = (data) => (
+    <View style={styles.rowBack}>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnRight]}
+        onPress={() => updateDeleteFromPlaylist(data.item.id)}
+      >
+        <View style={styles.deleteButtonContainer}>
+          <Text style={styles.backTextWhite}>Xóa</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+  const updateDeleteFromPlaylist = async (songIdInput) => {
+    try {
+      if (accessToken) {
+        const updatedSongs = playlist.songs.filter(
+          (songId) => songId !== songIdInput
+        );
+        const newCount = playlist.songCount - 1;
+        await axios.patch(
+          `http://10.0.2.2:3005/playlists/${playlist._id}`,
+          {
+            songs: updatedSongs,
+            songCounts: newCount,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log("Success");
+        setTracks(tracks.filter((track) => track.id !== songIdInput));
+        //showToastDelete();
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -271,7 +315,7 @@ const PlaylistDetailMongo = ({ route }) => {
           <Text style={styles.textDes}>{description}</Text>
           <View style={styles.follow_and_song}>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.textName}>{playlist.songCount}</Text>
+              <Text style={styles.textName}>{tracks.length}</Text>
               <Text style={styles.textDes}>Songs</Text>
             </View>
             <View style={{ alignItems: "center" }}>
@@ -290,12 +334,19 @@ const PlaylistDetailMongo = ({ route }) => {
         </View>
         {/* hehe */}
         <ScrollView style={styles.flatlistContainer}>
-          <FlatList
+          {/* <FlatList
             data={tracks}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
               return <SongItem input={item} songList={tracks} />;
             }}
+          /> */}
+          <SwipeListView
+            data={tracks}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            rightOpenValue={-75}
+            keyExtractor={(item) => item.id}
           />
           <View style={styles.commentContainer}>
             <View style={styles.commentPost}>
@@ -422,6 +473,36 @@ const styles = StyleSheet.create({
     color: "grey",
     alignItems: "center",
     width: "100%",
+  },
+  rowBack: {
+    alignItems: "center",
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    paddingRight: 15,
+  },
+  backRightBtn: {
+    alignItems: "center",
+    bottom: "5%",
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    width: 75,
+  },
+  backRightBtnRight: {
+    right: 0,
+  },
+  deleteButtonContainer: {
+    backgroundColor: "red",
+    borderRadius: 10,
+    width: "80%",
+    height: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  backTextWhite: {
+    color: "#FFF",
+    textAlign: "center",
   },
 });
 export default PlaylistDetailMongo;

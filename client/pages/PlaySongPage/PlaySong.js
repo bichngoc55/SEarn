@@ -37,6 +37,8 @@ import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import MenuOfPlaysong from "../../components/MenuOfPlaysong/MenuOfPlaysong";
 import AudioService from "../../service/audioService";
+import { SelectList } from "react-native-dropdown-select-list";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const PlaySongPage = ({ route }) => {
   const { song } = route.params;
@@ -54,28 +56,32 @@ const PlaySongPage = ({ route }) => {
   const isFocused = useIsFocused();
   const snapPoints = ["50%", "100%"];
   let bottomSheetRef = useRef(null);
- 
-  const { accessTokenForSpotify } = useSelector((state) => state.spotifyAccessToken);
+  const [selected, setSelected] = useState("1.0x");
+
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
+  const speed = [
+    { key: "1", value: "0.5x" },
+    { key: "2", value: "1.0x" },
+    { key: "3", value: "1.5x" },
+    { key: "4", value: "2.0x" },
+  ];
+  const handleSelect = (val) => {
+    setSelected(val);
+  };
 
   // useEffect(() => {
   //   dispatch(fetchSpotifyAccessToken());
   // }, [dispatch]);
 
   useEffect(() => {
-    if (isFocused) {
-      const handlePlaybackStatus = ({ progress, total }) => {
-        setProgress(progress);
-        setTotal(total);
-      };
-      service.registerPlaybackStatusCallback(handlePlaybackStatus);
-    }
-
-    // const intervalId = setInterval(
-    //   handlePlaybackStatus({ progress, total }),
-    //   1000
-    // );
-    return () => {};
-  }, [service.currentTime]);
+    const handlePlaybackStatus = ({ progress, total }) => {
+      setProgress(progress);
+      setTotal(total);
+    };
+    service.registerPlaybackStatusCallback(handlePlaybackStatus);
+  }, [service.currentTime, service.currentSong]);
 
   const formatTime = (timeInMillis) => {
     const totalSeconds = Math.floor(timeInMillis / 1000);
@@ -252,14 +258,43 @@ const PlaySongPage = ({ route }) => {
             ))}
           </Text>
         </View>
-        <TouchableOpacity onPress={handleLike}>
-          <Ionicons
-            style={styles.heartBtn}
-            name={liked ? "heart" : "heart-outline"}
-            size={scale(30)}
-            color="#FED215"
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity onPress={handleLike}>
+            <Ionicons
+              style={styles.heartBtn}
+              name={liked ? "heart" : "heart-outline"}
+              size={scale(30)}
+              color="#FED215"
+            />
+          </TouchableOpacity>
+          <SelectList
+            setSelected={(value) => {
+              setSelected(value);
+              console.log(value);
+            }}
+            onSelect={() => console.log("onSelect called")}
+            placeholder={selected}
+            data={speed}
+            save="value"
+            search={false}
+            style={{ zIndex: 5, position: "absolute" }}
+            dropdownStyles={{
+              backgroundColor: "#1B1B1B",
+              elevation: 5,
+              color: "white",
+              marginTop: scale(40),
+              position: "absolute",
+              zIndex: 5,
+            }}
+            dropdownTextStyles={{ color: "white" }}
+            boxStyles={{
+              color: "white",
+              placeholderTextColor: "white",
+              backgroundColor: "rgba(130, 130, 130, 0.85)",
+              zIndex: 1,
+            }}
           />
-        </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.headerL}>
         <Slider
@@ -318,11 +353,10 @@ const PlaySongPage = ({ route }) => {
               size={scale(27)}
               color="black"
               onPress={() => {
-                if (service.currentSound.sound != null) {
-                  service.currentSound.sound.pauseAsync();
-                  console.log("dừng");
-                  service.isPlay = false;
-                } else console.log("sound dang null");
+                service.currentSound.sound.pauseAsync();
+                console.log("dừng");
+                service.isPlay = false;
+                console.log(service.isPlay);
               }}
             />
           </View>
@@ -403,6 +437,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: "2.68%",
     flexDirection: "row",
+    zIndex: 1,
   },
   headerText: {
     color: "#FFFFFF",
@@ -445,6 +480,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    zIndex: 1,
   },
   bottomContain: {
     alignItems: "center",

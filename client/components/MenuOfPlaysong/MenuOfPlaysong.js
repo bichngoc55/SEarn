@@ -80,8 +80,7 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
     setIsOpenUpcoming(true);
   }
   function handleAddToPlaylistClose() {
-    setIsOpen(false);
-    setShowOverlay(false);
+    onClose();
   }
   function handleUpcomingClose() {
     setIsOpenUpcoming(false);
@@ -118,6 +117,7 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
     }
   };
   const handleCloseBottomSheet = () => {
+    onClose();
     setIsOpen(false);
     setShowOverlay(false);
   };
@@ -196,7 +196,9 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
             >
               <Upcoming onClose={() => handleUpcomingClose()} />
             </BottomSheetModal>
-          ) : (
+          ) : null}
+          {/* {showOverlay ? <View style={styles.overlay} /> : null} */}
+          {!isOpenUpcoming && !isOpen ? (
             <Modal
               visible={visible}
               animationType="slide"
@@ -299,8 +301,7 @@ const MenuOfPlaysong = ({ visible, onClose, song }) => {
                 </View>
               </View>
             </Modal>
-          )}
-          {/* {showOverlay ? <View style={styles.overlay} /> : null} */}
+          ) : null}
           {isOpen ? (
             <BottomSheetModal
               ref={bottomSheetRef}

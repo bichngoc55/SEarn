@@ -31,6 +31,7 @@ import { ScrollView } from "react-native-gesture-handler";
 const PlaylistDetailMongo = ({ route }) => {
   const { playlist } = route.params;
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
@@ -61,19 +62,16 @@ const PlaylistDetailMongo = ({ route }) => {
   };
   const handlePostComment = async () => {
     try {
-      const response = await fetch(
-        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/comment/add",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: newComment,
-            userId: user?._id,
-          }),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:3005/comment/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: newComment,
+          userId: user?._id,
+        }),
+      });
       const data = await response.json();
       // console.log("id ne: ", data._id);
       // console.log(
@@ -194,26 +192,29 @@ const PlaylistDetailMongo = ({ route }) => {
   };
 
   useEffect(() => {
-    const fetchTracks = async () => {
-      try {
-        const trackPromises = playlist.songs.map((songId) =>
-          getTrack(accessTokenForSpotify, songId)
-        );
-        const trackData = await Promise.all(trackPromises);
-        trackData.forEach((track) => {});
-        setTracks(trackData);
-      } catch (error) {}
-    };
-    getPlaylistDetails();
-    fetchTracks();
-  }, [accessTokenForSpotify, songList]);
+    if (isFocused) {
+      console.log("playlist is focused");
+      getPlaylistDetails();
+      fetchTracks();
+    }
+  }, [isFocused]);
+  const fetchTracks = async () => {
+    try {
+      const trackPromises = playlist.songs.map((songId) =>
+        getTrack(accessTokenForSpotify, songId)
+      );
+      const trackData = await Promise.all(trackPromises);
+      trackData.forEach((track) => {});
+      setTracks(trackData);
+    } catch (error) {}
+  };
 
   const getPlaylistDetails = async () => {
     // setIsLoading(true);
     try {
       if (accessToken) {
         const response = await fetch(
-          `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/playlists/${playlist._id}`,
+          `http://10.0.2.2:3005/playlists/${playlist._id}`,
           {
             method: "GET",
             headers: {

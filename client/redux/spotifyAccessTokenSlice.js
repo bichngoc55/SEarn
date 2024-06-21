@@ -7,26 +7,26 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
     try {
       // console.log("hêhhe");
       const response = await axios.get(
-        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/getAccessToken"
+        "http://10.0.2.2:3005/auth/getAccessToken"
       );
 
       // console.log("response: " + JSON.stringify(response));
-      const { data } = await response;
+      const data = await response;
       // console.log("chay di ba noi: " + JSON.stringify(data));
       //   console.log("hêhhe");
-      const { accessToken, expires_in } = data;
+      const { accessTokenForSpotify, expires_in } = data;
       // // console.log("data cua spotify access token2: ");
       // console.log("data cua spotify access token: " + accessToken);
-      return { accessToken, expires_in };
-      //       return response.data.accessToken;
+      dispatch(updateSpotifyAccessToken(data.accessTokenForSpotify));
+      return data.accessTokenForSpotify;
     } catch (error) {
-      return rejectWithValue("error.response.data");
+      return rejectWithValue("error.response.data" + error.message);
     }
   }
 );
 
 const accessTokenSlice = createSlice({
-  name: "accessToken",
+  name: "accessTokenForSpotify",
   initialState: {
     accessTokenForSpotify: null,
     loading: false,
@@ -58,7 +58,7 @@ const accessTokenSlice = createSlice({
       })
       .addCase(fetchSpotifyAccessToken.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessTokenForSpotify = action.payload.accessToken;
+        state.accessTokenForSpotify = action.payload;
         // console.log("action payload " + JSON.stringify(action.payload));
         // console.log(
         //   "trong fetch spotify access token fullfil : " +
@@ -76,5 +76,6 @@ export const {
   fetchAccessTokenRequest,
   fetchAccessTokenSuccess,
   fetchAccessTokenFailure,
+  updateSpotifyAccessToken,
 } = accessTokenSlice.actions;
 export default accessTokenSlice.reducer;

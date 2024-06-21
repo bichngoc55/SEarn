@@ -64,21 +64,14 @@ export default function UserPage() {
   //   try {
   //     console.log("Insidd make authenticate ");
   //     console.log("Data being sent:", JSON.stringify(data, null, 2));
-  //     console.log("Data being sent: " + data);
-  //     const newaccessToken = await AsyncStorage.getItem("userToken");
-  //     // const url2 = `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${endpoint}`;
-  //     // console.log("url2: " + url2);
-  //     // console.log(
-  //     //   "access token vs new access token : ",
-  //     //   accessToken + " " + newaccessToken
-  //     // );
+  //     // console.log("avatar : " + JSON.stringifydata.avatar);
   //     const response = await axios({
-  //       method: method,
-  //       url: `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${endpoint}`,
+  //       method: method, // 'PATCH' for updates
+  //       url: `http://10.0.2.2:3005/auth/${user._id}/${endpoint}`,
   //       data: data,
   //       headers: {
-  //         authorization: `Bearer ${newaccessToken}`,
-  //         "content-type": "multipart/form-data",
+  //         authorization: `Bearer ${accessToken}`,
+  //         "Content-Type": "multipart/form-data",
   //       },
   //     });
 
@@ -87,72 +80,6 @@ export default function UserPage() {
   //     console.error(`Error updating ${endpoint}:`, error);
   //   }
   // };
-
-  // const pickImage = async (type) => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   console.log(result);
-
-  //   if (!result.canceled) {
-  //     console.log("Image picked successfully:", result.assets[0].uri);
-  //     const imageUri = result.assets[0].uri;
-  //     const imageName = imageUri.substring(imageUri.lastIndexOf("/") + 1);
-  //     const imageType = imageUri.substring(imageUri.lastIndexOf(".") + 1);
-
-  //     if (type === "avatar") {
-  //       setImage(imageUri);
-  //     } else if (type === "backgroundImage") {
-  //       setbackgroundImage(imageUri);
-  //     }
-
-  //     const formData = new FormData();
-  //     console.log("den day r");
-  //     const sendRequest = async () => {
-  //       if (type === "avatar") {
-  //         formData.append("avatar", {
-  //           uri: imageUri,
-  //           type: `image/${imageType}`,
-  //           name: imageName,
-  //         });
-  //         await makeAuthenticatedRequest("PATCH", "ava", formData);
-  //       } else if (type === "backgroundImage") {
-  //         formData.append("backgroundImage", {
-  //           uri: imageUri,
-  //           type: `image/${imageType}`,
-  //           name: imageName,
-  //         });
-  //         await makeAuthenticatedRequest("PATCH", "backgroundImage", formData);
-  //       }
-  //     };
-
-  //     await sendRequest();
-  //   }
-  // };
-  const makeAuthenticatedRequest = async (method, endpoint, data) => {
-    try {
-      console.log("Insidd make authenticate ");
-      console.log("Data being sent:", JSON.stringify(data, null, 2));
-      // console.log("avatar : " + JSON.stringifydata.avatar);
-      const response = await axios({
-        method: method, // 'PATCH' for updates
-        url: `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/${endpoint}`,
-        data: data,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.error(`Error updating ${endpoint}:`, error);
-    }
-  };
 
   const pickImage = async (type) => {
     // try {
@@ -170,75 +97,60 @@ export default function UserPage() {
 
     console.log("image " + result.assets[0].uri);
     if (!result.canceled) {
-      await uploadImageToServer(result.assets[0]);
+      const newFile = {
+        uri: result.assets[0].uri,
+        type: `test/${result.assets[0].uri.split(".").pop()}`,
+        name: `${user._id}`,
+      };
+      if (type === "ava") {
+        setImage(result.assets[0].uri);
+      } else setbackgroundImage(result.assets[0].uri);
+
+      const data = new FormData();
+      data.append("file", newFile);
+      data.append("upload_preset", "Searn-musicapp");
+      data.append("cloud_name", "dzdso60ms");
+      await fetch("https://api.cloudinary.com/v1_1/dzdso60ms/image/upload", {
+        method: "POST",
+        body: data,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (type === "ava") {
+            updatedUserAva(data.url);
+          } else updatedUserBackgroundImage(data.url);
+        });
     }
-    // if (!result.canceled) {
-    //   const imageUri = result.assets[0].uri;
-    //   const imageName = imageUri.substring(imageUri.lastIndexOf("/") + 1);
-    //   const imageType = imageUri.substring(imageUri.lastIndexOf(".") + 1);
-    //   // console.log("result uri : " + result.uri);
-    //   if (type === "avatar") {
-    //     setImage(imageUri);
-    //   } else if (type === "backgroundImage") {
-    //     setbackgroundImage(imageUri);
-    //   }
-
-    //   const formData = new FormData();
-
-    //   if (type === "avatar") {
-    //     formData.append("file", result.assets[0]);
-    //     axios
-    //       .post(
-    //         "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/upload",
-    //         formData
-    //       )
-    //       .then((res) => {
-    //         console.log(res);
-    //       });
-    //     // formData.append("avatar", {
-    //     //   uri: imageUri,
-    //     //   name: imageName,
-    //     //   type: `image/${imageType}`,
-    //     // });
-    //     // console.log("behind formData");
-    //     //await makeAuthenticatedRequest("PATCH", "ava", formData);
-    //   } else if (type === "backgroundImage") {
-    //     formData.append("backgroundImage", {
-    //       uri: imageUri,
-    //       name: imageName,
-    //       type: `image/${imageType}`,
-    //     });
-    //     console.log("o day r");
-    //     await makeAuthenticatedRequest("PATCH", "backgroundImage", formData);
-    //     console.log("o day r");
-    //   }
-    // }
   };
-  const uploadImageToServer = async (image) => {
-    console.log("upload image to server");
+  const updatedUserAva = async (url) => {
     try {
-      const formData = new FormData();
-      formData.append("avatar", {
-        uri: image.uri,
-        type: image.type,
-        name: `${user.id}.png`,
+      await axios({
+        method: "PATCH",
+        url: `http://10.0.2.2:3005/auth/${user._id}/ava`,
+        data: { ava: url },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-
-      await axios.post(
-        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      console.log("Image uploaded successfully");
-    } catch (error) {
-      console.error("Error uploading image:", error);
+    } catch (e) {
+      console.log(e);
     }
   };
+  const updatedUserBackgroundImage = async (url) => {
+    try {
+      await axios({
+        method: "PATCH",
+        url: `http://10.0.2.2:3005/auth/${user._id}/backgroundImage`,
+        data: { url: url },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     let intervalId;
 
@@ -304,7 +216,7 @@ export default function UserPage() {
       console.log("name : " + name);
       await axios({
         method: "PATCH",
-        url: `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/name`,
+        url: `http://10.0.2.2:3005/auth/${user._id}/name`,
         data: { name },
         headers: {
           "Content-Type": "application/json",
@@ -331,7 +243,7 @@ export default function UserPage() {
     try {
       // console.log("content + email : ", feedback + user.email);
       const response = await axios.patch(
-        `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/report/${user._id}/addReport`,
+        `http://10.0.2.2:3005/report/${user._id}/addReport`,
         {
           content: feedback,
           email: user.email,

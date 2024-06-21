@@ -30,16 +30,13 @@ export const refreshAccessToken = createAsyncThunk(
         throw new Error("Refresh token is missing");
       }
 
-      const response = await fetch(
-        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/refresh",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refreshToken }),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:3005/auth/refresh", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to refresh access token");
@@ -62,18 +59,16 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       console.log("Inside login user in user slice");
-      const response = await fetch(
-        "https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(credentials),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:3005/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
 
       if (!response.ok) {
+        r;
         const data = await response.json();
         if (data.msg === "User does not exist.") {
           throw new Error("User does not exist.");

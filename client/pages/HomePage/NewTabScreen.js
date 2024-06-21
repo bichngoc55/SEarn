@@ -31,27 +31,24 @@ export default function NewsTab() {
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
-  useEffect(() => {
-    const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
-    console.log(
-      "new access token for spotify in new tab screen: " + accessToken
-    );
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const { accessToken, expires_in } = dispatch(fetchSpotifyAccessToken());
+  //   // console.log(
+  //   //   "new access token for spotify in new tab screen: " + accessToken
+  //   // );
+  // }, [dispatch]);
 
   const [albumsNewReleases, setAlbumsNewReleases] = useState([]);
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
   const [likedAlbumList, setLikedAlbumList] = useState([]);
   const [likedSongList, setLikedSongList] = useState([]);
 
-  //get liked album list on db
+  // get liked album list on db
   useEffect(() => {
-    const fetchAlbumList = async () => {
+    const getAlbumList = async () => {
       try {
         if (accessToken) {
-          const { listLikedAlbums } = await getLikedAlbumList(
-            accessToken,
-            user._id
-          );
+          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user?._id);
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
         } else alert("Chưa có accessToken");
@@ -60,14 +57,24 @@ export default function NewsTab() {
       }
     };
 
-    fetchAlbumList();
+    getAlbumList();
   }, [user?._id, accessToken]);
 
-  //get liked song from db
   useEffect(() => {
     const getLikedSong = async () => {
       try {
-        setLikedSongList(user.likedSongs);
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setLikedSongList(likedSong);
       } catch (error) {
         alert("Error in likedsong: " + error);
       }
@@ -91,7 +98,7 @@ export default function NewsTab() {
           const tracksData = await Promise.all(tracksPromises);
           setTracksRecommendations(tracksData);
         } else {
-          alert("accessToken:" + accessTokenForSpotify);
+          // alert("accessToken:" + accessTokenForSpotify);
         }
       } catch (error) {
         console.error("Error fetching tracks recommendations hehe:", error);
@@ -171,7 +178,7 @@ export default function NewsTab() {
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {
       await unlikeSong(songId);
-      setSongList(likedSongList.filter((id) => id !== songId));
+      setLikedSongList(likedSongList.filter((id) => id !== songId));
     } else {
       await addToLikedSongs(songId);
       setLikedSongList([...likedSongList, songId]);
@@ -219,7 +226,7 @@ export default function NewsTab() {
             );
           }}
           nestedScrollEnabled={true}
-          ListFooterComponent={<View style={{ height: scale(120) }} />}
+          ListFooterComponent={<View style={{ height: scale(60) }} />}
         />
       </GestureHandlerRootView>
     </SafeAreaView>

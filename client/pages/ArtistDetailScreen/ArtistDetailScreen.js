@@ -38,15 +38,15 @@ const ArtistDetailScreen = ({ route }) => {
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchSpotifyAccessToken());
+  // }, [dispatch]);
 
-  useEffect(() => {
-    if (accessTokenForSpotify) {
-      //console.log("Access Token in useEffect artist:", accessTokenForSpotify);
-    }
-  }, [user, accessTokenForSpotify]);
+  // useEffect(() => {
+  //   if (accessTokenForSpotify) {
+  //     //console.log("Access Token in useEffect artist:", accessTokenForSpotify);
+  //   }
+  // }, [user, accessTokenForSpotify]);
   const [artistAlbums, setArtistAlbums] = useState([]);
   const [artistSongs, setArtistSongs] = useState([]);
   const [likedAlbumList, setLikedAlbumList] = useState([]);
@@ -76,7 +76,7 @@ const ArtistDetailScreen = ({ route }) => {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3005/auth/${user._id}/getLikedSongs`,
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     width: scale(35),
     height: scale(35),
     borderRadius: scale(100),
-    backgroundColor: "lightgray",
+    backgroundColor: "rgba(211, 211, 211, 0.8)",
     justifyContent: "center",
     alignItems: "center",
   },

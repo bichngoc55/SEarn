@@ -30,6 +30,7 @@ const ArtistItem = ({ input, onLikeUnlike, isLiked }) => {
     onLikeUnlike(input.id);
     setLiked(!liked);
   };
+
   return (
     <TouchableOpacity
       style={styles.albumContainer}
@@ -42,7 +43,7 @@ const ArtistItem = ({ input, onLikeUnlike, isLiked }) => {
       <TouchableOpacity onPress={handleLike}>
         <Ionicons
           style={styles.heartBtn}
-          name={isLiked ? "heart" : "heart-outline"}
+          name={liked ? "heart" : "heart-outline"}
           size={scale(25)}
           color="#FED215"
         />

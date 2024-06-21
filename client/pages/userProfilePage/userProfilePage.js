@@ -312,7 +312,7 @@ export default function UserPage() {
     }
   };
   const handlePublicPlaylist = async () => {
-    navigation.navigate("publicPlaylist");
+    // navigation.navigate("publicPlaylist");
   };
   return (
     <BlurView intensity={isModalOpen ? 80 : 0} style={{ flex: 1 }}>
@@ -354,7 +354,7 @@ export default function UserPage() {
           <TouchableOpacity style={styles.editNameButton}>
             <AntDesign
               name="edit"
-              size={24}
+              size={22}
               color="white"
               onPress={handleChangeName}
             />
@@ -367,7 +367,7 @@ export default function UserPage() {
             style={styles.itemContainer}
             onPress={handlePasswordChange}
           >
-            <MaterialIcons name="password" size={24} color="white" />
+            <MaterialIcons name="password" size={22} color="white" />
             <Text style={styles.itemText}>Password settings</Text>
           </TouchableOpacity>
           {/* publicPlaylist */}
@@ -375,17 +375,17 @@ export default function UserPage() {
             style={styles.itemContainer}
             onPress={handlePublicPlaylist}
           >
-            <MaterialIcons name="password" size={24} color="white" />
+            <MaterialIcons name="password" size={22} color="white" />
             <Text style={styles.itemText}>Public Playlist</Text>
           </TouchableOpacity>
           <Text style={styles.sectionTitle}>Options</Text>
 
           <TouchableOpacity style={styles.itemContainer}>
-            <MaterialIcons name="update" size={24} color="white" />
+            <MaterialIcons name="update" size={22} color="white" />
             <Text style={styles.itemText}>Check for updates</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.itemContainer} onPress={openModal}>
-            <MaterialIcons name="feedback" size={24} color="white" />
+            <MaterialIcons name="feedback" size={22} color="white" />
             <Text style={styles.itemText}>Give feedbacks & Report errors</Text>
             <Modal isOpen={isModalOpen} onClose={closeModal}>
               <View style={styles.FeedbackContainer}>
@@ -435,14 +435,14 @@ export default function UserPage() {
             style={styles.itemContainer}
             onPress={handleTermsPress}
           >
-            <Ionicons name="document-text-outline" size={24} color="white" />
+            <Ionicons name="document-text-outline" size={22} color="white" />
             <Text style={styles.itemText}>Terms and conditions</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.itemContainer}
             onPress={handlePrivacyPress}
           >
-            <MaterialIcons name="security" size={24} color="white" />
+            <MaterialIcons name="security" size={22} color="white" />
             <Text style={styles.itemText}>Privacy Policy</Text>
           </TouchableOpacity>
           <View style={styles.btnContainer}>
@@ -451,7 +451,7 @@ export default function UserPage() {
               btnText="Log out"
               textColor="#ffffff"
               textSize={scale(18)}
-              width={scale(300)}
+              width={scale(280)}
               height={scale(50)}
             />
           </View>
@@ -511,13 +511,13 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   scrollViewContent: {
-    marginHorizontal: scale(10),
+    marginHorizontal: scale(20),
     flex: 1,
   },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: scale(10),
+    marginVertical: scale(6),
     marginHorizontal: scale(10),
   },
   itemText: {
@@ -562,6 +562,7 @@ const styles = StyleSheet.create({
     fontFamily: "semiBold",
     fontSize: scale(18),
     marginTop: scale(20),
+    marginBottom: scale(4)
   },
   btnContainer: {
     marginVertical: scale(20),

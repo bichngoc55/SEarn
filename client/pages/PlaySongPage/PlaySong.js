@@ -54,13 +54,12 @@ const PlaySongPage = ({ route }) => {
   const isFocused = useIsFocused();
   const snapPoints = ["50%", "100%"];
   let bottomSheetRef = useRef(null);
+ 
+  const { accessTokenForSpotify } = useSelector((state) => state.spotifyAccessToken);
 
-  const { accessTokenForSpotify } = useSelector(
-    (state) => state.spotifyAccessToken
-  );
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchSpotifyAccessToken());
+  // }, [dispatch]);
 
   useEffect(() => {
     if (isFocused) {

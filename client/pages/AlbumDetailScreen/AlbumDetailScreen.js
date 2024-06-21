@@ -33,39 +33,39 @@ const AlbumDetailScreen = ({ route }) => {
   const error = useSelector((state) => state.spotifyAccessToken.error);
   const [tokenExpiration, setTokenExpiration] = useState(null);
 
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      try {
-        const { accessToken, expires_in: expiresIn } = await dispatch(
-          fetchSpotifyAccessToken()
-        ).unwrap();
-        const expirationTime = new Date().getTime() + expiresIn * 1000;
-        setTokenExpiration(expirationTime);
-        console.log("expire time  Access Token:", expiresIn);
-      } catch (error) {
-        console.error("Error fetching access token:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchAccessToken = async () => {
+  //     try {
+  //       // const { accessToken, expires_in: expiresIn } = await dispatch(
+  //       //   fetchSpotifyAccessToken()
+  //       // ).unwrap();
+  //       const expirationTime = new Date().getTime() + expiresIn * 1000;
+  //       setTokenExpiration(expirationTime);
+  //       console.log("expire time  Access Token:", expiresIn);
+  //     } catch (error) {
+  //       console.error("Error fetching access token:", error);
+  //     }
+  //   };
 
-    const checkTokenExpiration = () => {
-      if (tokenExpiration && new Date().getTime() >= tokenExpiration) {
-        fetchAccessToken();
-      } else {
-        const interval = setInterval(checkTokenExpiration, 55 * 60 * 1000);
-        return () => clearInterval(interval);
-      }
-    };
-    checkTokenExpiration();
-  }, [dispatch]);
+  //   const checkTokenExpiration = () => {
+  //     if (tokenExpiration && new Date().getTime() >= tokenExpiration) {
+  //       fetchAccessToken();
+  //     } else {
+  //       const interval = setInterval(checkTokenExpiration, 55 * 60 * 1000);
+  //       return () => clearInterval(interval);
+  //     }
+  //   };
+  //   checkTokenExpiration();
+  // }, [dispatch]);
 
-  useEffect(() => {
-    if (accessTokenForSpotify) {
-      console.log(
-        "Access Token in album detail screen :",
-        accessTokenForSpotify
-      );
-    }
-  }, [user, accessTokenForSpotify]);
+  // useEffect(() => {
+  //   if (accessTokenForSpotify) {
+  //     console.log(
+  //       "Access Token in album detail screen :",
+  //       accessTokenForSpotify
+  //     );
+  //   }
+  // }, [user, accessTokenForSpotify]);
 
   const [albumTracks, setAlbumTracks] = useState([]);
   const [likedSongList, setLikedSongList] = useState([]);
@@ -146,9 +146,9 @@ const AlbumDetailScreen = ({ route }) => {
   };
   // Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
-    if (likedSongList.includes(songId)) {
+    if (likedSongList?.includes(songId)) {
       await unlikeSong(songId);
-      setSongList(likedSongList.filter((id) => id !== songId));
+      setSongList(likedSongList?.filter((id) => id !== songId));
     } else {
       await addToLikedSongs(songId);
       setLikedSongList([...likedSongList, songId]);
@@ -187,7 +187,7 @@ const AlbumDetailScreen = ({ route }) => {
                   input={item}
                   songList={albumTracks}
                   onLikeUnlike={handleLikeUnlikeSong}
-                  isLiked={likedSongList.includes(item.id)}
+                  isLiked={likedSongList?.includes(item.id)}
                 />
               );
             }}
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     width: scale(35),
     height: scale(35),
     borderRadius: scale(100),
-    backgroundColor: "lightgray",
+    backgroundColor: "rgba(211, 211, 211, 0.8)",
     justifyContent: "center",
     alignItems: "center",
   },

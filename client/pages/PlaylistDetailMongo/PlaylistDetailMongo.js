@@ -13,7 +13,7 @@ import {
   Image,
 } from "react-native";
 import { useSelector, useDispatch, Provider } from "react-redux";
-import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
+// import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     width: scale(30),
     height: scale(30),
     borderRadius: 35,
-    backgroundColor: "lightgray",
+    backgroundColor: "rgba(211, 211, 211, 0.8)",
     justifyContent: "center",
     alignItems: "center",
   },

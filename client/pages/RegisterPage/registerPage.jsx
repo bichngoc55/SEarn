@@ -168,22 +168,22 @@ const styles = StyleSheet.create({
     width: scale(35),
     height: scale(35),
     borderRadius: scale(100),
-    backgroundColor: "lightgray",
+    backgroundColor: "rgba(211, 211, 211, 0.8)",
     justifyContent: "center",
     alignItems: "center",
   },
   backButtonIcon: {
     width: scale(25),
     height: scale(25),
-    marginLeft: scale(10),
   },
   content: {
     flex: 1,
     alignItems: "center",
+    marginTop:scale(30),
     paddingHorizontal: scale(24),
   },
   logo: {
-    marginVertical: scale(10),
+    marginVertical: scale(20),
     width: scale(208),
     height: scale(150),
   },
@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: COLOR.textPrimaryColor,
     marginBottom: 10,
+    fontFamily:"semiBold"
   },
   errorMessage: {
     color: "red",

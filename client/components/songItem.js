@@ -59,6 +59,7 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
     console.log(service.currentSong);
     service.currentPlaylist = songList;
     service.currentTime = 0;
+    service.currentRate = 1;
     service.currentAudioIndex = currentSongIndex;
     service.playCurrentAudio();
     service.isGetCoin = true;

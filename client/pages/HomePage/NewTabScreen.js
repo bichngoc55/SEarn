@@ -48,7 +48,10 @@ export default function NewsTab() {
     const getAlbumList = async () => {
       try {
         if (accessToken) {
-          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user?._id);
+          const { listLikedAlbums } = await getLikedAlbumList(
+            accessToken,
+            user?._id
+          );
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
         } else alert("Chưa có accessToken");

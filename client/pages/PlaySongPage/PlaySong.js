@@ -20,6 +20,7 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
+  ScrollView,
   FlatList,
   Image,
 } from "react-native";
@@ -39,7 +40,14 @@ import MenuOfPlaysong from "../../components/MenuOfPlaysong/MenuOfPlaysong";
 import AudioService from "../../service/audioService";
 import { SelectList } from "react-native-dropdown-select-list";
 import DropDownPicker from "react-native-dropdown-picker";
-
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
+import { withMenuContext } from "react-native-popup-menu";
 const PlaySongPage = ({ route }) => {
   const { song } = route.params;
   const navigation = useNavigation();
@@ -61,12 +69,6 @@ const PlaySongPage = ({ route }) => {
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
-  const speed = [
-    { key: "1", value: "0.5x" },
-    { key: "2", value: "1.0x" },
-    { key: "3", value: "1.5x" },
-    { key: "4", value: "2.0x" },
-  ];
   const handleSelect = (val) => {
     setSelected(val);
   };
@@ -94,7 +96,7 @@ const PlaySongPage = ({ route }) => {
 
   const MoveToLyric = () => {
     navigation.navigate("Lyric", {
-      song: song,
+      song: service.currentSong,
     });
   };
 
@@ -205,214 +207,252 @@ const PlaySongPage = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerL}>
-        <Ionicons
-          name="arrow-back-circle"
-          size={scale(30)}
-          color="#737373"
-          onPress={navigation.goBack}
-        />
-        <Text style={styles.headerText}>Now playing</Text>
-        <Entypo
-          name="dots-three-vertical"
-          size={24}
-          color="#737373"
-          onPress={toggleModal}
-        />
-      </View>
+    <MenuProvider>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerL}>
+          <Ionicons
+            name="arrow-back-circle"
+            size={scale(30)}
+            color="#737373"
+            onPress={navigation.goBack}
+          />
+          <Text style={styles.headerText}>Now playing</Text>
+          <Entypo
+            name="dots-three-vertical"
+            size={24}
+            color="#737373"
+            onPress={toggleModal}
+          />
+        </View>
 
-      <MenuOfPlaysong
-        visible={modalVisible}
-        onClose={toggleModal}
-        song={service.currentSong}
-      />
-      <View style={styles.imageContain}>
-        {service.currentSong && service.currentSong.album ? (
-          <Image
-            source={{ uri: service.currentSong.album.image }}
-            style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
-          />
-        ) : (
-          <Image
-            source={{ uri: img }}
-            style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
-          />
-        )}
-      </View>
-      <View style={styles.textIcon}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.songname}>{service.currentSong.name}</Text>
-          <Text style={styles.songartist}>
-            {service.currentSong.artists.map((artist, index) => (
-              <TouchableOpacity
-                key={artist.id}
-                onPress={() => moveToArtistDetail(artist.id)}
+        <MenuOfPlaysong
+          visible={modalVisible}
+          onClose={toggleModal}
+          song={service.currentSong}
+        />
+        <View style={styles.imageContain}>
+          {service.currentSong && service.currentSong.album ? (
+            <Image
+              source={{ uri: service.currentSong.album.image }}
+              style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
+            />
+          ) : (
+            <Image
+              source={{ uri: img }}
+              style={{ width: "100%", height: "100%", borderRadius: scale(30) }}
+            />
+          )}
+        </View>
+        <View style={styles.textIcon}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.songname}>{service.currentSong.name}</Text>
+            <Text style={styles.songartist}>
+              {service.currentSong.artists.map((artist, index) => (
+                <TouchableOpacity
+                  key={artist.id}
+                  onPress={() => moveToArtistDetail(artist.id)}
+                >
+                  {index < service.currentSong.artists.length - 1 ? (
+                    <Text style={styles.songartist}>{artist.name}, </Text>
+                  ) : (
+                    <Text style={styles.songartist}>{artist.name} </Text>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity onPress={handleLike}>
+              <Ionicons
+                style={{ marginRight: "3%" }}
+                name={liked ? "heart" : "heart-outline"}
+                size={scale(30)}
+                color="#FED215"
+              />
+            </TouchableOpacity>
+            <Menu style={styles.menuTriggerContainer}>
+              <MenuTrigger onPress={() => console.log("Menu trigger pressed")}>
+                <Text
+                  style={{
+                    color: "white",
+                    borderWidth: "1px",
+                    borderColor: "white",
+                    borderRadius: 10,
+                    minWidth: "15%",
+                    padding: 5,
+                    textAlign: "center",
+                  }}
+                >
+                  {service.currentRate}x
+                </Text>
+              </MenuTrigger>
+              <MenuOptions
+                anchorStyle={{ right: 10 }}
+                customStyles={{
+                  optionsContainer: {
+                    backgroundColor: "gray",
+                    padding: 5,
+                    top: 0,
+                    borderRadius: 5,
+                    maxHeight: 150,
+                    width: "auto",
+                  },
+                }}
               >
-                {index < service.currentSong.artists.length - 1 ? (
-                  <Text style={styles.songartist}>{artist.name}, </Text>
-                ) : (
-                  <Text style={styles.songartist}>{artist.name} </Text>
-                )}
-              </TouchableOpacity>
-            ))}
+                <ScrollView>
+                  <MenuOption
+                    onSelect={() => service.changePlaybackRate(0.5)}
+                    text="0.5x"
+                  />
+                  <MenuOption
+                    onSelect={() => service.changePlaybackRate(0.75)}
+                    text="0.75x"
+                  />
+                  <MenuOption
+                    onSelect={() => service.changePlaybackRate(1.0)}
+                    text="1.0x"
+                  />
+                  <MenuOption
+                    onSelect={() => service.changePlaybackRate(1.25)}
+                    text="1.25x"
+                  />
+                  <MenuOption
+                    onSelect={() => service.changePlaybackRate(1.5)}
+                    text="1.5x"
+                  />
+                  <MenuOption
+                    onSelect={() => service.changePlaybackRate(1.75)}
+                    text="1.75x"
+                  />
+                  <MenuOption
+                    onSelect={() => service.changePlaybackRate(2.0)}
+                    text="2.0x"
+                  />
+                </ScrollView>
+              </MenuOptions>
+            </Menu>
+          </View>
+        </View>
+        <View style={styles.headerL}>
+          <Slider
+            style={{ width: "100%", height: "100%" }}
+            minimumTrackTintColor="#FED215"
+            maximumTrackTintColor="#2b2b2b"
+            value={service.currentTime}
+            minimumValue={0}
+            maximumValue={service.currentTotalTime}
+            onValueChange={(value) => {
+              service.currentTime = value;
+              service.isGetCoin = false;
+              service.currentSound.sound.setPositionAsync(value);
+            }}
+          />
+        </View>
+        <View style={styles.textDuration}>
+          <Text style={styles.songartist}>
+            {formatTime(service.currentTime)}
+          </Text>
+          <Text style={styles.songartist}>
+            {formatTime(service.currentTotalTime)}
           </Text>
         </View>
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity onPress={handleLike}>
-            <Ionicons
-              style={styles.heartBtn}
-              name={liked ? "heart" : "heart-outline"}
-              size={scale(30)}
+        <View style={styles.iconContainer}>
+          {service.isRepeat ? (
+            <Feather
+              name="repeat"
+              size={scale(25)}
               color="#FED215"
-            />
-          </TouchableOpacity>
-          <SelectList
-            setSelected={(value) => {
-              setSelected(value);
-              console.log(value);
-            }}
-            onSelect={() => console.log("onSelect called")}
-            placeholder={selected}
-            data={speed}
-            save="value"
-            search={false}
-            style={{ zIndex: 5, position: "absolute" }}
-            dropdownStyles={{
-              backgroundColor: "#1B1B1B",
-              elevation: 5,
-              color: "white",
-              marginTop: scale(40),
-              position: "absolute",
-              zIndex: 5,
-            }}
-            dropdownTextStyles={{ color: "white" }}
-            boxStyles={{
-              color: "white",
-              placeholderTextColor: "white",
-              backgroundColor: "rgba(130, 130, 130, 0.85)",
-              zIndex: 1,
-            }}
-          />
-        </View>
-      </View>
-      <View style={styles.headerL}>
-        <Slider
-          style={{ width: "100%", height: "100%" }}
-          minimumTrackTintColor="#FED215"
-          maximumTrackTintColor="#2b2b2b"
-          value={service.currentTime}
-          minimumValue={0}
-          maximumValue={service.currentTotalTime}
-          onValueChange={(value) => {
-            service.currentTime = value;
-            service.isGetCoin = false;
-            service.currentSound.sound.setPositionAsync(value);
-          }}
-        />
-      </View>
-      <View style={styles.textDuration}>
-        <Text style={styles.songartist}>{formatTime(service.currentTime)}</Text>
-        <Text style={styles.songartist}>
-          {formatTime(service.currentTotalTime)}
-        </Text>
-      </View>
-      <View style={styles.iconContainer}>
-        {service.isRepeat ? (
-          <Feather
-            name="repeat"
-            size={scale(25)}
-            color="#FED215"
-            onPress={() => {
-              service.isRepeat = false;
-            }}
-          />
-        ) : (
-          <Feather
-            name="repeat"
-            size={scale(25)}
-            color="#737373"
-            onPress={() => {
-              service.isRepeat = true;
-              service.isShuffle = false;
-            }}
-          />
-        )}
-        <FontAwesome6
-          name="backward-step"
-          size={scale(25)}
-          color="#737373"
-          onPress={() => {
-            service.playPreviousAudio();
-          }}
-        />
-        {service.isPlay ? (
-          <View style={styles.circle}>
-            <FontAwesome5
-              name="pause"
-              size={scale(27)}
-              color="black"
               onPress={() => {
-                service.currentSound.sound.pauseAsync();
-                console.log("dừng");
-                service.isPlay = false;
-                console.log(service.isPlay);
+                service.isRepeat = false;
               }}
             />
-          </View>
-        ) : (
-          <FontAwesome
-            name="play-circle"
-            size={scale(70)}
-            color="#FED215"
-            onPress={() => {
-              service.currentSound.sound.playAsync();
-              console.log("phát");
-              service.isPlay = true;
-            }}
-          />
-        )}
-
-        <FontAwesome6
-          name="forward-step"
-          size={scale(25)}
-          color="#737373"
-          onPress={() => {
-            service.playNextAudio();
-          }}
-        />
-        {service.isShuffle ? (
-          <Ionicons
-            name="shuffle"
-            size={scale(25)}
-            color="#FED215"
-            onPress={() => {
-              service.shufflePlaylist();
-            }}
-          />
-        ) : (
-          <Ionicons
-            name="shuffle"
+          ) : (
+            <Feather
+              name="repeat"
+              size={scale(25)}
+              color="#737373"
+              onPress={() => {
+                service.isRepeat = true;
+                service.isShuffle = false;
+              }}
+            />
+          )}
+          <FontAwesome6
+            name="backward-step"
             size={scale(25)}
             color="#737373"
             onPress={() => {
-              service.shufflePlaylist();
-              service.isRepeat = false;
+              service.playPreviousAudio();
             }}
           />
-        )}
-      </View>
+          {service.isPlay ? (
+            <View style={styles.circle}>
+              <FontAwesome5
+                name="pause"
+                size={scale(27)}
+                color="black"
+                onPress={() => {
+                  service.currentSound.sound.pauseAsync();
+                  console.log("dừng");
+                  service.isPlay = false;
+                  console.log(service.isPlay);
+                }}
+              />
+            </View>
+          ) : (
+            <FontAwesome
+              name="play-circle"
+              size={scale(70)}
+              color="#FED215"
+              onPress={() => {
+                service.currentSound.sound.playAsync();
+                console.log("phát");
+                service.isPlay = true;
+              }}
+            />
+          )}
 
-      <TouchableOpacity
-        style={styles.bottomContain}
-        onPress={() => {
-          MoveToLyric();
-        }}
-      >
-        <Entypo name="chevron-small-up" size={scale(30)} color="#737373" />
-        <Text style={styles.songartist}>Lyrics</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+          <FontAwesome6
+            name="forward-step"
+            size={scale(25)}
+            color="#737373"
+            onPress={() => {
+              service.playNextAudio();
+            }}
+          />
+          {service.isShuffle ? (
+            <Ionicons
+              name="shuffle"
+              size={scale(25)}
+              color="#FED215"
+              onPress={() => {
+                service.shufflePlaylist();
+              }}
+            />
+          ) : (
+            <Ionicons
+              name="shuffle"
+              size={scale(25)}
+              color="#737373"
+              onPress={() => {
+                service.shufflePlaylist();
+                service.isRepeat = false;
+              }}
+            />
+          )}
+        </View>
+
+        <TouchableOpacity
+          style={styles.bottomContain}
+          onPress={() => {
+            MoveToLyric();
+          }}
+        >
+          <Entypo name="chevron-small-up" size={scale(30)} color="#737373" />
+          <Text style={styles.songartist}>Lyrics</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </MenuProvider>
   );
 };
 
@@ -492,6 +532,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  menuTriggerContainer: {
+    marginLeft: "auto",
   },
   heartBtn: {},
 });

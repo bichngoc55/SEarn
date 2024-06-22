@@ -13,6 +13,7 @@ class AudioService {
       this.isPlay = true;
       this.currentTotalTime = 0;
       this.isRepeat = false;
+      this.currentRate = 1.0;
       this.isShuffle = false;
       this.currentPlaylist = [];
       this.originalPlaylist = [];
@@ -129,10 +130,12 @@ class AudioService {
 
   async playCurrentAudio() {
     if (this.currentSound != null) {
-      try {
-        await this.currentSound.sound.stopAsync();
-      } catch (error) {
-        console.error("Lỗi khi dừng âm thanh:", error);
+      if (this.currentSound.sound != null) {
+        try {
+          await this.currentSound.sound.stopAsync();
+        } catch (error) {
+          console.error("Lỗi khi dừng âm thanh:", error);
+        }
       }
     }
 
@@ -211,6 +214,19 @@ class AudioService {
     this.currentSong = this.currentPlaylist[this.currentAudioIndex];
 
     await this.playCurrentAudio();
+  }
+  async changePlaybackRate(rate) {
+    if (this.currentSound && this.currentSound.sound) {
+      try {
+        await this.currentSound.sound.setRateAsync(rate, true);
+        this.currentRate = rate;
+        console.log(`Playback rate changed to ${rate}x`);
+      } catch (error) {
+        console.error("Error changing playback rate:", error);
+      }
+    } else {
+      console.log("No sound is currently loaded");
+    }
   }
 }
 

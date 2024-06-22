@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";import {
+import React, { useState, useEffect } from "react";
+import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   StatusBar,
   Pressable,
-  Image
+  Image,
 } from "react-native";
 
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useSelector,  } from "react-redux";
+import { useSelector } from "react-redux";
 import NewsTab from "./NewTabScreen";
 import RelatedArtist from "./RelatedArtists";
 import PublicPlaylist from "./PublicPlaylist";
@@ -32,7 +33,7 @@ const HomePage = () => {
     let service = new AudioService();
     service.currentSong = input;
     service.loadSong();
-    console.log(service.currentSong)
+    console.log(service.currentSong);
     service.currentTime = 0;
     service.playCurrentAudio();
     service.isGetCoin = true;
@@ -43,15 +44,21 @@ const HomePage = () => {
   //get in4 recentlySong from spotify
   useEffect(() => {
     const fetchRecentlyPlayingSong = async () => {
-      console.log("inside fetch recent playing song inside home screen")
+      console.log("inside fetch recent playing song inside home screen");
       try {
         if (accessTokenForSpotify) {
-          const song= await getTrack(accessTokenForSpotify, user?.recentListeningSong);
+          const song = await getTrack(
+            accessTokenForSpotify,
+            user?.recentListeningSong
+          );
           setRecentlyPlayingSong(song);
-          console.log(song)
+          console.log(song);
         } else alert("Chưa có accessTokenForSpotify");
       } catch (error) {
-        console.error("Error fetching recently playing song in HomeScreen:", error);
+        console.error(
+          "Error fetching recently playing song in HomeScreen:",
+          error
+        );
       }
     };
     if (accessTokenForSpotify && user?._id && user?.recentListeningSong) {
@@ -64,23 +71,23 @@ const HomePage = () => {
       <NewsTab />
     </View>
   );
-  
+
   const RelatedArtistScreen = () => (
-    <View style={{ flex: 1}}>
-      <RelatedArtist/>
+    <View style={{ flex: 1 }}>
+      <RelatedArtist />
     </View>
   );
 
-  const PublicPlaylistScreen =() =>(
-    <View style={{ flex: 1}}>
-      <PublicPlaylist/>
+  const PublicPlaylistScreen = () => (
+    <View style={{ flex: 1 }}>
+      <PublicPlaylist />
     </View>
-  )
+  );
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "news", title: "News" },
     { key: "artist", title: "Artist" },
-    { key: "playlist", title: "Playlist"}
+    { key: "playlist", title: "Playlist" },
   ]);
 
   const renderScene = SceneMap({
@@ -88,7 +95,7 @@ const HomePage = () => {
     artist: RelatedArtistScreen,
     playlist: PublicPlaylistScreen,
   });
-  const renderTabBar = (props) => ( 
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: "transparent" }}
@@ -133,9 +140,15 @@ const HomePage = () => {
       <View style={styles.recentSongContainer}>
         {recentlyPlayingSong ? (
           <>
-            <View style={{ flexDirection: "column", marginHorizontal: scale(10) }}>
+            <View
+              style={{ flexDirection: "column", marginHorizontal: scale(10) }}
+            >
               <Text style={styles.songName}>{recentlyPlayingSong?.name}</Text>
-              <Text style={styles.artistsName}>{recentlyPlayingSong?.artists.map((artist) => artist.name).join(", ")}{" "}</Text>
+              <Text style={styles.artistsName}>
+                {recentlyPlayingSong?.artists
+                  .map((artist) => artist.name)
+                  .join(", ")}{" "}
+              </Text>
             </View>
             <Image
               source={{ uri: recentlyPlayingSong?.album?.image }}
@@ -144,21 +157,27 @@ const HomePage = () => {
           </>
         ) : (
           <>
-            <View style={{ flexDirection: "column", marginHorizontal: scale(10), width:scale(170) }}>
-              <Text style={styles.artistsName}>Chưa có bài hát nào được phát gần đây</Text>
-            </View>
             <View
-              style={styles.circle}
-            />
+              style={{
+                flexDirection: "column",
+                marginHorizontal: scale(10),
+                width: scale(170),
+              }}
+            >
+              <Text style={styles.artistsName}>
+                Chưa có bài hát nào được phát gần đây
+              </Text>
+            </View>
+            <View style={styles.circle} />
           </>
         )}
       </View>
       <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          renderTabBar={renderTabBar}
-          onIndexChange={setIndex}
-        />
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        onIndexChange={setIndex}
+      />
     </View>
   );
 };
@@ -171,23 +190,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#1C1B1B",
   },
   recentSongContainer: {
-    width:"100%",
+    width: "100%",
     height: scale(200),
     backgroundColor: "rgba(35, 35, 35, 0.75)",
-    flexDirection:"row",
-    alignItems:"center",
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal:scale(10),
+    paddingHorizontal: scale(10),
     borderBottomLeftRadius: scale(20),
     borderBottomRightRadius: scale(20),
     borderColor: COLOR.btnBackgroundColor,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   circle: {
     width: scale(120),
     height: scale(120),
     borderRadius: scale(100),
-    marginHorizontal:scale(10),
+    marginHorizontal: scale(10),
     backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
@@ -196,13 +215,13 @@ const styles = StyleSheet.create({
     fontSize: scale(17),
     fontFamily: "semiBold",
     color: COLOR.btnBackgroundColor,
-    marginBottom: scale(5)
+    marginBottom: scale(5),
   },
-  artistsName:{
+  artistsName: {
     fontSize: scale(15),
     fontFamily: "regular",
-    color: "white"
-  }
+    color: "white",
+  },
 });
 
 export default HomePage;

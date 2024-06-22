@@ -59,8 +59,8 @@ function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="HomePage" component={HomePage} />
-      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
-      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen}/>
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
@@ -303,6 +303,7 @@ export default function MainNavigation() {
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
+            <Stack.Screen name="PlaySong" component={PlaySongPage} />
           </>
         ) : (
           <Stack.Screen name="BottomBar" component={BottomBar} />
@@ -326,6 +327,6 @@ const styles = StyleSheet.create({
     bottom: scale(60),
     left: 0,
     right: 0,
-    marginBottom: scale (5)
+    marginBottom: scale(5),
   },
 });

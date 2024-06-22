@@ -105,7 +105,7 @@ export const logoutUser = createAsyncThunk(
     try {
       await AsyncStorage.removeItem("user");
       const resultRemove = await AsyncStorage.removeItem("userToken");
-      
+
       console.log("Removed user and token : " + resultRemove);
     } catch (error) {
       return rejectWithValue(error.message);

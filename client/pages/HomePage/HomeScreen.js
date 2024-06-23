@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback  } from "react";import {
+import React, { useState, useEffect, useCallback } from "react";
+import {
   View,
   Text,
   StyleSheet,
@@ -6,9 +7,9 @@ import React, { useState, useEffect, useCallback  } from "react";import {
   StatusBar,
   Pressable,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
@@ -42,7 +43,7 @@ const HomePage = () => {
   );
 
   const [recentlyPlayingSong, setRecentlyPlayingSong] = useState();
-  const [playSong, setPlaySong] =useState();
+  const [playSong, setPlaySong] = useState();
   let service = new AudioService();
 
   const MoveToPlaySong = async () => {
@@ -59,8 +60,7 @@ const HomePage = () => {
       navigation.navigate("PlaySong", {
         song: service.currentSong,
       });
-    }
-    else alert("No audio available");
+    } else alert("No audio available");
   };
 
   //get in4 recentlySong from spotify
@@ -68,12 +68,18 @@ const HomePage = () => {
     const fetchRecentlyPlayingSong = async () => {
       try {
         if (accessTokenForSpotify) {
-          const song= await getTrack(accessTokenForSpotify, user?.recentListeningSong);
+          const song = await getTrack(
+            accessTokenForSpotify,
+            user?.recentListeningSong
+          );
           setRecentlyPlayingSong(song);
           console.log("Get song from db: " + song.name);
         } else alert("Chưa có accessTokenForSpotify");
       } catch (error) {
-        console.error("Error fetching recently playing song in HomeScreen:", error);
+        console.error(
+          "Error fetching recently playing song in HomeScreen:",
+          error
+        );
       }
     };
     if (accessTokenForSpotify && user?._id && user?.recentListeningSong) {
@@ -100,43 +106,51 @@ const HomePage = () => {
     const newRecentlyPlayingSong = async () => {
       try {
         if (accessTokenForSpotify) {
-          if (recentlyPlayingSong.id !== service.currentSong.id && service.currentSong) {
-            updateRecentlyPlayingSong(service.currentSong.id)
+          if (
+            recentlyPlayingSong.id !== service.currentSong.id &&
+            service.currentSong
+          ) {
+            updateRecentlyPlayingSong(service.currentSong.id);
           }
-        } 
+        }
       } catch (error) {
-        console.error("Error fetching recently playing song in HomeScreen:", error);
+        console.error(
+          "Error fetching recently playing song in HomeScreen:",
+          error
+        );
       }
     };
-    if (accessTokenForSpotify &&recentlyPlayingSong !== service.currentSong && user?.recentListeningSong) {
+    if (
+      accessTokenForSpotify &&
+      recentlyPlayingSong !== service.currentSong &&
+      user?.recentListeningSong
+    ) {
       newRecentlyPlayingSong();
     }
   }, [user?._id, accessTokenForSpotify, service?.currentSong]);
-
-
 
   const NewsTabScreen = () => (
     <View style={{ flex: 1 }}>
       <NewsTab />
     </View>
   );
-  
+
   const RelatedArtistScreen = () => (
-    <View style={{ flex: 1}}>
-      <RelatedArtist/>
+    <View style={{ flex: 1 }}>
+      <RelatedArtist />
     </View>
   );
 
-  const PublicPlaylistScreen =() =>(
-    <View style={{ flex: 1}}>
-      <PublicPlaylist/>
+  const PublicPlaylistScreen = () => (
+    <View style={{ flex: 1 }}>
+      <PublicPlaylist />
     </View>
-  )
+  );
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "news", title: "News" },
     { key: "artist", title: "Artist" },
-    { key: "playlist", title: "Playlist"}
+    { key: "playlist", title: "Playlist" },
   ]);
 
   const renderScene = SceneMap({
@@ -144,7 +158,7 @@ const HomePage = () => {
     artist: RelatedArtistScreen,
     playlist: PublicPlaylistScreen,
   });
-  const renderTabBar = (props) => ( 
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: "transparent" }}
@@ -189,9 +203,15 @@ const HomePage = () => {
       <View style={styles.recentSongContainer}>
         {recentlyPlayingSong ? (
           <>
-            <View style={{ flexDirection: "column", marginHorizontal: scale(10) }}>
+            <View
+              style={{ flexDirection: "column", marginHorizontal: scale(10) }}
+            >
               <Text style={styles.songName}>{recentlyPlayingSong?.name}</Text>
-              <Text style={styles.artistsName}>{recentlyPlayingSong?.artists.map((artist) => artist.name).join(", ")}{" "}</Text>
+              <Text style={styles.artistsName}>
+                {recentlyPlayingSong?.artists
+                  .map((artist) => artist.name)
+                  .join(", ")}{" "}
+              </Text>
             </View>
             <TouchableOpacity onPress={MoveToPlaySong}>
               <Image
@@ -202,21 +222,27 @@ const HomePage = () => {
           </>
         ) : (
           <>
-            <View style={{ flexDirection: "column", marginHorizontal: scale(10), width:scale(170) }}>
-              <Text style={styles.artistsName}>Chưa có bài hát nào được phát gần đây</Text>
-            </View>
             <View
-              style={styles.circle}
-            />
+              style={{
+                flexDirection: "column",
+                marginHorizontal: scale(10),
+                width: scale(170),
+              }}
+            >
+              <Text style={styles.artistsName}>
+                Chưa có bài hát nào được phát gần đây
+              </Text>
+            </View>
+            <View style={styles.circle} />
           </>
         )}
       </View>
       <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          renderTabBar={renderTabBar}
-          onIndexChange={setIndex}
-        />
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        onIndexChange={setIndex}
+      />
     </View>
   );
 };
@@ -229,23 +255,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#1C1B1B",
   },
   recentSongContainer: {
-    width:"100%",
+    width: "100%",
     height: scale(200),
     backgroundColor: "rgba(35, 35, 35, 0.75)",
-    flexDirection:"row",
-    alignItems:"center",
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal:scale(10),
+    paddingHorizontal: scale(10),
     borderBottomLeftRadius: scale(20),
     borderBottomRightRadius: scale(20),
     borderColor: COLOR.btnBackgroundColor,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   circle: {
     width: scale(120),
     height: scale(120),
     borderRadius: scale(100),
-    marginHorizontal:scale(10),
+    marginHorizontal: scale(10),
     backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
@@ -254,13 +280,13 @@ const styles = StyleSheet.create({
     fontSize: scale(17),
     fontFamily: "semiBold",
     color: COLOR.btnBackgroundColor,
-    marginBottom: scale(5)
+    marginBottom: scale(5),
   },
-  artistsName:{
+  artistsName: {
     fontSize: scale(15),
     fontFamily: "regular",
-    color: "white"
-  }
+    color: "white",
+  },
 });
 
 export default HomePage;

@@ -59,7 +59,9 @@ export default function UserPage() {
     }
   };
   const [image, setImage] = useState(user?.avaURL);
-  const [backgroundImage, setbackgroundImage] = useState(user?.backgroundImage);
+  const [backgroundImage, setbackgroundImage] = useState(
+    user?.backgroundImageUrl
+  );
   // const makeAuthenticatedRequest = async (method, endpoint, data) => {
   //   try {
   //     console.log("Insidd make authenticate ");
@@ -153,7 +155,7 @@ export default function UserPage() {
 
   useEffect(() => {
     let intervalId;
-
+    console.log("background : " + backgroundImage);
     const refreshTokens = async () => {
       const currentAccessToken = await AsyncStorage.getItem("userToken");
       if (!currentAccessToken) {

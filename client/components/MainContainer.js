@@ -59,8 +59,8 @@ function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="HomePage" component={HomePage} />
-      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen}/>
-      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen}/>
+      <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       {/* <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
@@ -303,23 +303,24 @@ export default function MainNavigation() {
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
+            <Stack.Screen name="PlaySong" component={PlaySongPage} />
           </>
         ) : (
           <>
-          <Stack.Screen name="BottomBar" component={BottomBar} />
-          <Stack.Screen 
-              name="PlaySong" 
+            <Stack.Screen name="BottomBar" component={BottomBar} />
+            <Stack.Screen
+              name="PlaySong"
               component={PlaySongPage}
-              options={{ 
-                presentation: 'modal',
-                cardStyle: { backgroundColor: 'transparent' },
+              options={{
+                presentation: "modal",
+                cardStyle: { backgroundColor: "transparent" },
               }}
             />
             <Stack.Screen
-        name="Lyric"
-        component={LyricPage}
-        options={{ presentation: "modal" }}
-      />
+              name="Lyric"
+              component={LyricPage}
+              options={{ presentation: "modal" }}
+            />
           </>
         )}
       </Stack.Navigator>
@@ -341,6 +342,6 @@ const styles = StyleSheet.create({
     bottom: scale(50),
     left: 0,
     right: 0,
-    marginBottom: scale (5)
+    marginBottom: scale(5),
   },
 });

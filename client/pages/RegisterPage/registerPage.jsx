@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: "center",
-    marginTop:scale(30),
+    marginTop: scale(30),
     paddingHorizontal: scale(24),
   },
   logo: {
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: COLOR.textPrimaryColor,
     marginBottom: 10,
-    fontFamily:"semiBold"
+    fontFamily: "semiBold",
   },
   errorMessage: {
     color: "red",

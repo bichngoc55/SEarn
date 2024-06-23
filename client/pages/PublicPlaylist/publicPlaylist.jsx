@@ -52,7 +52,7 @@
 //   };
 
 //   useEffect(() => {
-//     const fetchPublicPlaylists = async () => { 
+//     const fetchPublicPlaylists = async () => {
 //       try {
 //         const response = await fetch("http://10.0.2.2:3005/playlists/public", {
 //           method: "GET",
@@ -178,7 +178,6 @@
 //   const handleSort = async () => {
 //     console.log("Sorting...");
 //     const sortedPlaylist = [...renderedPlaylist];
-
 
 //     if (isDescending) {
 //       sortedPlaylist.sort((a, b) => a.numberOfLikes - b.numberOfLikes);

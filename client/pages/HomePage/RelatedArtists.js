@@ -49,7 +49,10 @@ export default function RelatedArtist() {
     try {
       if (accessToken) {
         // const listLikedArtists = await user?.likedArtists
-        const { listLikedArtists } = await getLikedArtistList(accessToken, user?._id);
+        const { listLikedArtists } = await getLikedArtistList(
+          accessToken,
+          user?._id
+        );
         const artistIds = listLikedArtists.map((likedArtist) => likedArtist.id);
         setLikedArtistList(artistIds);
         let finalArtistList = artistIds;
@@ -58,8 +61,12 @@ export default function RelatedArtist() {
             .sort(() => 0.5 - Math.random())
             .slice(0, 5);
         } else if (artistIds.length === 0) {
-          const recommendations = await getTracksRecommendations(accessTokenForSpotify);
-          finalArtistList = recommendations.items.slice(0, 20).map(item => item.track.artists[0].id);
+          const recommendations = await getTracksRecommendations(
+            accessTokenForSpotify
+          );
+          finalArtistList = recommendations.items
+            .slice(0, 20)
+            .map((item) => item.track.artists[0].id);
         }
 
         setArtistList(finalArtistList);
@@ -87,7 +94,7 @@ export default function RelatedArtist() {
         const uniqueRelatedArtists = Array.from(
           new Set(allRelatedArtists.map((artist) => artist.id))
         ).map((id) => allRelatedArtists.find((artist) => artist.id === id));
-  
+
         setRelatedArtists(uniqueRelatedArtists);
       } else {
         // alert("accessToken:" + accessTokenForSpotify);
@@ -119,39 +126,33 @@ export default function RelatedArtist() {
 
   //add like artist to db
   const addToLikedArtists = async (artistId) => {
-    fetch(
-      `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/addLikedArtists`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ artistId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike artist on db
   const unlikeArtist = async (artistId) => {
-    fetch(
-      `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/unlikeArtists`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ artistId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeArtists`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ artistId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
-  
+
   // Handle like/unlike action
   const handleLikeUnlike = async (artistId) => {
     if (likedArtistList.includes(artistId)) {

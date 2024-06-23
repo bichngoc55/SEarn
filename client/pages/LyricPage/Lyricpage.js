@@ -115,7 +115,7 @@ const LyricPage = ({ route }) => {
     getLikedSong();
   }, [user?._id, accessToken]);
 
-   //add like song to db
+  //add like song to db
   const addToLikedSongs = async (songId) => {
     fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
@@ -143,7 +143,6 @@ const LyricPage = ({ route }) => {
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
-
 
   //is song liked or not
   useEffect(() => {
@@ -180,35 +179,37 @@ const LyricPage = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
-        source={{ uri: service.currentSong.album.image}}
+        source={{ uri: service.currentSong.album.image }}
         resizeMode="cover"
         style={styles.imageContainer}
       >
         <>
-        <View style={styles.overlay} />
-        <View style={styles.headerL}>
-          <Ionicons
-            name="arrow-back-circle"
-            size={scale(30)}
-            color="#737373"
-            onPress={navigation.goBack}
+          <View style={styles.overlay} />
+          <View style={styles.headerL}>
+            <Ionicons
+              name="arrow-back-circle"
+              size={scale(30)}
+              color="#737373"
+              onPress={navigation.goBack}
+            />
+            <Text style={styles.headerText} onPress={() => navigation.goBack()}>
+              Now playing
+            </Text>
+            <Entypo
+              name="dots-three-vertical"
+              size={24}
+              color="#737373"
+              onPress={toggleModal}
+            />
+          </View>
+          <MenuOfPlaysong
+            visible={modalVisible}
+            onClose={toggleModal}
+            song={service.currentSong}
           />
-          <Text style={styles.headerText} onPress={() => navigation.goBack()}>Now playing</Text>
-          <Entypo
-            name="dots-three-vertical"
-            size={24}
-            color="#737373"
-            onPress={toggleModal}
-          />
-        </View>
-        <MenuOfPlaysong
-          visible={modalVisible}
-          onClose={toggleModal}
-          song={service.currentSong}
-        />
-        <ScrollView style={{ marginTop: "3%" , flex: 1}}>
-          <Text style={styles.lyricText}>{lyric}</Text>
-        </ScrollView>
+          <ScrollView style={{ marginTop: "3%", flex: 1 }}>
+            <Text style={styles.lyricText}>{lyric}</Text>
+          </ScrollView>
         </>
         <View style={styles.Bottom}>
           <View style={styles.textIcon}>
@@ -250,10 +251,10 @@ const LyricPage = ({ route }) => {
           </View>
           <View>
             <Slider
-              style={{ width: "100%", marginVertical: '5%' }}
+              style={{ width: "100%", marginVertical: "5%" }}
               minimumTrackTintColor="#FED215"
               maximumTrackTintColor="#2b2b2b"
-              thumbTintColor="#FED215" 
+              thumbTintColor="#FED215"
               value={service.currentTime}
               minimumValue={0}
               maximumValue={service.currentTotalTime}
@@ -399,9 +400,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-    height: '100%',
-    width: '100%',
-
+    height: "100%",
+    width: "100%",
   },
   overlay: {
     position: "absolute",

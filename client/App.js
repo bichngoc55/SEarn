@@ -12,7 +12,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { SafeAreaView, StyleSheet, StatusBar } from "react-native";
 import { Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
-
+import PlaySongPage from "./pages/PlaySongPage/PlaySong";
 // import {
 //   BannerAd,
 //   BannerAdSize,
@@ -82,7 +82,7 @@ export default function App() {
     <SafeAreaView style={styles.co}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <MenuProvider>
+          <MenuProvider skipInstanceCheck>
             {/* {showAd && (
               <BannerAd
                 ref={bannerRef}

@@ -109,7 +109,7 @@ const HomePage = () => {
       try {
         if (accessTokenForSpotify) {
           if (
-            recentlyPlayingSong.id !== service.currentSong.id &&
+            recentlyPlayingSong?.id !== service?.currentSong?.id &&
             service.currentSong
           ) {
             updateRecentlyPlayingSong(service.currentSong.id);

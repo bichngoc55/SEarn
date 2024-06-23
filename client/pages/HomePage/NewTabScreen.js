@@ -68,7 +68,7 @@ export default function NewsTab() {
     const getLikedSong = async () => {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          `http://10.0.2.2:3005/auth/${user?._id}/getLikedSongs`,
           {
             method: "GET",
             headers: {
@@ -77,8 +77,10 @@ export default function NewsTab() {
             },
           }
         );
-        const likedSong = await response.json();
-        setLikedSongList(likedSong);
+        if (response.statusCode === 200) {
+          const likedSong = await response.json();
+          setLikedSongList(likedSong);
+        }
       } catch (error) {
         alert("Error in likedsong: " + error);
       }

@@ -76,6 +76,10 @@ function HomeStack() {
         component={AddtoPlaylist}
         options={{ presentation: "modal" }}
       />
+      <Stack.Screen
+        name="PlaylistDetailMongo"
+        component={PlaylistDetailMongo}
+      />
     </Stack.Navigator>
   );
 }

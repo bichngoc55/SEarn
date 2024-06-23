@@ -27,7 +27,12 @@ const PublicPlaylistItem = ({ playlist, onLikeUnlike, isLiked }) => {
         });
       }}
     >
-      <Image source={{ uri: playlist.imageURL }} style={styles.image} />
+      <Image
+        source={{
+          uri: "https://i.scdn.co/image/ab67616d0000b273212f0300aefcb79b00d2a6cf",
+        }}
+        style={styles.image}
+      />
       <View style={styles.details}>
         <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">
           {playlist.name}
@@ -77,12 +82,12 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: scale(16),
-    fontFamily: "bold",
+    fontWeight: "bold",
     fontFamily: "bold",
     color: "white",
   },
   description: {
-    fontFamily: "semiBold",
+    fontSize: scale(14),
     fontFamily: "regular",
     color: "white",
   },

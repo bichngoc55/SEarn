@@ -26,6 +26,7 @@ const PlaylistDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
@@ -42,6 +43,30 @@ const PlaylistDetailScreen = ({ route }) => {
     }
   }, [user, accessTokenForSpotify]);
   const [playlistTracks, setPlaylistTracks] = useState([]);
+  const [likedSongList, setLikedSongList] = useState([]);
+
+  // get liked song list on db
+  useEffect(() => {
+    const getLikedSong = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setLikedSongList(likedSong);
+      } catch (error) {
+        alert("Error in likedsong: " + error);
+      }
+    };
+    getLikedSong();
+  }, [user?._id, accessToken]);
 
   useEffect(() => {
     const fetchPlaylistTracks = async () => {
@@ -63,6 +88,45 @@ const PlaylistDetailScreen = ({ route }) => {
     };
     fetchPlaylistTracks();
   }, [accessTokenForSpotify, playlist.id]);
+
+  //add like song to db
+  const addToLikedSongs = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+    .then((response) => response.json())
+    .then((updatedUser) => console.log(updatedUser))
+    .catch((error) => console.error(error));
+  };
+  //unlike song on db
+  const unlikeSong = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+    .then((response) => response.json())
+    .then((updatedUser) => console.log(updatedUser))
+    .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlikeSong = async (songId) => {
+    if (likedSongList?.includes(songId)) {
+      await unlikeSong(songId);
+      setLikedSongList(likedSongList.filter((id) => id !== songId));
+    } else {
+      await addToLikedSongs(songId);
+      setLikedSongList([...likedSongList, songId]);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.Container}>
@@ -89,7 +153,9 @@ const PlaylistDetailScreen = ({ route }) => {
             data={playlistTracks}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              return <SongItem input={item} songList={playlistTracks} />;
+              return <SongItem input={item} songList={playlistTracks} 
+              onLikeUnlike={handleLikeUnlikeSong}
+              isLiked={likedSongList?.includes(item.id)}/>;
             }}
             nestedScrollEnabled={true}
           />

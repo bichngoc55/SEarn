@@ -21,6 +21,7 @@ import { getTracksRecommendations } from "../../service/songsRecommendations";
 import { getLikedAlbumList } from "../../service/getLikedAlbumList";
 import ArtistAlbumItem from "../../components/artistAlbumItem";
 import SongItem from "../../components/songItem";
+
 export default function NewsTab() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -42,6 +43,7 @@ export default function NewsTab() {
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
   const [likedAlbumList, setLikedAlbumList] = useState([]);
   const [likedSongList, setLikedSongList] = useState([]);
+  
 
   // get liked album list on db
   useEffect(() => {

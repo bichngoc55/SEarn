@@ -1,7 +1,7 @@
 const getUserPlaylist = async (userId) => {
   try {
     console.log("goi playlist tu db: ");
-    const response = await fetch("http://localhost:3005/playlists/", {
+    const response = await fetch("http://10.0.2.2:3005/playlists/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

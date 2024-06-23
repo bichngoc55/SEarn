@@ -31,6 +31,7 @@ import { ScrollView } from "react-native-gesture-handler";
 const PlaylistDetailMongo = ({ route }) => {
   const { playlist } = route.params;
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
@@ -191,19 +192,22 @@ const PlaylistDetailMongo = ({ route }) => {
   };
 
   useEffect(() => {
-    const fetchTracks = async () => {
-      try {
-        const trackPromises = playlist.songs.map((songId) =>
-          getTrack(accessTokenForSpotify, songId)
-        );
-        const trackData = await Promise.all(trackPromises);
-        trackData.forEach((track) => {});
-        setTracks(trackData);
-      } catch (error) {}
-    };
-    getPlaylistDetails();
-    fetchTracks();
-  }, [accessTokenForSpotify, songList]);
+    if (isFocused) {
+      console.log("playlist is focused");
+      getPlaylistDetails();
+      fetchTracks();
+    }
+  }, [isFocused]);
+  const fetchTracks = async () => {
+    try {
+      const trackPromises = playlist.songs.map((songId) =>
+        getTrack(accessTokenForSpotify, songId)
+      );
+      const trackData = await Promise.all(trackPromises);
+      trackData.forEach((track) => {});
+      setTracks(trackData);
+    } catch (error) {}
+  };
 
   const getPlaylistDetails = async () => {
     // setIsLoading(true);

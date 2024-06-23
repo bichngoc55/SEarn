@@ -13,27 +13,27 @@ import { useFocusEffect } from '@react-navigation/native';
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useSelector,  } from "react-redux";
+import { useSelector, dispatch  } from "react-redux";
 import NewsTab from "./NewTabScreen";
 import RelatedArtist from "./RelatedArtists";
 import PublicPlaylist from "./PublicPlaylist";
 import { useNavigation } from "@react-navigation/native";
 import AudioService from "../../service/audioService";
 import { getTrack } from "../../service/songService";
-
+import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 const HomePage = () => {
   const navigation = useNavigation();
-  const fetchData = useCallback(() => {
-    // Logic to fetch data or perform any action when the screen is focused
-    console.log('HomePage is focused');
-  }, []);
+  // const fetchData = useCallback(() => {
+  //   // Logic to fetch data or perform any action when the screen is focused
+  //   console.log('HomePage is focused');
+  // }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(fetchSpotifyAccessToken());
-      fetchData();
-    }, [fetchData])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     dispatch(fetchSpotifyAccessToken());
+  //     fetchData();
+  //   }, [fetchData])
+  // );
 
   const { user } = useSelector((state) => state.user);
   const accessToken = useSelector((state) => state.user.accessToken);

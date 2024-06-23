@@ -13,46 +13,46 @@ import { SafeAreaView, StyleSheet, StatusBar } from "react-native";
 import { Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-  useForeground,
-} from "react-native-google-mobile-ads";
-const adUnitId = __DEV__
-  ? TestIds.ADAPTIVE_BANNER
-  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+// import {
+//   BannerAd,
+//   BannerAdSize,
+//   TestIds,
+//   useForeground,
+// } from "react-native-google-mobile-ads";
+// const adUnitId = __DEV__
+//   ? TestIds.ADAPTIVE_BANNER
+//   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
 
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [showAd, setShowAd] = useState(false);
-  const bannerRef = useRef(null);
+  // const bannerRef = useRef(null);
 
-  useEffect(() => {
-    const manageAdVisibility = () => {
-      setShowAd(true);
+  // useEffect(() => {
+  //   const manageAdVisibility = () => {
+  //     setShowAd(true);
 
-      const hideTimer = setTimeout(() => {
-        setShowAd(false);
-      }, 60000);
+  //     const hideTimer = setTimeout(() => {
+  //       setShowAd(false);
+  //     }, 60000);
 
-      const showTimer = setTimeout(() => {
-        setShowAd(true);
-      }, 960000);
-      return () => {
-        clearTimeout(hideTimer);
-        clearTimeout(showTimer);
-      };
-    };
-    manageAdVisibility();
+  //     const showTimer = setTimeout(() => {
+  //       setShowAd(true);
+  //     }, 960000);
+  //     return () => {
+  //       clearTimeout(hideTimer);
+  //       clearTimeout(showTimer);
+  //     };
+  //   };
+  //   manageAdVisibility();
 
-    const interval = setInterval(manageAdVisibility, 960000);
+  //   const interval = setInterval(manageAdVisibility, 960000);
 
-    return () => clearInterval(interval);
-  }, []);
-  useForeground(() => {
-    Platform.OS === "ios" && bannerRef.current?.load();
-  });
+  //   return () => clearInterval(interval);
+  // }, []);
+  // useForeground(() => {
+  //   Platform.OS === "ios" && bannerRef.current?.load();
+  // });
   const AppContext = useMemo(() => {
     return {
       isDarkTheme,
@@ -83,13 +83,13 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <MenuProvider>
-            {showAd && (
+            {/* {showAd && (
               <BannerAd
                 ref={bannerRef}
                 unitId={adUnitId}
                 size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
               />
-            )}
+            )} */}
 
             <MainNavigation />
           </MenuProvider>

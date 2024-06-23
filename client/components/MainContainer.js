@@ -61,16 +61,16 @@ function HomeStack() {
       <Stack.Screen name="HomePage" component={HomePage} />
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
-        options={{ presentation: "modal" }}
+        options={{ presentation: "modal" , tabBarStyle: { display: 'none' }}}
       />
       <Stack.Screen
         name="Lyric"
         component={LyricPage}
         options={{ presentation: "modal" }}
-      />
+      /> */}
       <Stack.Screen
         name="AddTo"
         component={AddtoPlaylist}
@@ -88,16 +88,16 @@ function ExploreStack() {
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen} />
       <Stack.Screen name="PlaylistExplore" component={PlaylistDetailScreen} />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
         options={{ presentation: "modal" }}
-      />
-      <Stack.Screen
+      /> */}
+      {/* <Stack.Screen
         name="Lyric"
         component={LyricPage}
         options={{ presentation: "modal" }}
-      />
+      /> */}
       <Stack.Screen
         name="PlaylistDetailMongo"
         component={PlaylistDetailMongo}
@@ -113,21 +113,21 @@ function FavouriteStack() {
       <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetailScreen} />
       <Stack.Screen name="LikedSong" component={LikedSongPage} />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="PlaySong"
         component={PlaySongPage}
-        options={{ presentation: "modal" }}
-      />
+        options={{ presentation: "modal", tabBarStyle: { display: 'none' } }}
+      /> */}
       <Stack.Screen
         name="AddTo"
         component={AddtoPlaylist}
         options={{ presentation: "modal" }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Lyric"
         component={LyricPage}
         options={{ presentation: "modal" }}
-      />
+      /> */}
       <Stack.Screen
         name="PlaylistDetailMongo"
         component={PlaylistDetailMongo}
@@ -306,7 +306,22 @@ export default function MainNavigation() {
             <Stack.Screen name="PlaySong" component={PlaySongPage} />
           </>
         ) : (
-          <Stack.Screen name="BottomBar" component={BottomBar} />
+          <>
+            <Stack.Screen name="BottomBar" component={BottomBar} />
+            <Stack.Screen
+              name="PlaySong"
+              component={PlaySongPage}
+              options={{
+                presentation: "modal",
+                cardStyle: { backgroundColor: "transparent" },
+              }}
+            />
+            <Stack.Screen
+              name="Lyric"
+              component={LyricPage}
+              options={{ presentation: "modal" }}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
@@ -324,7 +339,7 @@ const styles = StyleSheet.create({
   miniPlayer: {
     zIndex: 2,
     position: "absolute",
-    bottom: scale(60),
+    bottom: scale(50),
     left: 0,
     right: 0,
     marginBottom: scale(5),

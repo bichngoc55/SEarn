@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     marginLeft: "5.1%",
     marginRight: "5.1%",
     alignItems: "center",
-    marginTop: "2.68%",
+    marginTop: "5%",
     flexDirection: "row",
     zIndex: 1,
   },

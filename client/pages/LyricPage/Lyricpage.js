@@ -91,6 +91,31 @@ const LyricPage = ({ route }) => {
   };
   const [liked, setLiked] = useState();
   const [likedSongList, setLikedSongList] = useState([]);
+
+  // get liked song list on db
+  useEffect(() => {
+    const getLikedSong = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setLikedSongList(likedSong);
+      } catch (error) {
+        alert("Error in likedsong: " + error);
+      }
+    };
+    getLikedSong();
+  }, [user?._id, accessToken]);
+
+   //add like song to db
   const addToLikedSongs = async (songId) => {
     fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
       method: "PATCH",
@@ -119,12 +144,13 @@ const LyricPage = ({ route }) => {
       .catch((error) => console.error(error));
   };
 
+
+  //is song liked or not
   useEffect(() => {
-    setLikedSongList(user.likedSongs);
     setLiked(likedSongList?.includes(service.currentSong.id));
   }, [service.currentSong.id, likedSongList]);
-  //Handle like/unlike action
 
+  //Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {
       await unlikeSong(songId);
@@ -154,10 +180,11 @@ const LyricPage = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
-        source={{ uri: service.currentSong.album.image }}
+        source={{ uri: service.currentSong.album.image}}
         resizeMode="cover"
         style={styles.imageContainer}
       >
+        <>
         <View style={styles.overlay} />
         <View style={styles.headerL}>
           <Ionicons
@@ -166,7 +193,7 @@ const LyricPage = ({ route }) => {
             color="#737373"
             onPress={navigation.goBack}
           />
-          <Text style={styles.headerText}>Now playing</Text>
+          <Text style={styles.headerText} onPress={() => navigation.goBack()}>Now playing</Text>
           <Entypo
             name="dots-three-vertical"
             size={24}
@@ -179,9 +206,10 @@ const LyricPage = ({ route }) => {
           onClose={toggleModal}
           song={service.currentSong}
         />
-        <ScrollView style={{ marginTop: "3%" }}>
+        <ScrollView style={{ marginTop: "3%" , flex: 1}}>
           <Text style={styles.lyricText}>{lyric}</Text>
         </ScrollView>
+        </>
         <View style={styles.Bottom}>
           <View style={styles.textIcon}>
             <View style={styles.imageContainCircle}>
@@ -222,9 +250,10 @@ const LyricPage = ({ route }) => {
           </View>
           <View>
             <Slider
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: "100%", marginVertical: '5%' }}
               minimumTrackTintColor="#FED215"
               maximumTrackTintColor="#2b2b2b"
+              thumbTintColor="#FED215" 
               value={service.currentTime}
               minimumValue={0}
               maximumValue={service.currentTotalTime}
@@ -349,7 +378,7 @@ const styles = StyleSheet.create({
     marginRight: "5.1%",
     height: scale(35),
     alignItems: "center",
-    marginTop: "2.68%",
+    marginTop: "5%",
 
     flexDirection: "row",
   },
@@ -370,6 +399,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
+    height: '100%',
+    width: '100%',
+
   },
   overlay: {
     position: "absolute",

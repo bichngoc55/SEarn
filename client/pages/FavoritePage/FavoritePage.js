@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,9 +15,17 @@ import LikedAlbumTab from "./LikedAlbumTab";
 import LikedArtistTab from "./LikedArtistTab";
 import { store, persistor } from "../../redux/store";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
+import {useDispatch } from "react-redux";
 import scale from "../../constant/responsive";
 
 const LibraryPage = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    
+    dispatch(fetchSpotifyAccessToken());
+  })
   const PlaylistScreen = () => (
     <View style={{ flex: 1 }}>
       <PlaylistPage />

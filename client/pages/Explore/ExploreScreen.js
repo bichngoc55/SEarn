@@ -36,6 +36,7 @@ export default function ExploreScreen() {
   const [categoriesList, setCategoriesList ] = useState([]);
   const [searchText, setSearchText] = useState(""); // State lưu trữ giá trị nhập liệu
   const [searchList, setSearchList] = useState([]);
+  const [searchTrackList, setSearchTrackList] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -65,6 +66,8 @@ export default function ExploreScreen() {
             ...searchResults.albums,
           ];
           setSearchList(combinedResults);
+          setSearchTrackList(searchResults.tracks);
+
         } else {
           setSearchList([]);
         }
@@ -100,7 +103,7 @@ export default function ExploreScreen() {
             data={filteredSearchs}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              return <SearchItem input={item} />;
+              return <SearchItem input={item} songList = {searchTrackList}/>;
             }}
             nestedScrollEnabled={true}
             style={styles.flatlistContainer}

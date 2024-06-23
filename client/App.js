@@ -79,7 +79,7 @@ export default function App() {
   }
 
   return (
-    <View style={styles.co}>
+    <SafeAreaView style={styles.co}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <MenuProvider>
@@ -95,7 +95,7 @@ export default function App() {
           </MenuProvider>
         </PersistGate>
       </Provider>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

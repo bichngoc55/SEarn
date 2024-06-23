@@ -57,7 +57,6 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked}) => {
   const MoveToPlaySong = async () => {
     let service = new AudioService();
     service.currentSong = input;
-    //service.loadSong();
     console.log(service.currentSong);
     service.currentPlaylist = songList;
     service.currentTime = 0;
@@ -93,7 +92,7 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked}) => {
           alert("accessToken: " + accessTokenForSpotify);
         }
       } catch (error) {
-        console.error("Error fetching get song image:", error);
+        //console.error("Error fetching get song image:", error);
       }
     };
     getSongImg();

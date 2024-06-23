@@ -191,7 +191,7 @@ const AddtoPlaylist = ({ song, onClose }) => {
           `http://10.0.2.2:3005/playlists/${playlist.value}`,
           {
             songs: [...playlist.songs, song.id],
-            songCount: songs.length,
+            songCount: playlist.songCount + 1,
           },
           {
             headers: {
@@ -201,7 +201,7 @@ const AddtoPlaylist = ({ song, onClose }) => {
           }
         );
         showToast();
-      } else alert("Chưa có accessToken");
+      }
     } catch (error) {
       alert(error.message);
     }
@@ -213,10 +213,12 @@ const AddtoPlaylist = ({ song, onClose }) => {
         const updatedSongs = playlist.songs.filter(
           (songId) => songId !== song.id
         );
+        const newCount = playlist.songCount - 1;
         await axios.patch(
           `http://10.0.2.2:3005/playlists/${playlist.value}`,
           {
             songs: updatedSongs,
+            songCount: newCount,
           },
           {
             headers: {
@@ -226,7 +228,7 @@ const AddtoPlaylist = ({ song, onClose }) => {
           }
         );
         showToastDelete();
-      } else alert("Chưa có accessToken");
+      }
     } catch (error) {
       alert(error.message);
     }

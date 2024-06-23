@@ -58,8 +58,8 @@ export default function UserPage() {
       console.error("Error during logout:", error);
     }
   };
-  const [image, setImage] = useState(null);
-  const [backgroundImage, setbackgroundImage] = useState(null);
+  const [image, setImage] = useState(user?.avaURL);
+  const [backgroundImage, setbackgroundImage] = useState(user?.backgroundImage);
   // const makeAuthenticatedRequest = async (method, endpoint, data) => {
   //   try {
   //     console.log("Insidd make authenticate ");
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     fontFamily: "semiBold",
     fontSize: scale(18),
     marginTop: scale(20),
-    marginBottom: scale(4)
+    marginBottom: scale(4),
   },
   btnContainer: {
     marginVertical: scale(20),

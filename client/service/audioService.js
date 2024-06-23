@@ -129,12 +129,10 @@ class AudioService {
 
   async playCurrentAudio() {
     if (this.currentSound != null) {
-      if (this.currentSound.sound != null) {
-        try {
-          await this.currentSound.sound.stopAsync();
-        } catch (error) {
-          console.error("Lỗi khi dừng âm thanh:", error);
-        }
+      try {
+        await this.currentSound.sound.stopAsync();
+      } catch (error) {
+        console.error("Lỗi khi dừng âm thanh:", error);
       }
     }
 

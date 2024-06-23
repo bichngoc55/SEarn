@@ -40,7 +40,7 @@ const EditPlaylistModal = ({ visible, onClose, playlist }) => {
           }
         );
         onClose();
-      } else alert("Chưa có accessToken");
+      }
     } catch (error) {
       alert(error.message);
     }

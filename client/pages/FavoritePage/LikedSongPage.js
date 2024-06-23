@@ -19,6 +19,7 @@ import { getTrack } from "../../service/songService";
 import { FontAwesome } from "@expo/vector-icons";
 import { getLikedSongList } from "../../service/getLikedSongList";
 import SongItem from "../../components/songItem";
+import AudioService from "../../service/audioService";
 
 const LikedSongPage = () => {
   const dispatch = useDispatch();
@@ -36,8 +37,19 @@ const LikedSongPage = () => {
   //   }
   // }, [user, accessTokenForSpotify]);
   const [songList, setSongList] = useState([]);
+  const [songListOriginal, setSongListOriginal] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [isAscending, setIsAscending] = useState(true);
+
+  const handleSort = () => {
+    if (isAscending) {
+      setTracks([...tracks].sort((a, b) => a.name.localeCompare(b.name)));
+    } else {
+      setTracks(songListOriginal);
+    }
+    setIsAscending(!isAscending);
+  };
 
   //get liked song from db
   useEffect(() => {
@@ -62,7 +74,6 @@ const LikedSongPage = () => {
     getLikedSong();
   }, [user?._id, accessToken]);
 
-  
   //get song's in4 from Spotify
   useEffect(() => {
     const fetchTracks = async () => {
@@ -74,6 +85,7 @@ const LikedSongPage = () => {
         const trackData = await Promise.all(trackPromises);
         trackData.forEach((track) => {});
         setTracks(trackData);
+        setSongListOriginal(trackData);
       } catch (error) {}
     };
 
@@ -123,6 +135,20 @@ const LikedSongPage = () => {
   const filteredSearchs = tracks.filter((search) =>
     search.name.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const MoveToPlaySong = async () => {
+    let service = new AudioService();
+    service.currentSong = tracks[0];
+    console.log(service.currentSong);
+    service.currentPlaylist = tracks;
+    service.currentTime = 0;
+    service.currentAudioIndex = 0;
+    service.playCurrentAudio();
+    service.isGetCoin = true;
+    service.isShuffle = false;
+    console.log(service.currentSong);
+    navigation.navigate("PlaySong", {});
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -176,13 +202,23 @@ const LikedSongPage = () => {
               <View style={styles.iconContainer}>
                 <MaterialCommunityIcons
                   name="arrow-up-down"
+                  onPress={() => handleSort()}
                   size={24}
                   color="black"
                 />
               </View>
-              <Text style={styles.text}>Default</Text>
+              {isAscending ? (
+                <Text style={styles.text}>Default</Text>
+              ) : (
+                <Text style={styles.text}>A-Z</Text>
+              )}
             </View>
-            <FontAwesome name="play-circle" size={scale(50)} color="#FED215" />
+            <FontAwesome
+              name="play-circle"
+              size={scale(50)}
+              color="#FED215"
+              onPress={() => MoveToPlaySong()}
+            />
           </View>
           <View style={styles.flatlistContainer}>
             <FlatList
@@ -211,7 +247,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1C1B1B",
-    marginTop: scale(20)
+    marginTop: scale(20),
   },
   scrollView: {
     flex: 1,

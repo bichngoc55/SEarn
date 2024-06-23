@@ -30,7 +30,7 @@ const DeletePlaylistModal = ({ visible, onClose, playlist }) => {
         });
         alert("Xóa thành công");
         onClose();
-      } else alert("Chưa có accessToken");
+      }
     } catch (error) {
       alert(error.message);
     }

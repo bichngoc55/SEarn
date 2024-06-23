@@ -25,8 +25,10 @@ export default function LikedArtistTab() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const{accessToken}   = useSelector((state) => state.user);
-  const { accessTokenForSpotify } = useSelector((state) => state.spotifyAccessToken);
+  const { accessToken } = useSelector((state) => state.user);
+  const { accessTokenForSpotify } = useSelector(
+    (state) => state.spotifyAccessToken
+  );
   const isLoading = useSelector((state) => state.spotifyAccessToken.loading);
   const error = useSelector((state) => state.spotifyAccessToken.error);
 
@@ -39,7 +41,7 @@ export default function LikedArtistTab() {
   //     //console.log("Access Token in useEffect artist:", accessTokenForSpotify);
   //   }
   // }, [user, accessTokenForSpotify]);
-  
+
   const [artistList, setArtistList] = useState([]);
   const [artists, setArtists] = useState([]);
   const [sortOrder, setSortOrder] = useState(0);
@@ -50,10 +52,10 @@ export default function LikedArtistTab() {
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
-  
+
       const fetchArtistList = async () => {
         if (!accessToken) return;
-  
+
         try {
           setIsFetching(true);
           const { listLikedArtists } = await getLikedArtistList(
@@ -72,9 +74,9 @@ export default function LikedArtistTab() {
           }
         }
       };
-  
+
       fetchArtistList();
-  
+
       return () => {
         isActive = false;
       };

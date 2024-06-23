@@ -14,7 +14,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useSelector, dispatch  } from "react-redux";
+import { useSelector, dispatch, useDispatch  } from "react-redux";
 import NewsTab from "./NewTabScreen";
 import RelatedArtist from "./RelatedArtists";
 import PublicPlaylist from "./PublicPlaylist";
@@ -32,7 +32,7 @@ const HomePage = () => {
   // useFocusEffect(
   //   useCallback(() => {
   //     dispatch(fetchSpotifyAccessToken());
-  //     fetchData();
+  //     //fetchData();
   //   }, [fetchData])
   // );
 
@@ -44,6 +44,7 @@ const HomePage = () => {
 
   const [recentlyPlayingSong, setRecentlyPlayingSong] = useState();
   const [playSong, setPlaySong] = useState();
+  const dispatch = useDispatch();
   let service = new AudioService();
 
   const MoveToPlaySong = async () => {
@@ -65,6 +66,7 @@ const HomePage = () => {
 
   //get in4 recentlySong from spotify
   useEffect(() => {
+    dispatch(fetchSpotifyAccessToken());
     const fetchRecentlyPlayingSong = async () => {
       try {
         if (accessTokenForSpotify) {

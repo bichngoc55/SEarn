@@ -31,6 +31,7 @@ const MiniPlayer = () => {
   const navigation = useNavigation();
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [isPlay, setIsPlay] = useState(false);
   const [name, setName] = useState("");
   const [total, setTotal] = useState(0);
   const pan = React.useRef(new Animated.ValueXY()).current;
@@ -39,7 +40,11 @@ const MiniPlayer = () => {
 
   useEffect(() => {
     if (isFocused) {
+      if (service.currentSong)
+        {
       setName(service.currentSong.name);
+      setIsPlay(service.isPlay);
+        }
     }
   }, [isFocused]);
 
@@ -146,7 +151,7 @@ const MiniPlayer = () => {
             </View>
           ) : (
             <View style={styles.textContainer}>
-              <Text style={styles.songname}>{track.title}</Text>
+              <Text style={styles.songname}>No song playing</Text>
               <Text style={styles.songartist}>Not found artists</Text>
             </View>
           )}
@@ -171,13 +176,14 @@ const MiniPlayer = () => {
             }}
           />
           {service.currentSong ? (
-            service.isPlay ? (
+            isPlay ? (
               <View
                 style={styles.circle}
                 onPress={() => {
                   service.currentSound.sound.pauseAsync();
                   console.log("Dừng âm thanh");
                   service.isPlay = false;
+                  setIsPlay(false);
                 }}
               >
                 <FontAwesome5
@@ -188,6 +194,7 @@ const MiniPlayer = () => {
                     service.currentSound.sound.pauseAsync();
                     console.log("Dừng âm thanh");
                     service.isPlay = false;
+                    setIsPlay(false);
                   }}
                 />
               </View>
@@ -200,6 +207,7 @@ const MiniPlayer = () => {
                   service.currentSound.sound.playAsync();
                   console.log("Phát âm thanh");
                   service.isPlay = true;
+                  setIsPlay(true);
                 }}
               />
             )

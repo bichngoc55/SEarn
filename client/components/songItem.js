@@ -29,6 +29,8 @@ import { getTrack } from "../service/songService";
 
 const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
   const navigation = useNavigation();
+  const { user } = useSelector((state) => state.user);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
@@ -55,6 +57,7 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
   const currentSongIndex = getCurrentSongIndex();
 
   const MoveToPlaySong = async () => {
+    try {
     let service = new AudioService();
     service.currentSong = input;
     console.log(service.currentSong);
@@ -62,12 +65,18 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
     service.currentTime = 0;
     service.currentRate = 1;
     service.currentAudioIndex = currentSongIndex;
+    service.userId = user._id;
+    console.log("userId: " + service.userId);
     service.playCurrentAudio();
     service.isGetCoin = true;
     service.isShuffle = false;
     //console.log(service.currentSong);
-    dispatch(setBottomBarVisibility(false));
     navigation.navigate("PlaySong", {});
+    }
+    catch(error)
+    {
+      console.log("cannot move to playsong: " + error);
+    }
   };
 
   const [image, setImage] = useState(null);

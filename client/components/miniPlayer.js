@@ -39,7 +39,7 @@ const MiniPlayer = () => {
 
   useEffect(() => {
     if (isFocused) {
-      setName(service.currentSong.name);
+      setName(service?.currentSong?.name);
     }
   }, [isFocused]);
 

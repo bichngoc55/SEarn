@@ -66,7 +66,7 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
     service.isGetCoin = true;
     service.isShuffle = false;
     //console.log(service.currentSong);
-    dispatch(setBottomBarVisibility(false));
+    // dispatch(setBottomBarVisibility(false));
     navigation.navigate("PlaySong", {});
   };
 

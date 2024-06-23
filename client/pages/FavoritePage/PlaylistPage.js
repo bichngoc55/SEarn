@@ -34,10 +34,8 @@ const PlaylistPage = () => {
     fetchPlaylist();
   };
   useEffect(() => {
-    if (isFocused) {
-      fetchPlaylist();
-    }
-  }, [isFocused, fetchPlaylist]);
+    fetchPlaylist();
+  }, []);
 
   useEffect(() => {
     if (accessTokenForSpotify) {

@@ -140,6 +140,7 @@ class AudioService {
     }
 
     await this.loadSong();
+    await this.currentSound.sound.setRateAsync(this.currentRate, true);
     console.log("phát 0");
     if (this.currentSound != null) {
       await this.currentSound.sound.setStatusAsync({

@@ -99,9 +99,9 @@ const PlaylistDetailScreen = ({ route }) => {
       },
       body: JSON.stringify({ songId }),
     })
-    .then((response) => response.json())
-    .then((updatedUser) => console.log(updatedUser))
-    .catch((error) => console.error(error));
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
@@ -113,9 +113,9 @@ const PlaylistDetailScreen = ({ route }) => {
       },
       body: JSON.stringify({ songId }),
     })
-    .then((response) => response.json())
-    .then((updatedUser) => console.log(updatedUser))
-    .catch((error) => console.error(error));
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
   };
   // Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
@@ -153,9 +153,14 @@ const PlaylistDetailScreen = ({ route }) => {
             data={playlistTracks}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              return <SongItem input={item} songList={playlistTracks} 
-              onLikeUnlike={handleLikeUnlikeSong}
-              isLiked={likedSongList?.includes(item.id)}/>;
+              return (
+                <SongItem
+                  input={item}
+                  songList={playlistTracks}
+                  onLikeUnlike={handleLikeUnlikeSong}
+                  isLiked={likedSongList?.includes(item.id)}
+                />
+              );
             }}
             nestedScrollEnabled={true}
           />

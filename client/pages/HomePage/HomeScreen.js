@@ -14,7 +14,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
 import NewsTab from "./NewTabScreen";
 import RelatedArtist from "./RelatedArtists";
 import PublicPlaylist from "./PublicPlaylist";
@@ -29,6 +30,7 @@ const HomePage = () => {
     console.log("HomePage is focused");
   }, []);
 
+  const dispatch = useDispatch();
   useFocusEffect(
     useCallback(() => {
       dispatch(fetchSpotifyAccessToken());

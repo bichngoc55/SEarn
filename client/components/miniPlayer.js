@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import {
   View,
@@ -27,22 +27,21 @@ import AudioService from "../service/audioService";
 
 const MiniPlayer = () => {
   let service = new AudioService();
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [name, setName] = useState("");
   const [total, setTotal] = useState(0);
   const pan = React.useRef(new Animated.ValueXY()).current;
   const translateX = useRef(new Animated.Value(0)).current;
   const { width, height } = useWindowDimensions();
 
   useEffect(() => {
-    const handlePlaybackStatus = ({ progress, total }) => {
-      setProgress(progress);
-      setTotal(total);
-    };
-    service.registerPlaybackStatusCallback(handlePlaybackStatus);
-    return () => {};
-  }, [service.currentTime]);
+    if (isFocused) {
+      setName(service.currentSong.name);
+    }
+  }, [isFocused]);
 
   const [track, setTrack] = useState({
     title: "No playing track",
@@ -133,7 +132,7 @@ const MiniPlayer = () => {
                 ellipsizeMode="tail"
                 style={styles.songname}
               >
-                {service.currentSong.name}
+                {name}
               </Text>
               <Text
                 numberOfLines={1}

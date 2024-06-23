@@ -84,12 +84,6 @@ export default function UserPage() {
   // };
 
   const pickImage = async (type) => {
-    // try {
-    //   const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    //   if (status !== 'granted') {
-    //     alert('Sorry, we need camera roll permissions to make this work!');
-    //     return;
-    //   } else {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -279,7 +273,7 @@ export default function UserPage() {
             </View>
             <View style={styles.avatarOverlay}>
               <TouchableOpacity
-                onPress={(e) => pickImage("avatar")}
+                onPress={(e) => pickImage("ava")}
                 style={styles.avatarContainer}
               >
                 <Image

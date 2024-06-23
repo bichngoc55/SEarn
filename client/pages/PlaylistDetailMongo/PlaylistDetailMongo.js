@@ -130,7 +130,7 @@ const PlaylistDetailMongo = ({ route }) => {
         throw new Error("Failed to modify comment");
       }
       // console.log("sao m k chay");
-      const updatedComments = comments.map((comment) =>
+      const updatedComments = comments?.map((comment) =>
         comment._id === modifiedComment.commentId
           ? { ...comment, content: modifiedComment.content }
           : comment
@@ -203,7 +203,7 @@ const PlaylistDetailMongo = ({ route }) => {
   }, [isFocused]);
   const fetchTracks = async () => {
     try {
-      const trackPromises = playlist.songs.map((songId) =>
+      const trackPromises = playlist?.songs?.map((songId) =>
         getTrack(accessTokenForSpotify, songId)
       );
       const trackData = await Promise.all(trackPromises);
@@ -274,7 +274,7 @@ const PlaylistDetailMongo = ({ route }) => {
         //showToastDelete();
       }
     } catch (error) {
-      alert(error.message);
+      // alert(error.message);
     }
   };
 
@@ -333,67 +333,54 @@ const PlaylistDetailMongo = ({ route }) => {
           </View>
         </View>
         {/* hehe */}
-        <ScrollView style={styles.flatlistContainer}>
-          {/* <FlatList
-            data={tracks}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              return <SongItem input={item} songList={tracks} />;
-            }}
-          /> */}
+
+        <View style={styles.flatlistContainer}>
           <SwipeListView
             data={tracks}
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-75}
             keyExtractor={(item) => item.id}
-          />
-          <View style={styles.commentContainer}>
-            <View style={styles.commentPost}>
-              <TextInput
-                style={styles.textComment}
-                placeholderTextColor={"grey"}
-                value={newComment}
-                onChangeText={setNewComment}
-                placeholder="Viết bình luận..."
-              />
-
-              <TouchableOpacity
-                onPress={handlePostComment}
-                style={{
-                  paddingHorizontal: scale(10),
-                  paddingVertical: scale(5),
-                  borderRadius: scale(10),
-                }}
-              >
-                <Feather name="send" size={24} color="white" />
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                display: "flex",
-                minHeight: scale(150),
-                marginBottom: scale(20),
-              }}
-            >
-              <FlatList
-                data={comments}
-                keyExtractor={(comment) => comment._id}
-                renderItem={({ item }) => (
-                  <RenderComment
-                    comment={item}
-                    handlePostResponse={handlePostResponse}
-                    toggleResponses={toggleResponses}
-                    selectedCommentId={selectedCommentId}
-                    setModifiedComment={setModifiedComment}
-                    onDeleteComment={handleDeleteComment}
-                    onSubmitModifiedComment={handleSubmitModifiedComment}
+            ListFooterComponent={() => (
+              <View style={styles.commentContainer}>
+                <View style={styles.commentPost}>
+                  <TextInput
+                    style={styles.textComment}
+                    placeholderTextColor={"grey"}
+                    value={newComment}
+                    onChangeText={setNewComment}
+                    placeholder="Viết bình luận..."
                   />
-                )}
-              />
-            </View>
-          </View>
-        </ScrollView>
+                  <TouchableOpacity
+                    onPress={handlePostComment}
+                    style={{
+                      paddingHorizontal: scale(10),
+                      paddingVertical: scale(5),
+                      borderRadius: scale(10),
+                    }}
+                  >
+                    <Feather name="send" size={24} color="white" />
+                  </TouchableOpacity>
+                </View>
+                <FlatList
+                  data={comments}
+                  keyExtractor={(comment) => comment._id}
+                  renderItem={({ item }) => (
+                    <RenderComment
+                      comment={item}
+                      handlePostResponse={handlePostResponse}
+                      toggleResponses={toggleResponses}
+                      selectedCommentId={selectedCommentId}
+                      setModifiedComment={setModifiedComment}
+                      onDeleteComment={handleDeleteComment}
+                      onSubmitModifiedComment={handleSubmitModifiedComment}
+                    />
+                  )}
+                />
+              </View>
+            )}
+          />
+        </View>
       </SafeAreaView>
     </GestureHandlerRootView>
   );

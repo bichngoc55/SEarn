@@ -307,7 +307,19 @@ export default function MainNavigation() {
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
-            <Stack.Screen name="PlaySong" component={PlaySongPage} />
+            <Stack.Screen
+              name="PlaySong"
+              component={PlaySongPage}
+              options={{
+                presentation: "modal",
+                cardStyle: { backgroundColor: "transparent" },
+              }}
+            />
+            <Stack.Screen
+              name="Lyric"
+              component={LyricPage}
+              options={{ presentation: "modal" }}
+            />
           </>
         ) : (
           <>

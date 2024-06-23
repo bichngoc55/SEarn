@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";import {
+import React, { useState, useEffect, useCallback  } from "react";import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   StatusBar,
   Pressable,
-  Image
+  Image,
+  TouchableOpacity
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
@@ -15,11 +17,24 @@ import { useSelector,  } from "react-redux";
 import NewsTab from "./NewTabScreen";
 import RelatedArtist from "./RelatedArtists";
 import PublicPlaylist from "./PublicPlaylist";
-
+import { useNavigation } from "@react-navigation/native";
 import AudioService from "../../service/audioService";
 import { getTrack } from "../../service/songService";
 
 const HomePage = () => {
+  const navigation = useNavigation();
+  const fetchData = useCallback(() => {
+    // Logic to fetch data or perform any action when the screen is focused
+    console.log('HomePage is focused');
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchSpotifyAccessToken());
+      fetchData();
+    }, [fetchData])
+  );
+
   const { user } = useSelector((state) => state.user);
   const accessToken = useSelector((state) => state.user.accessToken);
   const { accessTokenForSpotify } = useSelector(
@@ -27,28 +42,35 @@ const HomePage = () => {
   );
 
   const [recentlyPlayingSong, setRecentlyPlayingSong] = useState();
+  const [playSong, setPlaySong] =useState();
+  let service = new AudioService();
 
   const MoveToPlaySong = async () => {
-    let service = new AudioService();
-    service.currentSong = input;
-    service.loadSong();
-    console.log(service.currentSong)
-    service.currentTime = 0;
-    service.playCurrentAudio();
-    service.isGetCoin = true;
-    console.log(service.currentSong);
-    navigation.navigate("PlaySong", {});
+    //service.loadSong();
+    if (service.currentSong != null) {
+      navigation.navigate("PlaySong", {
+        song: service.currentSong,
+      });
+    } else if (recentlyPlayingSong != null) {
+      service.currentTime = 0;
+      service.currentSong = recentlyPlayingSong;
+      service.playCurrentAudio();
+      service.isGetCoin = true;
+      navigation.navigate("PlaySong", {
+        song: service.currentSong,
+      });
+    }
+    else alert("No audio available");
   };
 
   //get in4 recentlySong from spotify
   useEffect(() => {
     const fetchRecentlyPlayingSong = async () => {
-      console.log("inside fetch recent playing song inside home screen")
       try {
         if (accessTokenForSpotify) {
           const song= await getTrack(accessTokenForSpotify, user?.recentListeningSong);
           setRecentlyPlayingSong(song);
-          console.log(song)
+          console.log("Get song from db: " + song.name);
         } else alert("Chưa có accessTokenForSpotify");
       } catch (error) {
         console.error("Error fetching recently playing song in HomeScreen:", error);
@@ -58,6 +80,40 @@ const HomePage = () => {
       fetchRecentlyPlayingSong();
     }
   }, [user?._id, accessTokenForSpotify, user?.recentListeningSong]);
+
+  //update recentlySong
+  const updateRecentlyPlayingSong = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user?._id}/updateRecentListeningSong`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    const newRecentlyPlayingSong = async () => {
+      try {
+        if (accessTokenForSpotify) {
+          if (recentlyPlayingSong.id !== service.currentSong.id && service.currentSong) {
+            updateRecentlyPlayingSong(service.currentSong.id)
+          }
+        } 
+      } catch (error) {
+        console.error("Error fetching recently playing song in HomeScreen:", error);
+      }
+    };
+    if (accessTokenForSpotify &&recentlyPlayingSong !== service.currentSong && user?.recentListeningSong) {
+      newRecentlyPlayingSong();
+    }
+  }, [user?._id, accessTokenForSpotify, service?.currentSong]);
+
+
 
   const NewsTabScreen = () => (
     <View style={{ flex: 1 }}>
@@ -137,10 +193,12 @@ const HomePage = () => {
               <Text style={styles.songName}>{recentlyPlayingSong?.name}</Text>
               <Text style={styles.artistsName}>{recentlyPlayingSong?.artists.map((artist) => artist.name).join(", ")}{" "}</Text>
             </View>
-            <Image
-              source={{ uri: recentlyPlayingSong?.album?.image }}
-              style={styles.circle}
-            />
+            <TouchableOpacity onPress={MoveToPlaySong}>
+              <Image
+                source={{ uri: recentlyPlayingSong?.album?.image }}
+                style={styles.circle}
+              />
+            </TouchableOpacity>
           </>
         ) : (
           <>

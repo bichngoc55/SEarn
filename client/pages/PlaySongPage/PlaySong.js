@@ -263,8 +263,9 @@ const PlaySongPage = ({ route }) => {
       </View>
       <View style={styles.headerL}>
         <Slider
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100%" }}
           minimumTrackTintColor="#FED215"
+          thumbTintColor="#FED215" 
           maximumTrackTintColor="#2b2b2b"
           value={service.currentTime}
           minimumValue={0}
@@ -291,6 +292,7 @@ const PlaySongPage = ({ route }) => {
             onPress={() => {
               service.isRepeat = false;
             }}
+            
           />
         ) : (
           <Feather
@@ -301,6 +303,7 @@ const PlaySongPage = ({ route }) => {
               service.isRepeat = true;
               service.isShuffle = false;
             }}
+            
           />
         )}
         <FontAwesome6
@@ -310,6 +313,7 @@ const PlaySongPage = ({ route }) => {
           onPress={() => {
             service.playPreviousAudio();
           }}
+          
         />
         {service.isPlay ? (
           <View
@@ -406,7 +410,7 @@ const styles = StyleSheet.create({
     marginLeft: "5.1%",
     marginRight: "5.1%",
     alignItems: "center",
-    marginTop: "2.68%",
+    marginTop: "5%",
     flexDirection: "row",
   },
   headerText: {

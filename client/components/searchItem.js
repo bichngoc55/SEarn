@@ -14,16 +14,17 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { getAlbum } from "../service/albumService";
 import { getTrack } from "../service/songService";
+import AudioService from "../service/audioService";
 
-const SearchItem = ({ input }) => {
+const SearchItem = ({ input , songList}) => {
   const { user } = useSelector((state) => state.user);
-
+  let service = new AudioService();
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
   );
   useEffect(() => {
     if (accessTokenForSpotify) {
-      console.log("Access Token in useEffect search:", accessTokenForSpotify);
+      //console.log("Access Token in useEffect search:", accessTokenForSpotify);
     }
   }, [user, accessTokenForSpotify]);
 
@@ -50,11 +51,22 @@ const SearchItem = ({ input }) => {
       console.error("Error fetching search album hehe:", error);
     }
   };
+  const getCurrentSongIndex = () => {
+    return songList.findIndex((item) => item.id === input.id);
+  };
+
+  const currentSongIndex = getCurrentSongIndex();
   const moveToPlaySong = async () => {
     try {
       if (accessTokenForSpotify) {
         const songData = await getTrack(accessTokenForSpotify, input.id);
         console.log(songData);
+        service.currentTime = 0;
+        service.currentSong = songData;
+        service.currentPlaylist = songList;
+        service.currentAudioIndex = currentSongIndex;
+        service.playCurrentAudio();
+        service.isGetCoin = true;
         navigation.navigate("PlaySong", {
           song: songData,
         });

@@ -54,7 +54,7 @@ export default function LoginScreen({ navigation }) {
           console.log("co access token cho spotify r : ", accessTokenForSpotify);
         }
         else {
-          console.log(" co cai l : ", accessTokenForSpotify);
+          // console.log(" : ", accessTokenForSpotify);
         }
     } catch (error) {
       console.error("Login error:", error);

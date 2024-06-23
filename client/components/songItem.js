@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import scale from "../constant/responsive";
 import { useSelector, useDispatch, Provider } from "react-redux";
+import { setBottomBarVisibility } from "../redux/BottomBarSlice";
 import { Ionicons } from "@expo/vector-icons";
 import PlaySongPage from "../pages/PlaySongPage/PlaySong";
 import { useNavigation } from "@react-navigation/native";
@@ -26,7 +27,7 @@ import { Audio } from "expo-av";
 import AudioService from "../service/audioService";
 import { getTrack } from "../service/songService";
 
-const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
+const SongItem = ({ input, songList, onLikeUnlike, isLiked}) => {
   const navigation = useNavigation();
   const { accessTokenForSpotify } = useSelector(
     (state) => state.spotifyAccessToken
@@ -56,15 +57,16 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
   const MoveToPlaySong = async () => {
     let service = new AudioService();
     service.currentSong = input;
-    service.loadSong();
+    //service.loadSong();
     console.log(service.currentSong);
     service.currentPlaylist = songList;
     service.currentTime = 0;
     service.currentAudioIndex = currentSongIndex;
-    service.playCurrentAudio();
+    //service.playCurrentAudio();
     service.isGetCoin = true;
     service.isShuffle = false;
-    console.log(service.currentSong);
+    //console.log(service.currentSong);
+    dispatch(setBottomBarVisibility(false));
     navigation.navigate("PlaySong", {});
   };
 
@@ -98,7 +100,7 @@ const SongItem = ({ input, songList, onLikeUnlike, isLiked }) => {
   }, [accessTokenForSpotify]);
 
   return (
-    <TouchableOpacity style={styles.trackContainer} onPress={MoveToPlaySong}>
+    <TouchableOpacity style={styles.trackContainer} onPress={() => MoveToPlaySong()}>
       {input.album && input.album.image ? (
         <Image source={{ uri: input.album.image }} style={styles.circle} />
       ) : (

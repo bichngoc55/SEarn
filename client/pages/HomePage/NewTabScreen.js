@@ -43,14 +43,16 @@ export default function NewsTab() {
   const [tracksRecommendations, setTracksRecommendations] = useState([]);
   const [likedAlbumList, setLikedAlbumList] = useState([]);
   const [likedSongList, setLikedSongList] = useState([]);
-  
 
   // get liked album list on db
   useEffect(() => {
     const getAlbumList = async () => {
       try {
         if (accessToken) {
-          const { listLikedAlbums } = await getLikedAlbumList(accessToken, user?._id);
+          const { listLikedAlbums } = await getLikedAlbumList(
+            accessToken,
+            user?._id
+          );
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
         } else alert("Chưa có accessToken");
@@ -111,34 +113,28 @@ export default function NewsTab() {
 
   //add like album to db
   const addToLikedAlbums = async (albumId) => {
-    fetch(
-      `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/addLikedAlbums`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedAlbums`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike album on db
   const unlikeAlbum = async (albumId) => {
-    fetch(
-      `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/unlikeAlbum`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ albumId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeAlbum`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ albumId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
@@ -156,34 +152,28 @@ export default function NewsTab() {
 
   //add like song to db
   const addToLikedSongs = async (songId) => {
-    fetch(
-      `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/addLikedSongs`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ songId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));
   };
   //unlike song on db
   const unlikeSong = async (songId) => {
-    fetch(
-      `https://bf40-2405-4802-a39b-a4d0-b040-fdd4-ec8a-4ef.ngrok-free.app/auth/${user._id}/unlikeSongs`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ songId }),
-      }
-    )
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
       .then((response) => response.json())
       .then((updatedUser) => console.log(updatedUser))
       .catch((error) => console.error(error));

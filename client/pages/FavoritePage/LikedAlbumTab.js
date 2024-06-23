@@ -201,11 +201,13 @@ export default function LikedAlbumTab() {
           onPress={handleSort}
         >
           <MaterialCommunityIcons
-            name={sortOrder === 0
-              ? "sort-variant-remove"
-              : sortOrder === 1
-              ? "sort-alphabetical-ascending"
-              : "sort-clock-ascending-outline"}
+            name={
+              sortOrder === 0
+                ? "sort-variant-remove"
+                : sortOrder === 1
+                ? "sort-alphabetical-ascending"
+                : "sort-clock-ascending-outline"
+            }
             color={COLOR.btnBackgroundColor}
             size={30}
           />

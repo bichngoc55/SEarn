@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -47,7 +47,7 @@ export default function PublicPlaylist() {
   // };
 
   // useEffect(() => {
-  //   const fetchPublicPlaylists = async () => { 
+  //   const fetchPublicPlaylists = async () => {
   //     try {
   //       const response = await fetch("http://10.0.2.2:3005/playlists/public", {
   //         method: "GET",
@@ -182,7 +182,12 @@ export default function PublicPlaylist() {
           placeholder="Select a playlist"
           data={data}
           arrowicon={
-            <FontAwesome name="chevron-down" size={12} color={"white"} style={{alignSelf:"center"}} />
+            <FontAwesome
+              name="chevron-down"
+              size={12}
+              color={"white"}
+              style={{ alignSelf: "center" }}
+            />
           }
           search={false}
           dropdownStyles={{
@@ -190,8 +195,8 @@ export default function PublicPlaylist() {
             width: "70%",
             color: "white",
             marginTop: scale(40),
-            position:"absolute",
-            zIndex: 2
+            position: "absolute",
+            zIndex: 2,
           }}
           dropdownTextStyles={{ color: "white" }}
           boxStyles={{
@@ -221,7 +226,7 @@ export default function PublicPlaylist() {
                 isLiked={item?.listUserIdLikes.includes(user?._id)}
               />
             )}
-            ListFooterComponent={<View style={{ height: scale(200)}}/>}
+            ListFooterComponent={<View style={{ height: scale(200) }} />}
           />
         ) : (
           <Text style={{ color: "white" }}>
@@ -230,7 +235,7 @@ export default function PublicPlaylist() {
         )}
       </View> */}
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -254,12 +259,12 @@ const styles = StyleSheet.create({
     marginTop: scale(20),
     alignItems: "center",
     marginHorizontal: scale(20),
-    justifyContent:"space-between"
+    justifyContent: "space-between",
   },
   flatlistContainer: {
     marginTop: scale(20),
     marginHorizontal: scale(10),
-    zIndex: 1
+    zIndex: 1,
   },
   playlistItem: {
     flexDirection: "row",
@@ -270,6 +275,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "gray",
   },
-  input: {
-  },
+  input: {},
 });

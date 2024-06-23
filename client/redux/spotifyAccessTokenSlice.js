@@ -11,7 +11,7 @@ export const fetchSpotifyAccessToken = createAsyncThunk(
       );
 
       // console.log("response: " + JSON.stringify(response));
-      const data = await response;
+      const { data } = await response;
       // console.log("chay di ba noi: " + JSON.stringify(data));
 
       const { accessTokenForSpotify, expires_in } = data;

@@ -281,6 +281,43 @@ const PlaylistDetailMongo = ({ route }) => {
   const handleCommentChange = (text) => {
     setNewComment(text);
   };
+  const renderComments = () => (
+    <View style={styles.commentContainer}>
+      <View style={styles.commentPost}>
+        <TextInput
+          style={styles.textComment}
+          placeholderTextColor={"grey"}
+          value={newComment}
+          onChangeText={handleCommentChange}
+          placeholder="Viết bình luận..."
+          multiline={true}
+          blurOnSubmit={false}
+        />
+        <TouchableOpacity
+          onPress={handlePostComment}
+          style={{
+            paddingHorizontal: scale(10),
+            paddingVertical: scale(5),
+            borderRadius: scale(10),
+          }}
+        >
+          <Feather name="send" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      {comments.map((item) => (
+        <RenderComment
+          key={item._id}
+          comment={item}
+          handlePostResponse={handlePostResponse}
+          toggleResponses={toggleResponses}
+          selectedCommentId={selectedCommentId}
+          setModifiedComment={setModifiedComment}
+          onDeleteComment={handleDeleteComment}
+          onSubmitModifiedComment={handleSubmitModifiedComment}
+        />
+      ))}
+    </View>
+  );
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
@@ -344,46 +381,8 @@ const PlaylistDetailMongo = ({ route }) => {
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-75}
             keyExtractor={(item) => item.id}
+            ListFooterComponent={renderComments}
           />
-          <View style={styles.commentContainer}>
-            <View style={styles.commentPost}>
-              <TextInput
-                style={styles.textComment}
-                placeholderTextColor={"grey"}
-                value={newComment}
-                onChangeText={handleCommentChange}
-                placeholder="Viết bình luận..."
-                keyboardShouldPersistTaps="handled"
-                multiline={true}
-                blurOnSubmit={false}
-              />
-              <TouchableOpacity
-                onPress={handlePostComment}
-                style={{
-                  paddingHorizontal: scale(10),
-                  paddingVertical: scale(5),
-                  borderRadius: scale(10),
-                }}
-              >
-                <Feather name="send" size={24} color="white" />
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={comments}
-              keyExtractor={(comment) => comment._id}
-              renderItem={({ item }) => (
-                <RenderComment
-                  comment={item}
-                  handlePostResponse={handlePostResponse}
-                  toggleResponses={toggleResponses}
-                  selectedCommentId={selectedCommentId}
-                  setModifiedComment={setModifiedComment}
-                  onDeleteComment={handleDeleteComment}
-                  onSubmitModifiedComment={handleSubmitModifiedComment}
-                />
-              )}
-            />
-          </View>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>

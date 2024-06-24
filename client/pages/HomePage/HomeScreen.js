@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 
 import scale from "../../constant/responsive";
 import { COLOR } from "../../constant/color";
@@ -18,12 +18,16 @@ import { useSelector, dispatch, useDispatch  } from "react-redux";
 import NewsTab from "./NewTabScreen";
 import RelatedArtist from "./RelatedArtists";
 import PublicPlaylist from "./PublicPlaylist";
-import { useNavigation } from "@react-navigation/native";
 import AudioService from "../../service/audioService";
 import { getTrack } from "../../service/songService";
 import { fetchSpotifyAccessToken } from "../../redux/spotifyAccessTokenSlice";
+import RecentlyPlayingSong from "../../components/recentPlayingSong";
+import RecentlyPlayingContainer from '../../components/RecentlyPlayingContainer'
 const HomePage = () => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const [progress, setProgress] = useState(0);
+  const [total, setTotal] = useState(0);
   // const fetchData = useCallback(() => {
   //   // Logic to fetch data or perform any action when the screen is focused
   //   console.log('HomePage is focused');
@@ -44,93 +48,9 @@ const HomePage = () => {
 
   const [recentlyPlayingSong, setRecentlyPlayingSong] = useState();
   const [playSong, setPlaySong] = useState();
+  const [name, setName] = useState("");
   const dispatch = useDispatch();
-  let service = new AudioService();
-
-  const MoveToPlaySong = async () => {
-    //service.loadSong();
-    if (service.currentSong != null) {
-      navigation.navigate("PlaySong", {
-        song: service.currentSong,
-      });
-    } else if (recentlyPlayingSong != null) {
-      service.currentTime = 0;
-      service.currentSong = recentlyPlayingSong;
-      service.playCurrentAudio();
-      service.isGetCoin = true;
-      navigation.navigate("PlaySong", {
-        song: service.currentSong,
-      });
-    } else alert("No audio available");
-  };
-
-  //get in4 recentlySong from spotify
-  useEffect(() => {
-    dispatch(fetchSpotifyAccessToken());
-    const fetchRecentlyPlayingSong = async () => {
-      try {
-        if (accessTokenForSpotify) {
-          const song = await getTrack(
-            accessTokenForSpotify,
-            user?.recentListeningSong
-          );
-          setRecentlyPlayingSong(song);
-          console.log("Get song from db: " + song.name);
-        } else alert("Chưa có accessTokenForSpotify");
-      } catch (error) {
-        console.error(
-          "Error fetching recently playing song in HomeScreen:",
-          error
-        );
-      }
-    };
-    if (accessTokenForSpotify && user?._id && user?.recentListeningSong) {
-      fetchRecentlyPlayingSong();
-    }
-  }, [user?._id, accessTokenForSpotify, user?.recentListeningSong]);
-
-  //update recentlySong
-  const updateRecentlyPlayingSong = async (songId) => {
-    fetch(`http://10.0.2.2:3005/auth/${user?._id}/updateRecentListeningSong`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ songId }),
-    })
-      .then((response) => response.json())
-      .then((updatedUser) => console.log(updatedUser))
-      .catch((error) => console.error(error));
-  };
-
-  useEffect(() => {
-    const newRecentlyPlayingSong = async () => {
-      try {
-        if (accessTokenForSpotify) {
-          if (
-            recentlyPlayingSong?.id !== service?.currentSong?.id &&
-            service.currentSong
-          ) {
-            updateRecentlyPlayingSong(service.currentSong.id);
-          }
-        }
-      } catch (error) {
-        console.error(
-          "Error fetching recently playing song in HomeScreen:",
-          error
-        );
-      }
-    };
-    if (
-      accessTokenForSpotify &&
-      recentlyPlayingSong !== service.currentSong &&
-      user?.recentListeningSong
-    ) {
-      newRecentlyPlayingSong();
-    }
-  }, [user?._id, accessTokenForSpotify, service?.currentSong]);
-
+  const MemoizedRecentlyPlayingContainer = React.memo(RecentlyPlayingContainer);
   const NewsTabScreen = () => (
     <View style={{ flex: 1 }}>
       <NewsTab />
@@ -202,43 +122,8 @@ const HomePage = () => {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <View style={styles.recentSongContainer}>
-        {recentlyPlayingSong ? (
-          <>
-            <View
-              style={{ flexDirection: "column", marginHorizontal: scale(10) }}
-            >
-              <Text style={styles.songName}>{recentlyPlayingSong?.name}</Text>
-              <Text style={styles.artistsName}>
-                {recentlyPlayingSong?.artists
-                  .map((artist) => artist.name)
-                  .join(", ")}{" "}
-              </Text>
-            </View>
-            <TouchableOpacity onPress={MoveToPlaySong}>
-              <Image
-                source={{ uri: recentlyPlayingSong?.album?.image }}
-                style={styles.circle}
-              />
-            </TouchableOpacity>
-          </>
-        ) : (
-          <>
-            <View
-              style={{
-                flexDirection: "column",
-                marginHorizontal: scale(10),
-                width: scale(170),
-              }}
-            >
-              <Text style={styles.artistsName}>
-                Chưa có bài hát nào được phát gần đây
-              </Text>
-            </View>
-            <View style={styles.circle} />
-          </>
-        )}
-      </View>
+      {/* <RecentlyPlayingSong/> */}
+      <RecentlyPlayingContainer />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -252,8 +137,6 @@ const HomePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    height: "100%",
     backgroundColor: "#1C1B1B",
   },
   recentSongContainer: {

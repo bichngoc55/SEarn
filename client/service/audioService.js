@@ -68,26 +68,26 @@ class AudioService {
         console.log("Next song");
         await this.playNextAudio();
       }
-      // if (this.isGetCoin) {
-      //   try {
-      //     const response = await fetch(
-      //       `http://10.0.2.2:3005/auth/${user?._id}/increaseCoin`,
-      //       {
-      //         method: "PUT",
-      //         headers: {
-      //           "Content-Type": "application/json",
-      //         },
-      //       }
-      //     );
-      //     const data = await response.json();
-      //     if (response.ok) {
-      //       console.log("Data being sent:", JSON.stringify(data, null, 2));
-      //       //lam j nua thi k bt
-      //     } else {
-      //       console.error("Error liking/unliking playlist:", data.message);
-      //     }
-      //   } catch (e) {}
-      // }
+      if (this.isGetCoin) {
+        try {
+          const response = await fetch(
+            `http://10.0.2.2:3005/auth/${this.userId}/increaseCoin`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await response.json();
+          if (response.ok) {
+            console.log("Data being sent:", JSON.stringify(data, null, 2));
+            //lam j nua thi k bt
+          } else {
+            console.error("Error liking/unliking playlist:", data.message);
+          }
+        } catch (e) {}
+      }
       this.isGetCoin = true;
     }
     this.onPlaybackStatusChange(status);

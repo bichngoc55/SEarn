@@ -26,7 +26,7 @@ import PlaySongPage from "./pages/PlaySongPage/PlaySong";
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [showAd, setShowAd] = useState(false);
-  const bannerRef = useRef(null);
+  // const bannerRef = useRef(null);
 
   // useEffect(() => {
   //   const manageAdVisibility = () => {

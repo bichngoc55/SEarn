@@ -275,7 +275,7 @@ const PlaySongPage = ({ route }) => {
                 <Text
                   style={{
                     color: "white",
-                    // borderWidth: "1px",
+                    borderWidth: 1,
                     borderColor: "white",
                     borderRadius: 10,
                     minWidth: "15%",
@@ -292,8 +292,7 @@ const PlaySongPage = ({ route }) => {
                   optionsContainer: {
                     backgroundColor: "gray",
                     padding: 5,
-                    top: 0,
-                    marginTop: "10%",
+                    marginTop: '10%',
                     borderRadius: 5,
                     maxHeight: 150,
                     width: "auto",
@@ -336,7 +335,7 @@ const PlaySongPage = ({ route }) => {
         </View>
         <View style={styles.headerL}>
           <Slider
-            style={{ width: "100%" }}
+            style={{ width: "100%"}}
             minimumTrackTintColor="#FED215"
             maximumTrackTintColor="#2b2b2b"
             value={service.currentTime}

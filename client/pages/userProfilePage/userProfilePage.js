@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TextInput,
   Button,
+  Alert,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
@@ -91,7 +92,7 @@ export default function UserPage() {
       quality: 1,
     });
 
-    console.log("image " + result.assets[0].uri);
+    // console.log("image " + result.assets[0].uri);
     if (!result.canceled) {
       const newFile = {
         uri: result.assets[0].uri,
@@ -265,22 +266,30 @@ export default function UserPage() {
         <TouchableOpacity onPress={() => pickImage("backgroundImage")}>
           <View style={styles.headerContainer}>
             <View style={[styles.backgroundImage, styles.roundedCorners]}>
-              <ImageBackground
-                source={{ uri: backgroundImage }}
-                style={styles.backgroundImage}
-                resizeMode="cover"
-              />
+              {backgroundImage ? (
+                <ImageBackground
+                  source={{ uri: backgroundImage }}
+                  style={styles.backgroundImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.backgroundImagePlaceholder} />
+              )}
             </View>
             <View style={styles.avatarOverlay}>
               <TouchableOpacity
                 onPress={(e) => pickImage("ava")}
                 style={styles.avatarContainer}
               >
-                <Image
-                  source={{ uri: image }}
-                  style={styles.avatarImage}
-                  resizeMode="cover"
-                />
+                {image ? (
+                  <Image
+                    source={{ uri: image }}
+                    style={styles.avatarImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={styles.avatarImagePlaceholder} />
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -325,7 +334,12 @@ export default function UserPage() {
           </TouchableOpacity>
           <Text style={styles.sectionTitle}>Options</Text>
 
-          <TouchableOpacity style={styles.itemContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert("Up to Date", "Your app is already up to date.");
+            }}
+            style={styles.itemContainer}
+          >
             <MaterialIcons name="update" size={22} color="white" />
             <Text style={styles.itemText}>Check for updates</Text>
           </TouchableOpacity>

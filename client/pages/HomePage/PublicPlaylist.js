@@ -46,46 +46,41 @@ export default function PublicPlaylist() {
     }
   };
 
-  useEffect(() => {
-    const fetchPublicPlaylists = async () => {
-      try {
-        const response = await fetch("http://10.0.2.2:3005/playlists/public", {
+  const fetchPublicPlaylists = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:3005/playlists/public", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      // console.log("public playlist " + JSON.stringify(data, null, 2));
+      setAllPlaylistList(data);
+      setRenderedPlaylist(data);
+    } catch (error) {
+      console.error("Error fetching public playlists:", error);
+    }
+  };
+
+  const fetchLikedPlaylists = async () => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:3005/playlists/liked/${user?._id}`,
+        {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
-        });
-        const data = await response.json();
-        // console.log("public playlist " + JSON.stringify(data, null, 2));
-        setAllPlaylistList(data);
-        setRenderedPlaylist(data);
-      } catch (error) {
-        console.error("Error fetching public playlists:", error);
-      }
-    };
-
-    const fetchLikedPlaylists = async () => {
-      try {
-        const response = await fetch(
-          `http://10.0.2.2:3005/playlists/liked/${user._id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        // console.log("like playlist " + JSON.stringify(data, null, 2));
-        setLikedPlaylist(data);
-      } catch (error) {
-        console.error("Error fetching liked playlists:", error);
-      }
-    };
-
-    fetchPublicPlaylists();
-    fetchLikedPlaylists();
-  }, [user?._id]);
+        }
+      );
+      const data = await response.json();
+      // console.log("like playlist " + JSON.stringify(data, null, 2));
+      setLikedPlaylist(data);
+    } catch (error) {
+      console.error("Error fetching liked playlists:", error);
+    }
+  };
   const handleLikeUnlike = async (playlistId) => {
     try {
       const response = await fetch(
@@ -119,11 +114,26 @@ export default function PublicPlaylist() {
       console.error("Error liking/unliking playlist:", error);
     }
   };
+  useEffect(() => {
+    fetchPublicPlaylists();
+    fetchLikedPlaylists();
+  }, [user?._id]);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchPublicPlaylists();
+      fetchLikedPlaylists();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+  useEffect(() => {
     const fetchCoinBalance = async () => {
+      if (!userId) {
+        console.error("User ID is undefined");
+        return;
+      }
       try {
-        console.log("userId: " + userId);
         const response = await fetch(
           `http://10.0.2.2:3005/auth/${userId}/coins`,
           {
@@ -134,18 +144,19 @@ export default function PublicPlaylist() {
           }
         );
         const data = await response.json();
-        // console.log("Data being sent:", JSON.stringify(data, null, 2));
         if (response.ok) {
           setCoin(data.userCoin);
         } else {
           console.error("Error getting coin:", data.message);
         }
       } catch (error) {
-        console.error("Error show token  :", error);
+        console.error("Error showing token:", error);
       }
     };
 
-    fetchCoinBalance();
+    if (userId) {
+      fetchCoinBalance();
+    }
   }, [userId]);
 
   const handleSort = async () => {

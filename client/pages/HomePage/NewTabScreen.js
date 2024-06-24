@@ -55,7 +55,8 @@ export default function NewsTab() {
           );
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
-        } else alert("Chưa có accessToken");
+        } else {
+        }
       } catch (error) {
         console.error("Error fetching liked albums in NewsTab:", error);
       }
@@ -81,9 +82,7 @@ export default function NewsTab() {
           const likedSong = await response.json();
           setLikedSongList(likedSong);
         }
-      } catch (error) {
-        alert("Error in likedsong: " + error);
-      }
+      } catch (error) {}
     };
     getLikedSong();
   }, [user?._id, accessToken]);

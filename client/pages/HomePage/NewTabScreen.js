@@ -55,7 +55,8 @@ export default function NewsTab() {
           );
           const albumIds = listLikedAlbums.map((likedAlbum) => likedAlbum.id);
           setLikedAlbumList(albumIds);
-        } else alert("Chưa có accessToken");
+        } 
+        // else alert("Chưa có accessToken");
       } catch (error) {
         console.error("Error fetching liked albums in NewsTab:", error);
       }

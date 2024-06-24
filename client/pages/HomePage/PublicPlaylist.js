@@ -20,151 +20,151 @@ import { useSelector, useDispatch } from "react-redux";
 import { FontAwesome } from "@expo/vector-icons";
 
 export default function PublicPlaylist() {
-  const [publicPlaylist, setPublicPlaylist] = useState(null);
-  const [selected, setSelected] = useState("");
-  const { user } = useSelector((state) => state.user);
-  const navigation = useNavigation();
-  const userId = user?._id;
+  // const [publicPlaylist, setPublicPlaylist] = useState(null);
+  // const [selected, setSelected] = useState("");
+  // const { user } = useSelector((state) => state.user);
+  // const navigation = useNavigation();
+  // const userId = user?._id;
 
-  const data = [
-    { key: "1", value: "Trending playlist" },
-    { key: "2", value: "Your liked playlist" },
-  ];
-  const [allPlaylistList, setAllPlaylistList] = useState([]);
-  const [likedPlaylist, setLikedPlaylist] = useState([]);
-  const [renderedPlaylist, setRenderedPlaylist] = useState([]);
-  const [isLiked, setIsLiked] = useState(true);
-  const [isDescending, setIsDescending] = useState(true);
-  const [updatedPlaylist, setUpdatedPlaylist] = useState(null);
-  const [coin, setCoin] = useState(0);
+  // const data = [
+  //   { key: "1", value: "Trending playlist" },
+  //   { key: "2", value: "Your liked playlist" },
+  // ];
+  // const [allPlaylistList, setAllPlaylistList] = useState([]);
+  // const [likedPlaylist, setLikedPlaylist] = useState([]);
+  // const [renderedPlaylist, setRenderedPlaylist] = useState([]);
+  // const [isLiked, setIsLiked] = useState(true);
+  // const [isDescending, setIsDescending] = useState(true);
+  // const [updatedPlaylist, setUpdatedPlaylist] = useState(null);
+  // const [coin, setCoin] = useState(0);
 
-  const handleSelected = async (selected) => {
-    if (selected === "Trending playlist") {
-      await setRenderedPlaylist(allPlaylistList);
-    } else if (selected === "Your liked playlist") {
-      await setRenderedPlaylist(likedPlaylist);
-    }
-  };
+  // const handleSelected = async (selected) => {
+  //   if (selected === "Trending playlist") {
+  //     await setRenderedPlaylist(allPlaylistList);
+  //   } else if (selected === "Your liked playlist") {
+  //     await setRenderedPlaylist(likedPlaylist);
+  //   }
+  // };
 
-  useEffect(() => {
-    const fetchPublicPlaylists = async () => {
-      try {
-        const response = await fetch("http://10.0.2.2:3005/playlists/public", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        // console.log("public playlist " + JSON.stringify(data, null, 2));
-        setAllPlaylistList(data);
-        setRenderedPlaylist(data);
-      } catch (error) {
-        console.error("Error fetching public playlists:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchPublicPlaylists = async () => {
+  //     try {
+  //       const response = await fetch("http://10.0.2.2:3005/playlists/public", {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
+  //       const data = await response.json();
+  //       // console.log("public playlist " + JSON.stringify(data, null, 2));
+  //       setAllPlaylistList(data);
+  //       setRenderedPlaylist(data);
+  //     } catch (error) {
+  //       console.error("Error fetching public playlists:", error);
+  //     }
+  //   };
 
-    const fetchLikedPlaylists = async () => {
-      try {
-        const response = await fetch(
-          `http://10.0.2.2:3005/playlists/liked/${user._id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        // console.log("like playlist " + JSON.stringify(data, null, 2));
-        setLikedPlaylist(data);
-      } catch (error) {
-        console.error("Error fetching liked playlists:", error);
-      }
-    };
+  //   const fetchLikedPlaylists = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `http://10.0.2.2:3005/playlists/liked/${user?._id}`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+  //       const data = await response.json();
+  //       // console.log("like playlist " + JSON.stringify(data, null, 2));
+  //       setLikedPlaylist(data);
+  //     } catch (error) {
+  //       console.error("Error fetching liked playlists:", error);
+  //     }
+  //   };
 
-    fetchPublicPlaylists();
-    fetchLikedPlaylists();
-  }, [user?._id]);
-  const handleLikeUnlike = async (playlistId) => {
-    try {
-      const response = await fetch(
-        `http://10.0.2.2:3005/playlists/liked/${playlistId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: user?._id }),
-        }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        setLikedPlaylist((prevLikedPlaylist) =>
-          prevLikedPlaylist.map((playlist) =>
-            playlist._id === data._id ? data : playlist
-          )
-        );
-        setRenderedPlaylist((prevRenderedPlaylist) =>
-          prevRenderedPlaylist.map((playlist) =>
-            playlist._id === data._id ? data : playlist
-          )
-        );
-        console.log("Data being sent:", JSON.stringify(data, null, 2));
-        setCoin(data.userCoin);
-      } else {
-        console.error("Error liking/unliking playlist:", data.message);
-      }
-    } catch (error) {
-      console.error("Error liking/unliking playlist:", error);
-    }
-  };
+  //   fetchPublicPlaylists();
+  //   fetchLikedPlaylists();
+  // }, [user?._id]);
+  // const handleLikeUnlike = async (playlistId) => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://10.0.2.2:3005/playlists/liked/${playlistId}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ userId: user?._id }),
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       setLikedPlaylist((prevLikedPlaylist) =>
+  //         prevLikedPlaylist.map((playlist) =>
+  //           playlist._id === data._id ? data : playlist
+  //         )
+  //       );
+  //       setRenderedPlaylist((prevRenderedPlaylist) =>
+  //         prevRenderedPlaylist.map((playlist) =>
+  //           playlist._id === data._id ? data : playlist
+  //         )
+  //       );
+  //       console.log("Data being sent:", JSON.stringify(data, null, 2));
+  //       setCoin(data.userCoin);
+  //     } else {
+  //       console.error("Error liking/unliking playlist:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error liking/unliking playlist:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    const fetchCoinBalance = async () => {
-      try {
-        console.log("userId: " + userId);
-        const response = await fetch(
-          `http://10.0.2.2:3005/auth/${userId}/coins`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        // console.log("Data being sent:", JSON.stringify(data, null, 2));
-        if (response.ok) {
-          setCoin(data.userCoin);
-        } else {
-          console.error("Error getting coin:", data.message);
-        }
-      } catch (error) {
-        console.error("Error show token  :", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCoinBalance = async () => {
+  //     try {
+  //       console.log("userId: " + userId);
+  //       const response = await fetch(
+  //         `http://10.0.2.2:3005/auth/${userId}/coins`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+  //       const data = await response.json();
+  //       // console.log("Data being sent:", JSON.stringify(data, null, 2));
+  //       if (response.ok) {
+  //         setCoin(data.userCoin);
+  //       } else {
+  //         console.error("Error getting coin:", data.message);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error show token  :", error);
+  //     }
+  //   };
 
-    fetchCoinBalance();
-  }, [userId]);
+  //   fetchCoinBalance();
+  // }, [userId]);
 
-  const handleSort = async () => {
-    console.log("Sorting...");
-    const sortedPlaylist = [...renderedPlaylist];
+  // const handleSort = async () => {
+  //   console.log("Sorting...");
+  //   const sortedPlaylist = [...renderedPlaylist];
 
-    if (isDescending) {
-      sortedPlaylist.sort((a, b) => a.numberOfLikes - b.numberOfLikes);
-    } else {
-      sortedPlaylist.sort((a, b) => b.numberOfLikes - a.numberOfLikes);
-    }
+  //   if (isDescending) {
+  //     sortedPlaylist.sort((a, b) => a.numberOfLikes - b.numberOfLikes);
+  //   } else {
+  //     sortedPlaylist.sort((a, b) => b.numberOfLikes - a.numberOfLikes);
+  //   }
 
-    setIsDescending(!isDescending);
+  //   setIsDescending(!isDescending);
 
-    setRenderedPlaylist(sortedPlaylist);
-  };
+  //   setRenderedPlaylist(sortedPlaylist);
+  // };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity>
           <Text style={styles.title}>
             Token Balance :{" "}
@@ -208,7 +208,7 @@ export default function PublicPlaylist() {
         />
         <TouchableOpacity onPress={handleSort}>
           <MaterialCommunityIcons
-            name="sort-clock-ascending-outline"
+            name="sort-numeric-descending"
             color={COLOR.btnBackgroundColor}
             size={30}
           />
@@ -233,7 +233,7 @@ export default function PublicPlaylist() {
             You haven't liked any playlists yet.
           </Text>
         )}
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }

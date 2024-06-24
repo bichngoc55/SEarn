@@ -21,10 +21,18 @@ class AudioService {
       this.currentAudio = null;
       this.userId = null;
       this.isGetCoin = true;
+      this.listeners = [];
+      this.playbackStatusCallbacks = [];
       AudioService.instance = this;
     } else return AudioService.instance;
   }
 
+  async addListener(listener) {
+    if (typeof listener === 'function' && !this.listeners.includes(listener)) {
+      this.listeners.push(listener);
+    }
+  }
+  
   async loadSong() {
     try {
       await Audio.setAudioModeAsync({
@@ -51,12 +59,12 @@ class AudioService {
   async onPlaybackStatusUpdated(status) {
     this.currentTime = status.positionMillis;
     this.currentTotalTime = status.durationMillis;
-    if (this.playbackStatusCallback) {
-      this.playbackStatusCallback({
+    this.playbackStatusCallbacks.forEach(callback => {
+      callback({
         progress: status.positionMillis,
         total: status.durationMillis,
       });
-    }
+    });
     //const { user } = useSelector((state) => state.user);
     if (status.didJustFinish) {
       status.positionMillis = 0;
@@ -94,10 +102,9 @@ class AudioService {
   }
 
   onPlaybackStatusChange(status) {
-    // Nếu component đã đăng ký callback này, hãy gọi nó
-    if (this.playbackStatusCallback) {
-      this.playbackStatusCallback(status);
-    }
+    this.playbackStatusCallbacks.forEach(callback => {
+      callback(status);
+    });
   }
 
   shufflePlaylist() {
@@ -119,14 +126,14 @@ class AudioService {
 
   // Cho phép component đăng ký callback này
   registerPlaybackStatusCallback(callback) {
-    this.playbackStatusCallback = callback;
+    if (!this.playbackStatusCallbacks.includes(callback)) {
+      this.playbackStatusCallbacks.push(callback);
+    }
   }
 
-  // unregisterPlaybackStatusCallback(callback) {
-  //   this.playbackStatusCallbacks = this.playbackStatusCallbacks.filter(
-  //     (cb) => cb !== callback
-  //   );
-  // }
+  unregisterPlaybackStatusCallback(callback) {
+    this.playbackStatusCallbacks = this.playbackStatusCallbacks.filter(cb => cb !== callback);
+  }
 
   async playCurrentAudio() {
     if (this.currentSound != null) {

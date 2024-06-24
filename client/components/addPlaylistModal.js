@@ -93,7 +93,7 @@ const AddPlaylistModal = ({ visible, onClose }) => {
             <Switch
               trackColor={{ false: "#767577", true: "#FED215" }}
               thumbColor={"#f4f3f4"}
-              style={{ width: "100%" }}
+              style={{ width: scale(40), height: scale(50)}}
               onValueChange={toggleSwitch}
               value={isPublic}
             />

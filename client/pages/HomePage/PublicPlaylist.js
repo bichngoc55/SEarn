@@ -20,31 +20,31 @@ import { useSelector, useDispatch } from "react-redux";
 import { FontAwesome } from "@expo/vector-icons";
 
 export default function PublicPlaylist() {
-  const [publicPlaylist, setPublicPlaylist] = useState(null);
-  const [selected, setSelected] = useState("");
-  const { user } = useSelector((state) => state.user);
-  const navigation = useNavigation();
-  const userId = user?._id;
+  // const [publicPlaylist, setPublicPlaylist] = useState(null);
+  // const [selected, setSelected] = useState("");
+  // const { user } = useSelector((state) => state.user);
+  // const navigation = useNavigation();
+  // const userId = user?._id;
 
-  const data = [
-    { key: "1", value: "Trending playlist" },
-    { key: "2", value: "Your liked playlist" },
-  ];
-  const [allPlaylistList, setAllPlaylistList] = useState([]);
-  const [likedPlaylist, setLikedPlaylist] = useState([]);
-  const [renderedPlaylist, setRenderedPlaylist] = useState([]);
-  const [isLiked, setIsLiked] = useState(true);
-  const [isDescending, setIsDescending] = useState(true);
-  const [updatedPlaylist, setUpdatedPlaylist] = useState(null);
-  const [coin, setCoin] = useState(0);
+  // const data = [
+  //   { key: "1", value: "Trending playlist" },
+  //   { key: "2", value: "Your liked playlist" },
+  // ];
+  // const [allPlaylistList, setAllPlaylistList] = useState([]);
+  // const [likedPlaylist, setLikedPlaylist] = useState([]);
+  // const [renderedPlaylist, setRenderedPlaylist] = useState([]);
+  // const [isLiked, setIsLiked] = useState(true);
+  // const [isDescending, setIsDescending] = useState(true);
+  // const [updatedPlaylist, setUpdatedPlaylist] = useState(null);
+  // const [coin, setCoin] = useState(0);
 
-  const handleSelected = async (selected) => {
-    if (selected === "Trending playlist") {
-      await setRenderedPlaylist(allPlaylistList);
-    } else if (selected === "Your liked playlist") {
-      await setRenderedPlaylist(likedPlaylist);
-    }
-  };
+  // const handleSelected = async (selected) => {
+  //   if (selected === "Trending playlist") {
+  //     await setRenderedPlaylist(allPlaylistList);
+  //   } else if (selected === "Your liked playlist") {
+  //     await setRenderedPlaylist(likedPlaylist);
+  //   }
+  // };
 
   const fetchPublicPlaylists = async () => {
     try {
@@ -159,23 +159,23 @@ export default function PublicPlaylist() {
     }
   }, [userId]);
 
-  const handleSort = async () => {
-    console.log("Sorting...");
-    const sortedPlaylist = [...renderedPlaylist];
+  // const handleSort = async () => {
+  //   console.log("Sorting...");
+  //   const sortedPlaylist = [...renderedPlaylist];
 
-    if (isDescending) {
-      sortedPlaylist.sort((a, b) => a.numberOfLikes - b.numberOfLikes);
-    } else {
-      sortedPlaylist.sort((a, b) => b.numberOfLikes - a.numberOfLikes);
-    }
+  //   if (isDescending) {
+  //     sortedPlaylist.sort((a, b) => a.numberOfLikes - b.numberOfLikes);
+  //   } else {
+  //     sortedPlaylist.sort((a, b) => b.numberOfLikes - a.numberOfLikes);
+  //   }
 
-    setIsDescending(!isDescending);
+  //   setIsDescending(!isDescending);
 
-    setRenderedPlaylist(sortedPlaylist);
-  };
+  //   setRenderedPlaylist(sortedPlaylist);
+  // };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity>
           <Text style={styles.title}>
             Token Balance :{" "}
@@ -219,7 +219,7 @@ export default function PublicPlaylist() {
         />
         <TouchableOpacity onPress={handleSort}>
           <MaterialCommunityIcons
-            name="sort-clock-ascending-outline"
+            name="sort-numeric-descending"
             color={COLOR.btnBackgroundColor}
             size={30}
           />
@@ -244,7 +244,7 @@ export default function PublicPlaylist() {
             You haven't liked any playlists yet.
           </Text>
         )}
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }

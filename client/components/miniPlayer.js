@@ -30,23 +30,42 @@ const MiniPlayer = () => {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [progress, setProgress] = useState(0);
+  const [name, setName] = useState("")
   const [isVisible, setIsVisible] = useState(true);
   const [isPlay, setIsPlay] = useState(false);
-  const [name, setName] = useState("");
+  const [currentSong, setCurrentSong] = useState(null);
   const [total, setTotal] = useState(0);
   const pan = React.useRef(new Animated.ValueXY()).current;
   const translateX = useRef(new Animated.Value(0)).current;
   const { width, height } = useWindowDimensions();
+  const serviceRef = useRef(null);
+  
 
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     if (service.currentSong) {
+  //       setCurrentSong(service.currentSong);
+  //       setIsPlay(service.isPlay);
+  //     }
+  //   }
+  // }, [isFocused, service.currentSong, service.isPlay]);
   useEffect(() => {
-    if (isFocused) {
-      if (service.currentSong)
-        {
-      setName(service.currentSong.name);
-      setIsPlay(service.isPlay);
-        }
-    }
-  }, [isFocused]);
+    // if (!serviceRef.current) {
+    //   serviceRef.current = new AudioService();
+    // }
+    // const service = serviceRef.current;
+    if (isFocused)
+      {
+    const handlePlaybackStatus = ({ progress, total }) => {
+      setProgress(progress);
+      setTotal(total);
+    };
+    service.registerPlaybackStatusCallback(handlePlaybackStatus);
+  }
+ 
+  
+  }, [service.currentSong, isFocused]);
+
 
   const [track, setTrack] = useState({
     title: "No playing track",
@@ -137,7 +156,7 @@ const MiniPlayer = () => {
                 ellipsizeMode="tail"
                 style={styles.songname}
               >
-                {name}
+                {service.currentSong.name}
               </Text>
               <Text
                 numberOfLines={1}
@@ -176,7 +195,7 @@ const MiniPlayer = () => {
             }}
           />
           {service.currentSong ? (
-            isPlay ? (
+            service.isPlay ? (
               <View
                 style={styles.circle}
                 onPress={() => {

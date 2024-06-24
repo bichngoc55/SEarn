@@ -10,6 +10,8 @@ import {
   TextInput,
   Pressable,
   FlatList,
+  ScrollView,
+  Platform,
   Image,
 } from "react-native";
 import { useSelector, useDispatch, Provider } from "react-redux";
@@ -17,6 +19,7 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardAvoidingView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
@@ -26,7 +29,6 @@ import { Entypo } from "@expo/vector-icons";
 import { getTrack } from "../../service/songService";
 import SongItem from "../../components/songItem";
 import MenuOfPlaylist from "../../components/menuOfPlaylist";
-import { ScrollView } from "react-native-gesture-handler";
 import { SwipeListView } from "react-native-swipe-list-view";
 import axios from "axios";
 
@@ -109,22 +111,19 @@ const PlaylistDetailMongo = ({ route }) => {
     //   modifiedComment.commentId
     // );
     if (!modifiedComment.content.trim() || !modifiedComment.commentId) return;
-    const commentId = modifiedComment.commentId;
-    // console.log("comment content modified: ", modifiedComment.content.trim());
-    // console.log("API: ", `http://10.0.2.2:3005/comment/${commentId}`);
+    const id = modifiedComment.commentId;
+    console.log("comment content modified: ", modifiedComment.content.trim());
+    console.log("API: ", `http://10.0.2.2:3005/comment/${id}`);
     try {
-      const response = await fetch(
-        `http://10.0.2.2:3005/comment/${commentId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: modifiedComment.content,
-          }),
-        }
-      );
+      const response = await fetch(`http://10.0.2.2:3005/comment/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: modifiedComment.content,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to modify comment");
@@ -144,19 +143,16 @@ const PlaylistDetailMongo = ({ route }) => {
       alert("Error modifying comment: " + error.message);
     }
   };
-  const handleDeleteComment = async (commentId) => {
+  const handleDeleteComment = async (id) => {
     // console.log("HEHHEHEHEHE :", commentId);
     try {
       // console.log("HEHEHEH");
-      const response = await fetch(
-        `http://10.0.2.2:3005/comment/${commentId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://10.0.2.2:3005/comment/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       // console.log("HEHHEHEHEHE :", commentId);
 
       if (!response.ok) {
@@ -271,13 +267,57 @@ const PlaylistDetailMongo = ({ route }) => {
         );
         console.log("Success");
         setTracks(tracks.filter((track) => track.id !== songIdInput));
+        // Check if the playlist is now empty
+        if (updatedSongs.length === 0) {
+          // Navigate back to PublicPlaylist screen
+          navigation.navigate("PublicPlaylist", { refresh: true });
+        }
         //showToastDelete();
       }
     } catch (error) {
       // alert(error.message);
     }
   };
-
+  const handleCommentChange = (text) => {
+    setNewComment(text);
+  };
+  const renderComments = () => (
+    <View style={styles.commentContainer}>
+      <View style={styles.commentPost}>
+        <TextInput
+          style={styles.textComment}
+          placeholderTextColor={"grey"}
+          value={newComment}
+          onChangeText={handleCommentChange}
+          placeholder="Viết bình luận..."
+          multiline={true}
+          blurOnSubmit={false}
+        />
+        <TouchableOpacity
+          onPress={handlePostComment}
+          style={{
+            paddingHorizontal: scale(10),
+            paddingVertical: scale(5),
+            borderRadius: scale(10),
+          }}
+        >
+          <Feather name="send" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      {comments.map((item) => (
+        <RenderComment
+          key={item._id}
+          comment={item}
+          handlePostResponse={handlePostResponse}
+          toggleResponses={toggleResponses}
+          selectedCommentId={selectedCommentId}
+          setModifiedComment={setModifiedComment}
+          onDeleteComment={handleDeleteComment}
+          onSubmitModifiedComment={handleSubmitModifiedComment}
+        />
+      ))}
+    </View>
+  );
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
@@ -341,44 +381,7 @@ const PlaylistDetailMongo = ({ route }) => {
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-75}
             keyExtractor={(item) => item.id}
-            ListFooterComponent={() => (
-              <View style={styles.commentContainer}>
-                <View style={styles.commentPost}>
-                  <TextInput
-                    style={styles.textComment}
-                    placeholderTextColor={"grey"}
-                    value={newComment}
-                    onChangeText={setNewComment}
-                    placeholder="Viết bình luận..."
-                  />
-                  <TouchableOpacity
-                    onPress={handlePostComment}
-                    style={{
-                      paddingHorizontal: scale(10),
-                      paddingVertical: scale(5),
-                      borderRadius: scale(10),
-                    }}
-                  >
-                    <Feather name="send" size={24} color="white" />
-                  </TouchableOpacity>
-                </View>
-                <FlatList
-                  data={comments}
-                  keyExtractor={(comment) => comment._id}
-                  renderItem={({ item }) => (
-                    <RenderComment
-                      comment={item}
-                      handlePostResponse={handlePostResponse}
-                      toggleResponses={toggleResponses}
-                      selectedCommentId={selectedCommentId}
-                      setModifiedComment={setModifiedComment}
-                      onDeleteComment={handleDeleteComment}
-                      onSubmitModifiedComment={handleSubmitModifiedComment}
-                    />
-                  )}
-                />
-              </View>
-            )}
+            ListFooterComponent={renderComments}
           />
         </View>
       </SafeAreaView>
@@ -456,6 +459,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderRadius: scale(10),
+    // height: scale(30),
     borderWidth: 1,
     color: "grey",
     alignItems: "center",
@@ -490,6 +494,9 @@ const styles = StyleSheet.create({
   backTextWhite: {
     color: "#FFF",
     textAlign: "center",
+  },
+  commentContainer: {
+    marginBottom: scale(90),
   },
 });
 export default PlaylistDetailMongo;

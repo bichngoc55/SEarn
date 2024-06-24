@@ -46,107 +46,118 @@ export default function PublicPlaylist() {
   //   }
   // };
 
-  // useEffect(() => {
-  //   const fetchPublicPlaylists = async () => {
-  //     try {
-  //       const response = await fetch("http://10.0.2.2:3005/playlists/public", {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       });
-  //       const data = await response.json();
-  //       // console.log("public playlist " + JSON.stringify(data, null, 2));
-  //       setAllPlaylistList(data);
-  //       setRenderedPlaylist(data);
-  //     } catch (error) {
-  //       console.error("Error fetching public playlists:", error);
-  //     }
-  //   };
+  const fetchPublicPlaylists = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:3005/playlists/public", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      // console.log("public playlist " + JSON.stringify(data, null, 2));
+      setAllPlaylistList(data);
+      setRenderedPlaylist(data);
+    } catch (error) {
+      console.error("Error fetching public playlists:", error);
+    }
+  };
 
-  //   const fetchLikedPlaylists = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://10.0.2.2:3005/playlists/liked/${user?._id}`,
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         }
-  //       );
-  //       const data = await response.json();
-  //       // console.log("like playlist " + JSON.stringify(data, null, 2));
-  //       setLikedPlaylist(data);
-  //     } catch (error) {
-  //       console.error("Error fetching liked playlists:", error);
-  //     }
-  //   };
+  const fetchLikedPlaylists = async () => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:3005/playlists/liked/${user?._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      // console.log("like playlist " + JSON.stringify(data, null, 2));
+      setLikedPlaylist(data);
+    } catch (error) {
+      console.error("Error fetching liked playlists:", error);
+    }
+  };
+  const handleLikeUnlike = async (playlistId) => {
+    try {
+      const response = await fetch(
+        `http://10.0.2.2:3005/playlists/liked/${playlistId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: user?._id }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setLikedPlaylist((prevLikedPlaylist) =>
+          prevLikedPlaylist.map((playlist) =>
+            playlist._id === data._id ? data : playlist
+          )
+        );
+        setRenderedPlaylist((prevRenderedPlaylist) =>
+          prevRenderedPlaylist.map((playlist) =>
+            playlist._id === data._id ? data : playlist
+          )
+        );
+        console.log("Data being sent:", JSON.stringify(data, null, 2));
+        setCoin(data.userCoin);
+      } else {
+        console.error("Error liking/unliking playlist:", data.message);
+      }
+    } catch (error) {
+      console.error("Error liking/unliking playlist:", error);
+    }
+  };
+  useEffect(() => {
+    fetchPublicPlaylists();
+    fetchLikedPlaylists();
+  }, [user?._id]);
 
-  //   fetchPublicPlaylists();
-  //   fetchLikedPlaylists();
-  // }, [user?._id]);
-  // const handleLikeUnlike = async (playlistId) => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://10.0.2.2:3005/playlists/liked/${playlistId}`,
-  //       {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ userId: user?._id }),
-  //       }
-  //     );
-  //     const data = await response.json();
-  //     if (response.ok) {
-  //       setLikedPlaylist((prevLikedPlaylist) =>
-  //         prevLikedPlaylist.map((playlist) =>
-  //           playlist._id === data._id ? data : playlist
-  //         )
-  //       );
-  //       setRenderedPlaylist((prevRenderedPlaylist) =>
-  //         prevRenderedPlaylist.map((playlist) =>
-  //           playlist._id === data._id ? data : playlist
-  //         )
-  //       );
-  //       console.log("Data being sent:", JSON.stringify(data, null, 2));
-  //       setCoin(data.userCoin);
-  //     } else {
-  //       console.error("Error liking/unliking playlist:", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error liking/unliking playlist:", error);
-  //   }
-  // };
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchPublicPlaylists();
+      fetchLikedPlaylists();
+    });
 
-  // useEffect(() => {
-  //   const fetchCoinBalance = async () => {
-  //     try {
-  //       console.log("userId: " + userId);
-  //       const response = await fetch(
-  //         `http://10.0.2.2:3005/auth/${userId}/coins`,
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         }
-  //       );
-  //       const data = await response.json();
-  //       // console.log("Data being sent:", JSON.stringify(data, null, 2));
-  //       if (response.ok) {
-  //         setCoin(data.userCoin);
-  //       } else {
-  //         console.error("Error getting coin:", data.message);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error show token  :", error);
-  //     }
-  //   };
+    return unsubscribe;
+  }, [navigation]);
+  useEffect(() => {
+    const fetchCoinBalance = async () => {
+      if (!userId) {
+        console.error("User ID is undefined");
+        return;
+      }
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${userId}/coins`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setCoin(data.userCoin);
+        } else {
+          console.error("Error getting coin:", data.message);
+        }
+      } catch (error) {
+        console.error("Error showing token:", error);
+      }
+    };
 
-  //   fetchCoinBalance();
-  // }, [userId]);
+    if (userId) {
+      fetchCoinBalance();
+    }
+  }, [userId]);
 
   // const handleSort = async () => {
   //   console.log("Sorting...");

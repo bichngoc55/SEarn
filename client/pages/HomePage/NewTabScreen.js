@@ -82,9 +82,7 @@ export default function NewsTab() {
           const likedSong = await response.json();
           setLikedSongList(likedSong);
         }
-      } catch (error) {
-        alert("Error in likedsong: " + error);
-      }
+      } catch (error) {}
     };
     getLikedSong();
   }, [user?._id, accessToken]);

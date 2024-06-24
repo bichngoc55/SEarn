@@ -23,6 +23,7 @@ import {
 } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import AudioService from "../../service/audioService";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Upcoming = ({ onClose }) => {
   const [playlists, setPlaylists] = useState([]);
@@ -51,47 +52,41 @@ const Upcoming = ({ onClose }) => {
       <View style={styles.modalView}>
         <Text style={styles.text}>Playing Playlist</Text>
       </View>
-      <FlatList
-        data={service.currentPlaylist}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              style={styles.trackContainer}
-              onPress={() => PlaySong(item)}
-            >
-              {item.album && item.album.image ? (
-                <Image
-                  source={{ uri: item.album.image }}
-                  style={styles.circle}
-                />
-              ) : (
-                <Image
-                  source={{ uri: image }}
-                  // source={require("../assets/images/logoSEarn.png")}
-                  style={styles.circle}
-                />
-              )}
-              <View style={{ flexDirection: "column", flex: 1 }}>
-                <Text
-                  style={styles.textName}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {item.name}
-                </Text>
-                <Text
-                  style={styles.textArtist}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {item.artists.map((artist) => artist.name).join(", ")}{" "}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
+      <ScrollView nestedScrollEnabled={true}>
+        {service.currentPlaylist.map((item) => (
+          <TouchableOpacity
+            style={styles.trackContainer}
+            key={item.id.toString()}
+            onPress={() => PlaySong(item)}
+          >
+            {item.album && item.album.image ? (
+              <Image source={{ uri: item.album.image }} style={styles.circle} />
+            ) : (
+              <Image
+                source={{ uri: image }}
+                // source={require("../assets/images/logoSEarn.png")}
+                style={styles.circle}
+              />
+            )}
+            <View style={{ flexDirection: "column", flex: 1 }}>
+              <Text
+                style={styles.textName}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {item.name}
+              </Text>
+              <Text
+                style={styles.textArtist}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {item.artists.map((artist) => artist.name).join(", ")}{" "}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
       <Toast />
     </View>
   );

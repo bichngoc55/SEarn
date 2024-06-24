@@ -284,7 +284,7 @@ const AddtoPlaylist = ({ song, onClose }) => {
               </View>
               <Checkbox
                 value={item.isCheck}
-                style={{ borderRadius: "10%" }}
+                style={{ borderRadius: scale(10) }}
                 color={item.isCheck ? "#FED215" : "#737373"}
                 onValueChange={(newValue) => {
                   const updatedItems = items.map((itemInArray) => {

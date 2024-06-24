@@ -71,7 +71,7 @@ export default function RelatedArtist() {
 
         setArtistList(finalArtistList);
       } else {
-        alert("Chưa có accessToken");
+        // alert("Chưa có accessToken");
       }
     } catch (error) {
       console.error("Error fetching liked artists:", error);

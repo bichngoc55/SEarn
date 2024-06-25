@@ -324,16 +324,8 @@ export default function UserPage() {
             <MaterialIcons name="password" size={22} color="white" />
             <Text style={styles.itemText}>Password settings</Text>
           </TouchableOpacity>
-          {/* publicPlaylist */}
-          <TouchableOpacity
-            style={styles.itemContainer}
-            onPress={handlePublicPlaylist}
-          >
-            <MaterialIcons name="password" size={22} color="white" />
-            <Text style={styles.itemText}>Public Playlist</Text>
-          </TouchableOpacity>
-          <Text style={styles.sectionTitle}>Options</Text>
 
+          <Text style={styles.sectionTitle}>Options</Text>
           <TouchableOpacity
             onPress={() => {
               Alert.alert("Up to Date", "Your app is already up to date.");

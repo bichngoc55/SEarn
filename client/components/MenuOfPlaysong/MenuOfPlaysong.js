@@ -371,8 +371,8 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "semiBold",
     color: "white",
-    fontFamily: "semiBold",
     color: "#FED215",
+    fontSize: scale(19)
   },
   iconandtext: {
     flexDirection: "row",

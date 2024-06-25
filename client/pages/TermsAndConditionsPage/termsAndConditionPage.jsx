@@ -48,7 +48,7 @@ export default function TermsAndConditionsPage() {
           style={styles.backButton}
           onPress={() => navigation.navigate("UserProfile")}
         >
-          <Ionicons name="chevron-back-sharp" size={24} color="black" />
+          <Ionicons name="chevron-back-sharp" size={scale(18)} color="black" />
         </Pressable>
       </View>
 
@@ -134,12 +134,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#1C1B1B",
   },
   backButtonContainer: {
-    marginTop: scale(20),
+    marginTop: scale(27),
     marginLeft: scale(15),
   },
   backButton: {
-    width: scale(35),
-    height: scale(35),
+    width: scale(30),
+    height: scale(30),
     borderRadius:scale(100),
     backgroundColor: "rgba(211, 211, 211, 0.8)",
     justifyContent: "center",

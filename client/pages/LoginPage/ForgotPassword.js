@@ -25,47 +25,58 @@ const RegisterSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email format")
     .required("Email is required"),
-  password: Yup.string()
-    .min(8, "Password must be at least 6 characters")
-    .required("Password is required"),
 });
 
-export default function LoginScreen({ navigation }) {
+export default function ForgorPasswordScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const loginError = useSelector((state) => state.user.error);
+  const resetPasswordError = useSelector((state) => state.user.error);
   const { accessTokenForSpotify } = useSelector((state) => state.spotifyAccessToken);
   const { accessToken } = useSelector((state) => state.user);
   const handleSubmit = async (values) => {
     try {
-      // console.log(values);
-      await dispatch(loginUser(values));
-        await dispatch(fetchSpotifyAccessToken());
-       
-      if (accessToken) {
-        navigation.navigate("BottomBar");
-        console.log("access token for user l1 trong login: ", accessToken);
-      } else {
-        // console.error("Login error:", error);
-      }
-      if(accessTokenForSpotify)
-        {
-          console.log("co access token cho spotify r : ", accessTokenForSpotify);
-        }
-        else {
-          // console.log(" : ", accessTokenForSpotify);
-        }
+      const response = await fetch("http://10.0.2.2:3005/auth/forgotPassword", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: values.email }),
+      });
+      const data = await response.json();
+      console.log(data, "userRegister");
+      alert("Your password is send to your email");
+      values.email=""
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("reset password error:", error);
     }
+  };
+
+  const forgotPassword = async (e) => {
+    e.preventDefault();
+    console.log(emailInput);
+    fetch("http://10.0.2.2:3005/auth/forgotPassword", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: emailInput }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data, "userRegister");
+        alert(data.status);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   return (
     <View style={styles.container}>
       <View style={styles.backButtonContainer}>
         <Pressable
           style={styles.backButton}
-          onPress={() => navigation.navigate("SignUpOrLogin")}
+          onPress={navigation.goBack}
         >
           <Ionicons name="chevron-back-sharp" size={24} color="black" />
         </Pressable>
@@ -78,10 +89,10 @@ export default function LoginScreen({ navigation }) {
             resizeMode="contain"
           />
 
-          <Text style={styles.loginText}>Sign In</Text>
+          <Text style={styles.loginText}>Reset Password</Text>
 
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ email: ""}}
             validationSchema={RegisterSchema}
             onSubmit={handleSubmit}
           >
@@ -108,33 +119,19 @@ export default function LoginScreen({ navigation }) {
                     <Text style={styles.errorMessage}>{errors.email}</Text>
                   )}
                 </View>
-                <View style={styles.inputContainer}>
-                  <TextField
-                    placeholder="Enter your password"
-                    width={scale(310)}
-                    height={scale(65)}
-                    onChangeText={handleChange("password")}
-                    onBlur={handleBlur("password")}
-                    value={values.password}
-                    secureTextEntry
-                  />
-                  {touched.password && errors.password && (
-                    <Text style={styles.errorMessage}>{errors.password}</Text>
-                  )}
-                </View>
-                {loginError && (
+                {resetPasswordError && (
                   <Text style={styles.errorMessage}>
                     {loginError === "User does not exist."
                       ? "User does not exist"
                       : loginError === "Invalid credentials."
-                      ? "Invalid email or password"
+                      ? "Invalid email"
                       : loginError}
                   </Text>
                 )}
                 <View style={styles.btnContainer}>
                   <ReuseBtn
                     onPress={handleSubmit}
-                    btnText="Login"
+                    btnText="Reset password"
                     textSize={scale(18)}
                     textColor="#ffffff"
                     width={scale(210)}
@@ -144,23 +141,10 @@ export default function LoginScreen({ navigation }) {
               </View>
             )}
           </Formik>
-
-          <View style={styles.signInLinkContainer}>
-            <Text style={styles.signInText}>Not a member? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-              <Text style={styles.signInLink}>Register now</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.signInLinkContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-              <Text style={styles.signInLink}>Forgot Password</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </TouchableWithoutFeedback>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -223,3 +207,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+  

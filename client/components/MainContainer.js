@@ -16,6 +16,7 @@ import UserPage from "../pages/userProfilePage/userProfilePage";
 import gettingStartedPage from "../pages/GettingStartedPage/gettingStartedPage";
 import LoginPage from "../pages/LoginPage/loginPage";
 import RegisterPage from "../pages/RegisterPage/registerPage";
+import ForgorPasswordScreen from "../pages/LoginPage/ForgotPassword";
 import PlaylistPage from "../pages/FavoritePage/PlaylistPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
 import LikedSongPage from "../pages/FavoritePage/LikedSongPage";
@@ -307,6 +308,7 @@ export default function MainNavigation() {
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="BottomBar" component={BottomBar} />
+            <Stack.Screen name="ForgotPassword" component={ForgorPasswordScreen} />
             <Stack.Screen
               name="PlaySong"
               component={PlaySongPage}

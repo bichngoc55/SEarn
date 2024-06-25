@@ -69,7 +69,8 @@ export default function NewsTab() {
   useEffect(() => {
     const getLikedSong = async () => {
       try {
-        const response = await fetch(
+        if (accessToken) {
+          const response = await fetch(
           `http://10.0.2.2:3005/auth/${user?._id}/getLikedSongs`,
           {
             method: "GET",
@@ -82,6 +83,7 @@ export default function NewsTab() {
         const likedSong = await response.json();
         setLikedSongList(likedSong);
         console.log("Đã gọi được likedArtistList từ db");
+        }
       } catch (error) {}
     };
     getLikedSong();
@@ -106,7 +108,7 @@ export default function NewsTab() {
           // alert("accessToken:" + accessTokenForSpotify);
         }
       } catch (error) {
-        console.error("Error fetching tracks recommendations hehe:", error);
+        console.log("Error fetching tracks recommendations hehe:", error);
       }
     };
     fetchAlbumsNewReleases();

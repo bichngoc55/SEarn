@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     padding: scale(10),
     borderRadius: scale(20),
     height: scale(80),
-    width: scale(350),
   },
   circle: {
     width: scale(60),

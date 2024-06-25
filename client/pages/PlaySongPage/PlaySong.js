@@ -21,6 +21,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Pressable,
   FlatList,
   Image,
 } from "react-native";
@@ -211,19 +212,19 @@ const PlaySongPage = ({ route }) => {
     <MenuProvider>
       <SafeAreaView style={styles.container}>
         <View style={styles.headerL}>
-          <Ionicons
-            name="arrow-back-circle"
-            size={scale(30)}
-            color="#737373"
-            onPress={navigation.goBack}
-          />
+          <Pressable
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="chevron-back-sharp" size={scale(18)} color="black" marginRight={scale(1)} />
+          </Pressable>
           <Text style={styles.headerText}>Now playing</Text>
-          <Entypo
-            name="dots-three-vertical"
-            size={24}
-            color="#737373"
+          <Pressable
+            style={styles.backButton}
             onPress={toggleModal}
-          />
+          >
+            <Entypo name="dots-three-vertical" size={scale(18)} color="black" />
+          </Pressable>
         </View>
 
         <MenuOfPlaysong
@@ -247,7 +248,7 @@ const PlaySongPage = ({ route }) => {
         <View style={styles.textIcon}>
           <View style={{ flex: 1 }}>
             <Text style={styles.songname}>{service.currentSong.name}</Text>
-            <Text style={styles.songartist}>
+            {/* <Text style={styles.songartist}>
               {service.currentSong.artists.map((artist, index) => (
                 <TouchableOpacity
                   key={artist.id}
@@ -260,7 +261,7 @@ const PlaySongPage = ({ route }) => {
                   )}
                 </TouchableOpacity>
               ))}
-            </Text>
+            </Text> */}
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TouchableOpacity onPress={handleLike}>
@@ -473,10 +474,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerL: {
-    marginLeft: "5.1%",
-    marginRight: "5.1%",
+    marginHorizontal: "5.1%",
     alignItems: "center",
-    marginTop: "5%",
+    marginTop: scale(27),
     flexDirection: "row",
     zIndex: 1,
   },
@@ -484,8 +484,15 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: scale(16),
     flex: 1,
-
     textAlign: "center",
+  },
+  backButton: {
+    width: scale(24),
+    height: scale(24),
+    borderRadius: scale(100),
+    backgroundColor: "rgba(211, 211, 211, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   imageContain: {
     marginLeft: "5.1%",

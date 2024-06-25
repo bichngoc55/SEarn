@@ -247,7 +247,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1C1B1B",
-    marginTop: scale(20),
   },
   scrollView: {
     flex: 1,
@@ -256,7 +255,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "5.1%",
     height: scale(35),
     alignItems: "center",
-    marginTop: "2.68%",
+    marginTop: scale(27),
     marginBottom: "4.68%",
     flexDirection: "row",
   },

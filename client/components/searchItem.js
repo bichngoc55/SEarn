@@ -96,7 +96,7 @@ const SearchItem = ({ input , songList}) => {
           flex: 1,
           marginHorizontal: scale(10),
           height: scale(60),
-          justifyContent: "space-between",
+          justifyContent: "space-evenly",
         }}
       >
         <Text style={styles.textName} numberOfLines={2} ellipsizeMode="tail">
@@ -132,6 +132,8 @@ const styles = StyleSheet.create({
     fontFamily: "semiBold",
     color: "white",
     fontFamily: "semiBold",
+    fontSize: scale(15),
+
   },
   textArtist: {
     fontSize: scale(12),

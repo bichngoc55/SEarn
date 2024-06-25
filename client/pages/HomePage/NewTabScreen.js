@@ -65,6 +65,7 @@ export default function NewsTab() {
     getAlbumList();
   }, [user?._id, accessToken]);
 
+  //get liked song from db
   useEffect(() => {
     const getLikedSong = async () => {
       try {
@@ -78,14 +79,13 @@ export default function NewsTab() {
             },
           }
         );
-        if (response.statusCode === 200) {
-          const likedSong = await response.json();
-          setLikedSongList(likedSong);
-        }
+        const likedSong = await response.json();
+        setLikedSongList(likedSong);
+        console.log("Đã gọi được likedArtistList từ db");
       } catch (error) {}
     };
     getLikedSong();
-  }, [user?._id, accessToken]);
+  }, [user?._id, accessToken, likedSongList]);
 
   useEffect(() => {
     const fetchAlbumsNewReleases = async () => {
@@ -148,6 +148,7 @@ export default function NewsTab() {
     } else {
       await addToLikedAlbums(albumId);
       setLikedAlbumList([...likedAlbumList, albumId]);
+      
     }
   };
 
@@ -187,6 +188,7 @@ export default function NewsTab() {
     } else {
       await addToLikedSongs(songId);
       setLikedSongList([...likedSongList, songId]);
+      console.log("Có bao nhiêu liked song: ", likedSongList);
     }
   };
 
@@ -199,7 +201,7 @@ export default function NewsTab() {
           keyExtractor={(item) => item.id}
           ListHeaderComponent={
             <>
-              <Text style={styles.title}>Albums</Text>
+              <Text style={styles.title}>New Albums Releases</Text>
               <View style={styles.flatlistContainer}>
                 <FlatList
                   horizontal={true}
@@ -210,7 +212,7 @@ export default function NewsTab() {
                       <ArtistAlbumItem
                         input={item}
                         onLikeUnlike={handleLikeUnlikeAlbums}
-                        isLiked={likedAlbumList.includes(item.id)}
+                        isLiked={likedAlbumList?.includes(item.id)}
                       />
                     );
                   }}

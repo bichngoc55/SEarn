@@ -138,6 +138,7 @@ const PlaySongPage = ({ route }) => {
           }
         );
         const likedSong = await response.json();
+        console.log(likedSong)
         setLikedSongList(likedSong);
       } catch (error) {
         alert("Error in likedsong: " + error);
@@ -176,8 +177,8 @@ const PlaySongPage = ({ route }) => {
   };
 
   useEffect(() => {
-    setLiked(likedSongList?.includes(song?.id));
-  }, [song?.id, likedSongList]);
+    setLiked(likedSongList?.includes(service?.currentSong.id));
+  }, [service?.currentSong?.id, likedSongList]);
   // Handle like/unlike action
   const handleLikeUnlikeSong = async (songId) => {
     if (likedSongList?.includes(songId)) {

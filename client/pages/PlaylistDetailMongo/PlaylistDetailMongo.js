@@ -56,6 +56,7 @@ const PlaylistDetailMongo = ({ route }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [comments, setComments] = useState([]);
+  const [likedSongList, setLikedSongList] = useState([]);
   const { user } = useSelector((state) => state.user);
 
   const toggleModal = () => {
@@ -232,7 +233,9 @@ const PlaylistDetailMongo = ({ route }) => {
       }
     } catch (error) {}
   };
-  const renderItem = (data) => <SongItem input={data.item} songList={tracks} />;
+  const renderItem = (data) => <SongItem input={data.item} songList={tracks} 
+  onLikeUnlike={handleLikeUnlikeSong}
+  isLiked={likedSongList?.includes(item.id)}/>;
   const renderHiddenItem = (data) => (
     <View style={styles.rowBack}>
       <TouchableOpacity
@@ -318,6 +321,69 @@ const PlaylistDetailMongo = ({ route }) => {
       ))}
     </View>
   );
+
+  //get liked song from db
+  useEffect(() => {
+    const getLikedSong = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:3005/auth/${user?._id}/getLikedSongs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const likedSong = await response.json();
+        setLikedSongList(likedSong);
+        console.log("Đã gọi được likedArtistList từ db");
+      } catch (error) {}
+    };
+    getLikedSong();
+  }, [user?._id, accessToken, likedSongList]);
+
+  //add like song to db
+  const addToLikedSongs = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/addLikedSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  //unlike song on db
+  const unlikeSong = async (songId) => {
+    fetch(`http://10.0.2.2:3005/auth/${user._id}/unlikeSongs`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ songId }),
+    })
+      .then((response) => response.json())
+      .then((updatedUser) => console.log(updatedUser))
+      .catch((error) => console.error(error));
+  };
+  // Handle like/unlike action
+  const handleLikeUnlikeSong = async (songId) => {
+    if (likedSongList?.includes(songId)) {
+      await unlikeSong(songId);
+      setLikedSongList(likedSongList.filter((id) => id !== songId));
+    } else {
+      await addToLikedSongs(songId);
+      setLikedSongList([...likedSongList, songId]);
+      console.log("Có bao nhiêu liked song: ", likedSongList);
+    }
+  };
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
@@ -372,7 +438,6 @@ const PlaylistDetailMongo = ({ route }) => {
             </View>
           </View>
         </View>
-        {/* hehe */}
 
         <View style={styles.flatlistContainer}>
           <SwipeListView
